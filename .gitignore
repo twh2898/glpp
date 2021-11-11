@@ -1,0 +1,9 @@
+.vscode/
+tags
+compile_commands.json
+
+build/
+install/
+Release/
+Debug/
+
