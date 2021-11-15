@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.15...3.20)
 
-project(FooBar
+project(glpp
     VERSION 0.1
-    DESCRIPTION "An awesome project"
+    DESCRIPTION "Helper Classes that wrap OpenGL functionality"
     LANGUAGES CXX)
 
 # Set the default build type if non is specified
@@ -57,6 +57,9 @@ include_directories(PRIVATE ${CMAKE_BINARY_DIR}/include)
 #FetchContent_MakeAvailable(fmtlib)
 # Adds fmt::fmt
 
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(glm REQUIRED CONFIG)
 #find_package(fmt REQUIRED)
 
 add_subdirectory(src)

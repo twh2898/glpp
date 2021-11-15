@@ -4,10 +4,18 @@ set(TARGET foo)
 # Find with GLOB if CMake version is at least 3.12, otherwise use set
 #file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${${PROJECT_NAME}_SOURCE_DIR}/include/${PROJECT_NAME}/*.hpp")
 
-set(HEADER_LIST foo.hpp)
+set(HEADER_LIST
+    FrameBuffer.hpp
+    Shader.hpp
+    Texture.hpp
+    VBO.hpp)
 list(TRANSFORM HEADER_LIST PREPEND "${${PROJECT_NAME}_SOURCE_DIR}/include/${PROJECT_NAME}/")
 
-set(SOURCE_LIST foo.cpp)
+set(SOURCE_LIST
+    FrameBuffer.cpp
+    Shader.cpp
+    Texture.cpp
+    VBO.cpp)
 list(TRANSFORM SOURCE_LIST PREPEND "${${PROJECT_NAME}_SOURCE_DIR}/src/")
 
 add_library(${TARGET} ${SOURCE_LIST} ${HEADER_LIST})
@@ -18,7 +26,12 @@ target_include_directories(${TARGET} PUBLIC
 
 target_compile_features(${TARGET} PUBLIC cxx_std_17)
 
-#target_link_libraries(${TARGET} PRIVATE fmt::fmt)
+target_link_libraries(${TARGET}
+    PRIVATE
+    OpenGL::OpenGL
+    GLEW::GLEW
+    PUBLIC
+    glm)
 
 # Check for Inter Procedural Optimization (IPO)
 include(CheckIPOSupported)
