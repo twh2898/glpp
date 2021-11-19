@@ -80,7 +80,7 @@ namespace glpp {
 
         std::vector<GLuint> buffers;
         for (int i = 0; i < count(); i++) {
-            auto & a = textures[i].getAttachment();
+            auto a = textures[i].getAttachment();
             if (a != GL_DEPTH_ATTACHMENT && a != GL_STENCIL_ATTACHMENT)
                 buffers.push_back(a);
         }
@@ -106,7 +106,7 @@ namespace glpp {
     void FrameBuffer::setSize(const glm::uvec2 & size) {
         this->size = size;
         for (auto & texture : textures) {
-            texture->resize(size);
+            texture.resize(size);
         }
 
         if (rboDepth > 0) {
@@ -149,7 +149,7 @@ namespace glpp {
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dest);
         if (count() > 1) {
             for (int i = 0; i < count(); i++) {
-                auto a = textures[i]->getAttachment();
+                auto a = textures[i].getAttachment();
                 if (a != GL_DEPTH_ATTACHMENT && a != GL_STENCIL_ATTACHMENT) {
                     glReadBuffer(a);
                     glDrawBuffer(a);
