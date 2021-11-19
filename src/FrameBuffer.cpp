@@ -163,7 +163,7 @@ namespace glpp {
                               bitfield, GL_NEAREST);
     }
 
-    const FrameBuffer FrameBuffer::getResolved() const {
+    const FrameBuffer FrameBuffer::resolve() const {
         FrameBuffer resolved(size, attachments, depthBuffer, 0);
         blit(resolved.getId(),
              GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);

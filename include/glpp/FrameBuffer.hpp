@@ -191,7 +191,7 @@ namespace glpp {
 
         /**
          * Does the FrameBuffer support multisampling. If so, you need to use
-         * the FrameBuffer from getResolved() for any sampleing.
+         * the FrameBuffer from resolve() for any sampleing.
          */
         bool isMultisampled() const;
 
@@ -244,7 +244,7 @@ namespace glpp {
          *
          * @returns the resolved FrameBuffer
          */
-        const FrameBuffer getResolved() const;
+        const FrameBuffer resolve() const;
 
         /**
          * Bind the FrameBuffer. All draw calls after this will be sent to the
