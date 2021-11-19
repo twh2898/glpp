@@ -45,22 +45,9 @@ include(GNUInstallDirs)
 configure_File(cmake/config.h.in include/config.h)
 include_directories(PRIVATE ${CMAKE_BINARY_DIR}/include)
 
-# Use FetchContent instead of find_package for small stuff? Must be exported
-# with install targets to work.
-#include(FetchContent)
-
-# Formatting library
-#FetchContent_Declare(
-#    fmtlib
-#    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-#    GIT_TAG 5.3.0)
-#FetchContent_MakeAvailable(fmtlib)
-# Adds fmt::fmt
-
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glm REQUIRED CONFIG)
-#find_package(fmt REQUIRED)
 
 add_subdirectory(src)
 
