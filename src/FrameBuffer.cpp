@@ -37,7 +37,11 @@ namespace glpp {
                              std::vector<FrameBufferAttachment> attachments,
                              bool depthBuffer,
                              GLsizei samples)
-        : size(size), rboDepth(0), samples(samples), attachments(attachments) {
+        : size(size),
+          rboDepth(0),
+          samples(samples),
+          attachments(attachments),
+          depthBuffer(depthBuffer) {
 
         glGenFramebuffers(1, &fboId);
 
@@ -83,10 +87,6 @@ namespace glpp {
         glDrawBuffers(buffers.size(), &buffers[0]);
 
         unbind();
-
-        if (samples > 0)
-            resolved =
-                std::make_shared<FrameBuffer>(size, attachments, depthBuffer, 0);
     }
 
     FrameBuffer::~FrameBuffer() {
@@ -118,13 +118,18 @@ namespace glpp {
                 glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT,
                                       size.x, size.y);
         }
-
-        if (resolved)
-            resolved->setSize(size);
     }
 
-    const std::vector<FrameBufferTexture::Ptr> & FrameBuffer::getTextures() const {
+    const std::vector<FrameBufferAttachment> & FrameBuffer::getAttachments() const {
+        return attachments;
+    }
+
+    const std::vector<FrameBufferTexture> & FrameBuffer::getTextures() const {
         return textures;
+    }
+
+    bool FrameBuffer::hasDepthBuffer() const {
+        return depthBuffer;
     }
 
     bool FrameBuffer::isMultisampled() const {
@@ -158,10 +163,10 @@ namespace glpp {
                               bitfield, GL_NEAREST);
     }
 
-    const FrameBuffer::Ptr & FrameBuffer::getResolved() const {
-        if (resolved)
-            blit(resolved->getId(), GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
-                                        | GL_STENCIL_BUFFER_BIT);
+    const FrameBuffer FrameBuffer::getResolved() const {
+        FrameBuffer resolved(size, attachments, depthBuffer, 0);
+        blit(resolved.getId(),
+             GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         return resolved;
     }
 

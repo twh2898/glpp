@@ -79,6 +79,9 @@ namespace glpp {
         void setAttachment(GLuint attachment);
     };
 
+    /**
+     * Describes an attachment for a FrameBuffer.
+     */
     struct FrameBufferAttachment {
         GLenum attachment;
         GLint internal = GL_RGBA;
@@ -122,11 +125,10 @@ namespace glpp {
         GLuint fboId;
         glm::uvec2 size;
         const std::vector<FrameBufferAttachment> attachments;
+        bool depthBuffer;
         std::vector<FrameBufferTexture> textures;
         GLuint rboDepth;
         GLsizei samples;
-
-        FrameBuffer * resolved;
 
     public:
         /**
@@ -181,6 +183,13 @@ namespace glpp {
         void setSize(const glm::uvec2 & size);
 
         /**
+         * Does this FrameBuffer have a depth buffer.
+         *
+         * @return does this have a depth buffer
+         */
+        bool hasDepthBuffer() const;
+
+        /**
          * Does the FrameBuffer support multisampling. If so, you need to use
          * the FrameBuffer from getResolved() for any sampleing.
          */
@@ -205,7 +214,14 @@ namespace glpp {
         size_t count(void) const;
 
         /**
-         * Get the FrameBufferTexture textures.
+         * Get the attachments.
+         *
+         * @return the attachments
+         */
+        const std::vector<FrameBufferAttachment> & getAttachments() const;
+
+        /**
+         * Get the textures.
          *
          * @return the textures
          */
@@ -228,7 +244,7 @@ namespace glpp {
          *
          * @returns the resolved FrameBuffer
          */
-        const FrameBufferTexture & getResolved() const;
+        const FrameBuffer getResolved() const;
 
         /**
          * Bind the FrameBuffer. All draw calls after this will be sent to the
