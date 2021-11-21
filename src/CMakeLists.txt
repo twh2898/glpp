@@ -1,5 +1,5 @@
 
-set(TARGET foo)
+set(TARGET glpp)
 
 # Find with GLOB if CMake version is at least 3.12, otherwise use set
 #file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${${PROJECT_NAME}_SOURCE_DIR}/include/${PROJECT_NAME}/*.hpp")
