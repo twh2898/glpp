@@ -1,4 +1,4 @@
-# GLPP
+# GLPP / OpenGL++
 
 Helper Classes that wrap OpenGL functionality.
 
