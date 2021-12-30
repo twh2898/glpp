@@ -10,6 +10,46 @@
 
 namespace glpp {
 
+    template<typename T>
+    struct Buffer {
+        using element_type = T;
+
+        virtual element_type * data() = 0;
+        virtual size_t size() = 0;
+
+        void bufferData() {
+            glBindVertexArray(vao);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+            gBufferData(GL_ARRAY_BUFFER, sizeof(element_type) * size(), data(),
+                        GL_STATIC_DRAW);
+
+            glBindVertexArray(0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        }
+
+        void draw() {
+            glBindVertexArray(vao);
+            glDrawArrays(mode, 0, size());
+            glBindVertexArray(0);
+        }
+    };
+
+    template<typename T>
+    struct ColorBufferBase : public Buffer<T> {
+        std::vector<glm::vec3> buff;
+
+        element_type * data() override {
+            return buff.data();
+        }
+
+        size_t size() override {
+            return buff.size();
+        }
+    };
+
+    using ColorBuffer = ColorBufferBase<float>;
+
     /**
      * A single point in the format accepted by VBO, Mesh and Model.
      */
