@@ -68,79 +68,55 @@ namespace glpp {
 }
 
 namespace glpp {
-    VBO::VBO(VBO::Mode mode, VBO::Usage usage)
-        : mode(mode), usage(usage), vao(0), vbo(0), nPoints(0) {
+    VAO::VAO(std::vector<std::shared_ptr<Buffer>> buffers, VAO::Mode mode)
+        : buffers(buffers), mode(mode), vao(0), nPoints(0) {
 
         glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
-        glGenBuffers(1, &vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        bind();
 
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                              (void *)(3 * sizeof(float)));
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                              (void *)(6 * sizeof(float)));
+        for (auto & buff : buffers) {
+            buff->bind();
+            buff->enable();
+        }
 
-        glBindVertexArray(0);
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        unbind();
+        for (auto & buff : buffers) {
+            buff->disable();
+            buff->unbind();
+        }
     }
 
-    VBO::~VBO() {
-        glDeleteBuffers(1, &vbo);
+    VAO::~VAO() {
         glDeleteVertexArrays(1, &vao);
     }
 
-    GLuint VBO::getVBO() const {
-        return vbo;
-    }
-
-    GLuint VBO::getVAO() const {
+    GLuint VAO::getVAO() const {
         return vao;
     }
 
-    size_t VBO::size() const {
+    size_t VAO::size() const {
         return nPoints;
     }
 
-    VBO::Mode VBO::getMode() const {
+    VAO::Mode VAO::getMode() const {
         return mode;
     }
 
-    void VBO::setMode(VBO::Mode mode) {
+    void VAO::setMode(VAO::Mode mode) {
         this->mode = mode;
     }
 
-    VBO::Usage VBO::getUsage() const {
-        return usage;
-    }
-
-    void VBO::setUsage(VBO::Usage usage) {
-        this->usage = usage;
-    }
-
-    void VBO::loadFromPoints(const std::vector<Vertex> & points) {
-        nPoints = points.size();
-
-        glBindVertexArray(vao);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * nPoints, points.data(),
-                     usage);
-
-        glBindVertexArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-
-    void VBO::draw() const {
+    void VAO::draw() const {
         glBindVertexArray(vao);
         glDrawArrays(mode, 0, nPoints);
+        glBindVertexArray(0);
+    }
+
+    void VAO::bind() const {
+        glBindVertexArray(vao);
+    }
+
+    void VAO::unbind() const {
         glBindVertexArray(0);
     }
 }

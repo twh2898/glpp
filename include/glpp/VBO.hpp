@@ -6,49 +6,165 @@
 
 #include <cstddef>
 #include <glm/glm.hpp>
+#include <memory>
 #include <vector>
 
 namespace glpp {
 
-    template<typename T>
-    struct Buffer {
-        using element_type = T;
+    struct Attribute {
+        GLuint vaa;
+        GLint size;
+        GLenum type;
+        bool normalized;
+        GLsizei stride;
+        const void * pointer;
 
-        virtual element_type * data() = 0;
-        virtual size_t size() = 0;
+        Attribute(GLuint vaa,
+                  GLint size,
+                  GLenum type,
+                  bool normalized,
+                  GLsizei stride,
+                  const void * pointer = nullptr)
+            : vaa(vaa),
+              size(size),
+              type(type),
+              normalized(normalized),
+              stride(stride),
+              pointer(pointer) {}
 
-        void bufferData() {
-            glBindVertexArray(vao);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-            gBufferData(GL_ARRAY_BUFFER, sizeof(element_type) * size(), data(),
-                        GL_STATIC_DRAW);
-
-            glBindVertexArray(0);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        void enable() const {
+            glEnableVertexAttribArray(vaa);
+            glVertexAttribPointer(vaa, size, type, normalized, stride, pointer);
         }
 
-        void draw() {
-            glBindVertexArray(vao);
-            glDrawArrays(mode, 0, size());
-            glBindVertexArray(0);
+        void disable() const {
+            glDisableVertexAttribArray(vaa);
+        }
+    };
+
+    class Buffer {
+    public:
+        /**
+         * OpenGL buffer usage.
+         */
+        enum Usage {
+            /// Data will be buffered once and used multiple times
+            Static = GL_STATIC_DRAW,
+            /// Data will be buffered and used a few times
+            Stream = GL_STREAM_DRAW,
+            /// Data will be buffered and used once
+            Dynamic = GL_DYNAMIC_DRAW,
+        };
+
+    protected:
+        GLuint vbo;
+        Usage usage;
+        std::vector<Attribute> attributes;
+
+    public:
+        /**
+         * Create a new VBO.
+         *
+         * @param vaa the Vertex Attribute index
+         * @param usage the OpenGL buffer usage
+         *
+         * After creating the vertex array attribute vaa will be enabled and the
+         * new vbo will be bound.
+         */
+        Buffer(std::vector<Attribute> attributes, Usage usage = Usage::Static)
+            : vbo(0), attributes(attributes), usage(usage) {
+
+            glGenBuffers(1, &vbo);
+            bind();
+        }
+
+        virtual ~Buffer() {
+            glDeleteBuffers(1, &vbo);
+        }
+
+        virtual void * data() = 0;
+        virtual size_t size() = 0;
+
+        void enable() const {
+            for (auto & attr : attributes) {
+                attr.enable();
+            }
+        }
+
+        void disable() const {
+            for (auto & attr : attributes) {
+                attr.disable();
+            }
+        }
+
+        void bufferData() {
+            bind();
+            glBufferData(GL_ARRAY_BUFFER, size(), data(), usage);
+        }
+
+        void bind() const {
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        }
+
+        void unbind() const {
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
     };
 
     template<typename T>
-    struct ColorBufferBase : public Buffer<T> {
-        std::vector<glm::vec3> buff;
+    struct VectorBufferBase : public Buffer {
+        using element_type = T;
 
-        element_type * data() override {
+        std::vector<element_type> buff;
+
+        using Buffer::Buffer;
+
+        void * data() override {
             return buff.data();
         }
 
         size_t size() override {
-            return buff.size();
+            return buff.size() * sizeof(element_type);
+        }
+
+        /**
+         * Load buffer with data from buff.
+         *
+         * @param buff the data to send to the buffer
+         */
+        void loadFromPoints(const std::vector<element_type> & buff) {
+            this->buff = buff;
+            bufferData();
         }
     };
 
-    using ColorBuffer = ColorBufferBase<float>;
+    struct VertexBuffer : public VectorBufferBase<glm::vec3> {
+        const std::vector<Attribute> attributes {
+            Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
+
+        VertexBuffer(GLuint vaa) : VectorBufferBase(attributes) {}
+    };
+
+    struct ColorBuffer : public VectorBufferBase<glm::vec3> {
+        const std::vector<Attribute> attributes {
+            Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
+
+        ColorBuffer(GLuint vaa) : VectorBufferBase(attributes) {}
+    };
+
+    struct NormalBuffer : public VectorBufferBase<glm::vec3> {
+        const std::vector<Attribute> attributes {
+            Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
+
+        NormalBuffer(GLuint vaa) : VectorBufferBase(attributes) {}
+    };
+
+    struct TexCoordBuffer : public VectorBufferBase<glm::vec2> {
+        const std::vector<Attribute> attributes {
+            Attribute(0, 2, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
+
+        TexCoordBuffer(GLuint vaa) : VectorBufferBase(attributes) {}
+    };
 
     /**
      * A single point in the format accepted by VBO, Mesh and Model.
@@ -133,6 +249,25 @@ namespace glpp {
         Vertex & operator-=(const Vertex & other);
     };
 
+    struct TextureVertexBuffer : public VectorBufferBase<Vertex> {
+        const std::vector<Attribute> attributes {
+            Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0),
+            Attribute(0,
+                      3,
+                      GL_FLOAT,
+                      GL_FALSE,
+                      sizeof(element_type),
+                      (void *)(3 * sizeof(float))),
+            Attribute(0,
+                      2,
+                      GL_FLOAT,
+                      GL_FALSE,
+                      sizeof(element_type),
+                      (void *)(6 * sizeof(float)))};
+
+        TextureVertexBuffer() : VectorBufferBase(attributes) {}
+    };
+
     void draw_array(const std::vector<Vertex> & vertices, GLenum mode);
 
     void draw_quad(const glm::vec2 & pos, const glm::vec2 & size);
@@ -140,7 +275,7 @@ namespace glpp {
     /**
      * Manages a single vertex buffered object and vertex array object.
      */
-    class VBO {
+    class VAO {
     public:
         /**
          * OpenGL Draw mode.
@@ -155,24 +290,11 @@ namespace glpp {
             TriangleFan = GL_TRIANGLE_FAN,
         };
 
-        /**
-         * OpenGL buffer usage.
-         */
-        enum Usage {
-            /// Data will be buffered once and used multiple times
-            Static = GL_STATIC_DRAW,
-            /// Data will be buffered and used a few times
-            Stream = GL_STREAM_DRAW,
-            /// Data will be buffered and used once
-            Dynamic = GL_DYNAMIC_DRAW,
-        };
-
     private:
         GLuint vao;
-        GLuint vbo;
-        Mode mode;
-        Usage usage;
         size_t nPoints;
+        Mode mode;
+        std::vector<std::shared_ptr<Buffer>> buffers;
 
     public:
         /**
@@ -181,29 +303,23 @@ namespace glpp {
          * @param mode the OpenGL draw mode
          * @param usage the OpenGL buffer usage
          */
-        VBO(Mode mode = Mode::Triangles, Usage usage = Usage::Static);
+        VAO(std::vector<std::shared_ptr<Buffer>> buffers,
+            Mode mode = Mode::Triangles);
 
         /**
          * Free OpenGL buffers.
          */
-        virtual ~VBO();
+        virtual ~VAO();
 
         /**
          * Default move constructor.
          */
-        VBO(VBO && other) = default;
+        VAO(VAO && other) = default;
 
         /**
          * Default move assign operator.
          */
-        VBO & operator=(VBO && other) = default;
-
-        /**
-         * Get the OpenGL vbo id.
-         *
-         * @return the vbo id
-         */
-        GLuint getVBO() const;
+        VAO & operator=(VAO && other) = default;
 
         /**
          * Get the OpenGL vao id.
@@ -234,37 +350,12 @@ namespace glpp {
         void setMode(Mode mode);
 
         /**
-         * Get the OpenGL buffer usage.
-         *
-         * @return the VBO::Usage
-         */
-        Usage getUsage() const;
-
-        /**
-         * Set the OpenGL buffer usage.
-         *
-         * @param usage the new usage
-         */
-        void setUsage(Usage usage);
-
-        /**
-         * Load buffer with data from points.
-         *
-         * @param points the data to send to the buffer
-         */
-        void loadFromPoints(const std::vector<Vertex> & points);
-
-        /**
-         * Load buffer with data from points.
-         *
-         * @param points the data to send to the buffer
-         * @param n the numebr of points
-         */
-        void loadFromPoints(const Vertex * points, size_t n);
-
-        /**
          * Bind the vao, then draw, then unbind the vao.
          */
         void draw() const;
+
+        void bind() const;
+
+        void unbind() const;
     };
 }
