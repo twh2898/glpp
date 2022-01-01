@@ -68,7 +68,7 @@ namespace glpp {
 }
 
 namespace glpp {
-    VAO::VAO(std::vector<std::shared_ptr<Buffer>> buffers, VAO::Mode mode)
+    BufferArray::BufferArray(std::vector<std::shared_ptr<Buffer>> buffers, BufferArray::Mode mode)
         : buffers(buffers), mode(mode), vao(0), nPoints(0) {
 
         glGenVertexArrays(1, &vao);
@@ -86,37 +86,37 @@ namespace glpp {
         }
     }
 
-    VAO::~VAO() {
+    BufferArray::~BufferArray() {
         glDeleteVertexArrays(1, &vao);
     }
 
-    GLuint VAO::getVAO() const {
+    GLuint BufferArray::getVAO() const {
         return vao;
     }
 
-    size_t VAO::size() const {
+    size_t BufferArray::size() const {
         return nPoints;
     }
 
-    VAO::Mode VAO::getMode() const {
+    BufferArray::Mode BufferArray::getMode() const {
         return mode;
     }
 
-    void VAO::setMode(VAO::Mode mode) {
+    void BufferArray::setMode(BufferArray::Mode mode) {
         this->mode = mode;
     }
 
-    void VAO::draw() const {
+    void BufferArray::draw() const {
         glBindVertexArray(vao);
         glDrawArrays(mode, 0, nPoints);
         glBindVertexArray(0);
     }
 
-    void VAO::bind() const {
+    void BufferArray::bind() const {
         glBindVertexArray(vao);
     }
 
-    void VAO::unbind() const {
+    void BufferArray::unbind() const {
         glBindVertexArray(0);
     }
 }

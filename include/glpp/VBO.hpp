@@ -71,8 +71,15 @@ namespace glpp {
          * After creating the vertex array attribute vaa will be enabled and the
          * new vbo will be bound.
          */
-        Buffer(std::vector<Attribute> attributes, Usage usage = Usage::Static)
+        Buffer(const std::vector<Attribute> & attributes, Usage usage = Usage::Static)
             : vbo(0), attributes(attributes), usage(usage) {
+
+            glGenBuffers(1, &vbo);
+            bind();
+        }
+
+        Buffer(std::vector<Attribute> && attributes, Usage usage = Usage::Static)
+            : vbo(0), attributes(std::move(attributes)), usage(usage) {
 
             glGenBuffers(1, &vbo);
             bind();
@@ -109,6 +116,10 @@ namespace glpp {
         void unbind() const {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
+
+        void draw() {
+            bufferData();
+        }
     };
 
     template<typename T>
@@ -138,11 +149,11 @@ namespace glpp {
         }
     };
 
-    struct VertexBuffer : public VectorBufferBase<glm::vec3> {
+    struct PositionBuffer : public VectorBufferBase<glm::vec3> {
         const std::vector<Attribute> attributes {
             Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
 
-        VertexBuffer(GLuint vaa) : VectorBufferBase(attributes) {}
+        PositionBuffer(GLuint vaa) : VectorBufferBase(attributes) {}
     };
 
     struct ColorBuffer : public VectorBufferBase<glm::vec3> {
@@ -275,7 +286,7 @@ namespace glpp {
     /**
      * Manages a single vertex buffered object and vertex array object.
      */
-    class VAO {
+    class BufferArray {
     public:
         /**
          * OpenGL Draw mode.
@@ -303,23 +314,23 @@ namespace glpp {
          * @param mode the OpenGL draw mode
          * @param usage the OpenGL buffer usage
          */
-        VAO(std::vector<std::shared_ptr<Buffer>> buffers,
+        BufferArray(std::vector<std::shared_ptr<Buffer>> buffers,
             Mode mode = Mode::Triangles);
 
         /**
          * Free OpenGL buffers.
          */
-        virtual ~VAO();
+        virtual ~BufferArray();
 
         /**
          * Default move constructor.
          */
-        VAO(VAO && other) = default;
+        BufferArray(BufferArray && other) = default;
 
         /**
          * Default move assign operator.
          */
-        VAO & operator=(VAO && other) = default;
+        BufferArray & operator=(BufferArray && other) = default;
 
         /**
          * Get the OpenGL vao id.
