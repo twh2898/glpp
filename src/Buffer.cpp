@@ -1,4 +1,78 @@
-#include "glpp/VBO.hpp"
+#include "glpp/Buffer.hpp"
+
+namespace glpp {
+    Attribute::Attribute(GLuint vaa,
+                         GLint size,
+                         GLenum type,
+                         bool normalized,
+                         GLsizei stride,
+                         const void * pointer)
+        : vaa(vaa),
+          size(size),
+          type(type),
+          normalized(normalized),
+          stride(stride),
+          pointer(pointer) {}
+
+
+    void Attribute::enable() const {
+        glEnableVertexAttribArray(vaa);
+        glVertexAttribPointer(vaa, size, type, normalized, stride, pointer);
+    }
+
+    void Attribute::disable() const {
+        glDisableVertexAttribArray(vaa);
+    }
+}
+
+namespace glpp {
+    Buffer::Buffer(const std::vector<Attribute> & attributes, Usage usage)
+        : vbo(0), attributes(attributes), usage(usage) {
+
+        glGenBuffers(1, &vbo);
+        bind();
+    }
+
+    Buffer::Buffer(std::vector<Attribute> && attributes, Usage usage)
+        : vbo(0), attributes(std::move(attributes)), usage(usage) {
+
+        glGenBuffers(1, &vbo);
+        bind();
+    }
+
+    Buffer::~Buffer() {
+        glDeleteBuffers(1, &vbo);
+    }
+
+    void Buffer::enable() const {
+        for (auto & attr : attributes) {
+            attr.enable();
+        }
+    }
+
+    void Buffer::disable() const {
+        for (auto & attr : attributes) {
+            attr.disable();
+        }
+    }
+
+    void Buffer::bufferData() {
+        bind();
+        glBufferData(GL_ARRAY_BUFFER, size(), data(), usage);
+    }
+
+    void Buffer::bind() const {
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    }
+
+    void Buffer::unbind() const {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    void Buffer::draw() {
+        bufferData();
+    }
+}
 
 namespace glpp {
     Vertex::Vertex() : pos(0), norm(0), uv(0) {}

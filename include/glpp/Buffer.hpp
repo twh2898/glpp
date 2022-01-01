@@ -24,22 +24,11 @@ namespace glpp {
                   GLenum type,
                   bool normalized,
                   GLsizei stride,
-                  const void * pointer = nullptr)
-            : vaa(vaa),
-              size(size),
-              type(type),
-              normalized(normalized),
-              stride(stride),
-              pointer(pointer) {}
+                  const void * pointer = nullptr);
 
-        void enable() const {
-            glEnableVertexAttribArray(vaa);
-            glVertexAttribPointer(vaa, size, type, normalized, stride, pointer);
-        }
+        void enable() const;
 
-        void disable() const {
-            glDisableVertexAttribArray(vaa);
-        }
+        void disable() const;
     };
 
     class Buffer {
@@ -71,55 +60,27 @@ namespace glpp {
          * After creating the vertex array attribute vaa will be enabled and the
          * new vbo will be bound.
          */
-        Buffer(const std::vector<Attribute> & attributes, Usage usage = Usage::Static)
-            : vbo(0), attributes(attributes), usage(usage) {
+        Buffer(const std::vector<Attribute> & attributes,
+               Usage usage = Usage::Static);
 
-            glGenBuffers(1, &vbo);
-            bind();
-        }
+        Buffer(std::vector<Attribute> && attributes, Usage usage = Usage::Static);
 
-        Buffer(std::vector<Attribute> && attributes, Usage usage = Usage::Static)
-            : vbo(0), attributes(std::move(attributes)), usage(usage) {
-
-            glGenBuffers(1, &vbo);
-            bind();
-        }
-
-        virtual ~Buffer() {
-            glDeleteBuffers(1, &vbo);
-        }
+        virtual ~Buffer();
 
         virtual void * data() = 0;
         virtual size_t size() = 0;
 
-        void enable() const {
-            for (auto & attr : attributes) {
-                attr.enable();
-            }
-        }
+        void enable() const;
 
-        void disable() const {
-            for (auto & attr : attributes) {
-                attr.disable();
-            }
-        }
+        void disable() const;
 
-        void bufferData() {
-            bind();
-            glBufferData(GL_ARRAY_BUFFER, size(), data(), usage);
-        }
+        void bufferData();
 
-        void bind() const {
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        }
+        void bind() const;
 
-        void unbind() const {
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
+        void unbind() const;
 
-        void draw() {
-            bufferData();
-        }
+        void draw();
     };
 
     template<typename T>

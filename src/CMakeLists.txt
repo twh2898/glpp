@@ -5,17 +5,17 @@ set(TARGET glpp)
 #file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${${PROJECT_NAME}_SOURCE_DIR}/include/${PROJECT_NAME}/*.hpp")
 
 set(HEADER_LIST
+    Buffer.hpp
     FrameBuffer.hpp
     Shader.hpp
-    Texture.hpp
-    VBO.hpp)
+    Texture.hpp)
 list(TRANSFORM HEADER_LIST PREPEND "${${PROJECT_NAME}_SOURCE_DIR}/include/${PROJECT_NAME}/")
 
 set(SOURCE_LIST
+    Buffer.cpp
     FrameBuffer.cpp
     Shader.cpp
-    Texture.cpp
-    VBO.cpp)
+    Texture.cpp)
 list(TRANSFORM SOURCE_LIST PREPEND "${${PROJECT_NAME}_SOURCE_DIR}/src/")
 
 add_library(${TARGET} ${SOURCE_LIST} ${HEADER_LIST})
