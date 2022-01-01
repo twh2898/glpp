@@ -110,7 +110,7 @@ namespace glpp {
         glDeleteVertexArrays(1, &vao);
     }
 
-    GLuint BufferArray::getVAO() const {
+    GLuint BufferArray::getId() const {
         return vao;
     }
 

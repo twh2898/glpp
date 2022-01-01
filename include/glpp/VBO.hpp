@@ -346,7 +346,7 @@ namespace glpp {
          *
          * @return the vao id
          */
-        GLuint getVAO() const;
+        GLuint getId() const;
 
         /**
          * Get the number of points.
