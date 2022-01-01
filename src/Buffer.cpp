@@ -69,8 +69,14 @@ namespace glpp {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    void Buffer::draw() {
-        bufferData();
+    void Buffer::draw(Mode mode) {
+        for (auto & attr : attributes) {
+            attr.enable();
+        }
+        glDrawArrays(mode, 0, count());
+        for (auto & attr : attributes) {
+            attr.disable();
+        }
     }
 }
 

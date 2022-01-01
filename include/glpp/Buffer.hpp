@@ -11,6 +11,9 @@
 
 namespace glpp {
 
+    /**
+     * Describes a vertex array attribute for a Buffer.
+     */
     struct Attribute {
         GLuint vaa;
         GLint size;
@@ -19,6 +22,16 @@ namespace glpp {
         GLsizei stride;
         const void * pointer;
 
+        /**
+         * Create a new Attribute for an index vaa.
+         *
+         * @param vaa the vertex attribute index
+         * @param size the number of values per vertex
+         * @param type the opengl value type
+         * @param normalized are the values normalized
+         * @param stride the size in bytes of each value
+         * @param pointer pointer to the data or offset within the element
+         */
         Attribute(GLuint vaa,
                   GLint size,
                   GLenum type,
@@ -31,6 +44,9 @@ namespace glpp {
         void disable() const;
     };
 
+    /**
+     * A single array buffer.
+     */
     class Buffer {
     public:
         /**
@@ -43,6 +59,19 @@ namespace glpp {
             Stream = GL_STREAM_DRAW,
             /// Data will be buffered and used once
             Dynamic = GL_DYNAMIC_DRAW,
+        };
+
+        /**
+         * OpenGL Draw mode.
+         */
+        enum Mode {
+            Lines = GL_LINES,
+            LineStrip = GL_LINE_STRIP,
+            LineLoop = GL_LINE_LOOP,
+
+            Triangles = GL_TRIANGLES,
+            TriangleStrip = GL_TRIANGLE_STRIP,
+            TriangleFan = GL_TRIANGLE_FAN,
         };
 
     protected:
@@ -69,9 +98,16 @@ namespace glpp {
 
         virtual void * data() = 0;
         virtual size_t size() = 0;
+        virtual size_t count() = 0;
 
+        /**
+         * Enable all attributes.
+         */
         void enable() const;
 
+        /**
+         * Disable all attributes
+         */
         void disable() const;
 
         void bufferData();
@@ -80,7 +116,7 @@ namespace glpp {
 
         void unbind() const;
 
-        void draw();
+        void draw(Mode mode);
     };
 
     template<typename T>
@@ -97,6 +133,10 @@ namespace glpp {
 
         size_t size() override {
             return buff.size() * sizeof(element_type);
+        }
+
+        size_t count() override {
+            return buff.size();
         }
 
         /**
@@ -249,18 +289,7 @@ namespace glpp {
      */
     class BufferArray {
     public:
-        /**
-         * OpenGL Draw mode.
-         */
-        enum Mode {
-            Lines = GL_LINES,
-            LineStrip = GL_LINE_STRIP,
-            LineLoop = GL_LINE_LOOP,
-
-            Triangles = GL_TRIANGLES,
-            TriangleStrip = GL_TRIANGLE_STRIP,
-            TriangleFan = GL_TRIANGLE_FAN,
-        };
+        using Mode = Buffer::Mode;
 
     private:
         GLuint vao;
