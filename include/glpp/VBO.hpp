@@ -314,8 +314,17 @@ namespace glpp {
          * @param mode the OpenGL draw mode
          * @param usage the OpenGL buffer usage
          */
-        BufferArray(std::vector<std::shared_ptr<Buffer>> buffers,
-            Mode mode = Mode::Triangles);
+        BufferArray(const std::vector<std::shared_ptr<Buffer>> & buffers,
+                    Mode mode = Mode::Triangles);
+
+        /**
+         * Create a new VBO with mode and usage.
+         *
+         * @param mode the OpenGL draw mode
+         * @param usage the OpenGL buffer usage
+         */
+        BufferArray(std::vector<std::shared_ptr<Buffer>> && buffers,
+                    Mode mode = Mode::Triangles);
 
         /**
          * Free OpenGL buffers.

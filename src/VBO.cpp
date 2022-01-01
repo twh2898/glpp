@@ -68,7 +68,27 @@ namespace glpp {
 }
 
 namespace glpp {
-    BufferArray::BufferArray(std::vector<std::shared_ptr<Buffer>> buffers, BufferArray::Mode mode)
+    BufferArray::BufferArray(const std::vector<std::shared_ptr<Buffer>> & buffers,
+                             BufferArray::Mode mode)
+        : buffers(buffers), mode(mode), vao(0), nPoints(0) {
+
+        glGenVertexArrays(1, &vao);
+        bind();
+
+        for (auto & buff : buffers) {
+            buff->bind();
+            buff->enable();
+        }
+
+        unbind();
+        for (auto & buff : buffers) {
+            buff->disable();
+            buff->unbind();
+        }
+    }
+
+    BufferArray::BufferArray(std::vector<std::shared_ptr<Buffer>> && buffers,
+                             BufferArray::Mode mode)
         : buffers(buffers), mode(mode), vao(0), nPoints(0) {
 
         glGenVertexArrays(1, &vao);
