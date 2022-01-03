@@ -154,28 +154,32 @@ namespace glpp {
         const std::vector<Attribute> attributes {
             Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
 
-        PositionBuffer(GLuint vaa) : VectorBufferBase(attributes) {}
+        PositionBuffer(GLuint vaa, Usage usage = Usage::Static)
+            : VectorBufferBase(attributes, usage) {}
     };
 
     struct ColorBuffer : public VectorBufferBase<glm::vec3> {
         const std::vector<Attribute> attributes {
             Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
 
-        ColorBuffer(GLuint vaa) : VectorBufferBase(attributes) {}
+        ColorBuffer(GLuint vaa, Usage usage = Usage::Static)
+            : VectorBufferBase(attributes, usage) {}
     };
 
     struct NormalBuffer : public VectorBufferBase<glm::vec3> {
         const std::vector<Attribute> attributes {
             Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
 
-        NormalBuffer(GLuint vaa) : VectorBufferBase(attributes) {}
+        NormalBuffer(GLuint vaa, Usage usage = Usage::Static)
+            : VectorBufferBase(attributes, usage) {}
     };
 
     struct TexCoordBuffer : public VectorBufferBase<glm::vec2> {
         const std::vector<Attribute> attributes {
             Attribute(0, 2, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
 
-        TexCoordBuffer(GLuint vaa) : VectorBufferBase(attributes) {}
+        TexCoordBuffer(GLuint vaa, Usage usage = Usage::Static)
+            : VectorBufferBase(attributes, usage) {}
     };
 
     /**
@@ -277,7 +281,8 @@ namespace glpp {
                       sizeof(element_type),
                       (void *)(6 * sizeof(float)))};
 
-        TextureVertexBuffer() : VectorBufferBase(attributes) {}
+        TextureVertexBuffer(Usage usage = Usage::Static)
+            : VectorBufferBase(attributes, usage) {}
     };
 
     void draw_array(const std::vector<Vertex> & vertices, GLenum mode);
