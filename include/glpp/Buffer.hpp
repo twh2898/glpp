@@ -96,9 +96,9 @@ namespace glpp {
 
         virtual ~Buffer();
 
-        virtual void * data() = 0;
-        virtual size_t size() = 0;
-        virtual size_t count() = 0;
+        virtual const void * data() const = 0;
+        virtual size_t size() const = 0;
+        virtual size_t count() const = 0;
 
         /**
          * Enable all attributes.
@@ -116,7 +116,7 @@ namespace glpp {
 
         void unbind() const;
 
-        void draw(Mode mode);
+        void draw(Mode mode) const;
     };
 
     template<typename T>
@@ -127,15 +127,15 @@ namespace glpp {
 
         using Buffer::Buffer;
 
-        void * data() override {
+        const void * data() const override {
             return buff.data();
         }
 
-        size_t size() override {
+        size_t size() const override {
             return buff.size() * sizeof(element_type);
         }
 
-        size_t count() override {
+        size_t count() const override {
             return buff.size();
         }
 

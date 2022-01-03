@@ -69,7 +69,7 @@ namespace glpp {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    void Buffer::draw(Mode mode) {
+    void Buffer::draw(Mode mode) const {
         for (auto & attr : attributes) {
             attr.enable();
         }
