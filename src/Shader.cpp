@@ -273,7 +273,7 @@ void main() {
         return Shader(defaultVertexShaderSource, defaultVertexShaderSource);
     }
 
-    Shader fromPaths(const std::string & vertexPath,
+    Shader Shader::fromPaths(const std::string & vertexPath,
                      const std::string & fragmentPath) {
         auto vertexSource = shaderSource(vertexPath);
         auto fragmentSource = shaderSource(fragmentPath);
