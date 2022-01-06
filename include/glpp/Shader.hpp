@@ -298,6 +298,17 @@ namespace glpp {
         static Shader fromFragmentSource(const std::string_view & source);
 
         /**
+         * Load a shader using a vertex and fragment shader path.
+         *
+         * @param vertexPath the path to the vertex shader source
+         * @param fragmentPath the path to the fragment shader source
+         *
+         * @return the shader
+         */
+        static Shader fromPaths(const std::string & vertexPath,
+                                const std::string & fragmentPath);
+
+        /**
          * Load a shader using the default vertex shader and a fragment shader.
          *
          * This shader takes a Vertex from VBO.hpp,
