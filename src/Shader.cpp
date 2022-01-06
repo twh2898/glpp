@@ -270,16 +270,14 @@ void main() {
 })";
 
     Shader Shader::defaultShader() {
-        Shader shader(defaultVertexShaderSource, defaultVertexShaderSource);
-        return shader;
+        return Shader(defaultVertexShaderSource, defaultVertexShaderSource);
     }
 
     Shader fromPaths(const std::string & vertexPath,
                      const std::string & fragmentPath) {
         auto vertexSource = shaderSource(vertexPath);
         auto fragmentSource = shaderSource(fragmentPath);
-        Shader shader(vertexSource, fragmentSource);
-        return shader;
+        return Shader(vertexSource, fragmentSource);
     }
 
     Shader Shader::fromFragmentPath(const std::string & path) {
