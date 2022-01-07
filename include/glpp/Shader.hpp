@@ -40,11 +40,6 @@ namespace glpp {
 
     public:
         /**
-         * Create a new Shader with no program.
-         */
-        Shader();
-
-        /**
          * Create a new Shader with program from vertex and fragment source.
          *
          * @param vertexSource the vertex shader source

@@ -110,12 +110,12 @@ namespace glpp {
 }
 
 namespace glpp {
-    Shader::Shader() : program(glCreateProgram()) {}
-
     Shader::Shader(const std::string_view & vertexSource,
                    const std::string_view & fragmentSource) {
         GLuint vShader = compileShader(GL_VERTEX_SHADER, vertexSource);
         GLuint fShader = compileShader(GL_FRAGMENT_SHADER, fragmentSource);
+
+        program = glCreateProgram();
 
         glAttachShader(program, vShader);
         glAttachShader(program, fShader);
