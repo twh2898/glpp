@@ -3,8 +3,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-#include <SFML/Graphics/Image.hpp>
-
 namespace glpp {
     Texture::Texture(const unsigned char * data,
                      const glm::uvec2 & size,
