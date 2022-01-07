@@ -262,7 +262,7 @@ void main() {
 })";
 
     Shader Shader::defaultShader() {
-        return Shader(defaultVertexShaderSource, defaultVertexShaderSource);
+        return Shader(defaultVertexShaderSource, defaultFragmentShaderSource);
     }
 
     Shader Shader::fromFragmentSource(const std::string_view & fragmentSource) {
