@@ -41,8 +41,8 @@ namespace glpp {
          */
         FrameBufferTexture(GLuint attachment,
                            const glm::uvec2 & size,
-                           GLint internal = GL_RGBA,
-                           GLenum format = GL_RGBA,
+                           Format internal = RGBA,
+                           Format format = RGBA,
                            GLenum type = GL_FLOAT,
                            GLsizei samples = 0,
                            GLint magFilter = GL_NEAREST,
@@ -84,13 +84,13 @@ namespace glpp {
      */
     struct FrameBufferAttachment {
         GLenum attachment;
-        GLint internal = GL_RGBA;
-        GLenum format = GL_RGBA;
+        Texture::Format internal = Texture::RGBA;
+        Texture::Format format = Texture::RGBA;
         GLenum type = GL_FLOAT;
 
         FrameBufferAttachment(GLenum attachment,
-                              GLint internal = GL_RGBA,
-                              GLenum format = GL_RGBA,
+                              Texture::Format internal = Texture::RGBA,
+                              Texture::Format format = Texture::RGBA,
                               GLenum type = GL_FLOAT)
             : attachment(attachment),
               internal(internal),

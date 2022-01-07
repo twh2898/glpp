@@ -5,17 +5,32 @@
 #include <GL/gl.h>
 
 #include <glm/glm.hpp>
+#include <stdexcept>
+#include <string>
 
 namespace glpp {
+
+    class TextureLoadException : public std::runtime_error {
+    public:
+        using std::runtime_error::runtime_error;
+    };
 
     /**
      * Manages a single OpenGL texture.
      */
     class Texture {
+    public:
+        enum Format {
+            Gray = GL_RED,
+            RGB = GL_RGB,
+            RGBA = GL_RGBA,
+        };
+
+    private:
         GLuint textureId;
         glm::uvec2 size;
-        GLint internal;
-        GLenum format;
+        Format internal;
+        Format format;
         GLenum type;
         GLsizei samples;
         GLenum target;
@@ -28,6 +43,9 @@ namespace glpp {
         /**
          * Create a texture from an image.
          *
+         * Throw TextureLoadException if nrComponents is unsupported. Only 1, 3
+         * and 4 are supported.
+         *
          * @param data the pixel data
          * @param size the image dimensions in pixesl
          * @param nrComponents the number of components for each pixel
@@ -35,6 +53,8 @@ namespace glpp {
          * @param minFilter the minification filter (default GL_NEAREST)
          * @param wrap the wrap mode when drawing
          * @param mipmaps should mipmaps be generated
+         *
+         * @throws TextureLoadException for unsupported nrComponents
          */
         Texture(const unsigned char * data,
                 const glm::uvec2 & size,
@@ -63,8 +83,8 @@ namespace glpp {
          * @param mipmaps should mipmaps be generated
          */
         Texture(const glm::uvec2 & size,
-                GLint internal = GL_RGBA,
-                GLenum format = GL_RGBA,
+                Format internal = RGBA,
+                Format format = RGBA,
                 GLenum type = GL_FLOAT,
                 GLsizei samples = 0,
                 GLint magFilter = GL_LINEAR,
@@ -89,13 +109,31 @@ namespace glpp {
          * Load the texture from an image, setting the size to match
          * image.getSize().
          *
+         * Throw TextureLoadException if nrComponents is unsupported. Only 1, 3
+         * and 4 are supported.
+         *
          * @param data the pixel data
          * @param size the image dimensions in pixesl
          * @param nrComponents the number of components for each pixel
+         *
+         * @throws TextureLoadException for unsupported nrComponents
          */
         void loadFrom(const unsigned char * data,
                       const glm::uvec2 & size,
                       size_t nrComponents);
+
+        /**
+         * Load the texture from a file, setting the size from the image.
+         *
+         * Throw TextureLoadException if the image has an unsupported number of
+         * components. Only 1, 3 and 4 are supported.
+         *
+         * @param path the path to the image file
+         *
+         * @throws TextureLoadException if the image han an unsupported number
+         * of components
+         */
+        void loadFrom(const std::string & path);
 
         /**
          * Get the OpenGL texture id.

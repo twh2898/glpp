@@ -1,5 +1,8 @@
 #include "glpp/Texture.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 #include <SFML/Graphics/Image.hpp>
 
 namespace glpp {
@@ -12,8 +15,8 @@ namespace glpp {
                      bool mipmaps)
         : textureId(0),
           size(size),
-          internal(GL_RGBA),
-          format(GL_RGBA),
+          internal(RGBA),
+          format(RGBA),
           type(GL_UNSIGNED_BYTE),
           samples(0),
           target(GL_TEXTURE_2D),
@@ -27,8 +30,8 @@ namespace glpp {
     }
 
     Texture::Texture(const glm::uvec2 & size,
-                     GLint internal,
-                     GLenum format,
+                     Format internal,
+                     Format format,
                      GLenum type,
                      GLsizei samples,
                      GLint magFilter,
@@ -62,11 +65,13 @@ namespace glpp {
 
         this->size = size;
         if (nrComponents == 1)
-            internal = GL_RED;
+            internal = Gray;
         else if (nrComponents == 3)
-            internal = GL_RGB;
+            internal = RGB;
         else if (nrComponents == 4)
-            internal = GL_RGBA;
+            internal = RGBA;
+        else
+            throw TextureLoadException("Unsupported number of components");
         format = internal;
         type = GL_UNSIGNED_BYTE;
         samples = 0;
@@ -83,6 +88,14 @@ namespace glpp {
         if (mipmaps)
             glGenerateMipmap(target);
         unbind();
+    }
+
+    void Texture::loadFrom(const std::string & path) {
+        int x, y, n;
+        auto * data = stbi_load(path.c_str(), &x, &y, &n, 0);
+        if (!data)
+            throw TextureLoadException("Failed to load image from file");
+        loadFrom(data, glm::uvec2(x, y), n);
     }
 
     GLuint Texture::getTextureId() const {

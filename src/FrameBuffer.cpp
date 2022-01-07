@@ -8,8 +8,8 @@ namespace glpp {
 
     FrameBufferTexture::FrameBufferTexture(GLuint attachment,
                                            const glm::uvec2 & size,
-                                           GLint internal,
-                                           GLenum format,
+                                           Format internal,
+                                           Format format,
                                            GLenum type,
                                            GLsizei samples,
                                            GLint magFilter,
