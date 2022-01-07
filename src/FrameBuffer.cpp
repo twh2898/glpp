@@ -14,7 +14,7 @@ namespace glpp {
                                            GLsizei samples,
                                            GLint magFilter,
                                            GLint minFilter,
-                                           GLint wrap)
+                                           Wrap wrap)
         : Texture(
             size, internal, format, type, samples, magFilter, minFilter, wrap, false),
           attachment(attachment) {}
@@ -50,7 +50,7 @@ namespace glpp {
         for (auto & a : attachments) {
             auto & texture = textures.emplace_back(
                 a.attachment, size, a.internal, a.format, a.type, samples,
-                GL_NEAREST, GL_NEAREST, GL_CLAMP);
+                GL_NEAREST, GL_NEAREST, Texture::Clamp);
 
             GLenum textarget = GL_TEXTURE_2D;
             if (samples > 0)

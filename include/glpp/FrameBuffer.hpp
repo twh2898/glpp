@@ -47,7 +47,7 @@ namespace glpp {
                            GLsizei samples = 0,
                            GLint magFilter = GL_NEAREST,
                            GLint minFilter = GL_NEAREST,
-                           GLint wrap = GL_CLAMP);
+                           Wrap wrap = Repeat);
 
         /**
          * Destruct the FrameBufferTexture.

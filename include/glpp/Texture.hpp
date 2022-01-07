@@ -26,6 +26,14 @@ namespace glpp {
             RGBA = GL_RGBA,
         };
 
+        enum Wrap {
+            Clamp = GL_CLAMP_TO_EDGE,
+            Border = GL_CLAMP_TO_BORDER,
+            MirrorRepeat = GL_MIRRORED_REPEAT,
+            Repeat = GL_REPEAT,
+            MirrorClamp = GL_MIRROR_CLAMP_TO_EDGE
+        };
+
     private:
         GLuint textureId;
         glm::uvec2 size;
@@ -36,7 +44,7 @@ namespace glpp {
         GLenum target;
 
         GLint magFilter, minFilter;
-        GLint wrap;
+        Wrap wrap;
         bool mipmaps;
 
     public:
@@ -61,7 +69,7 @@ namespace glpp {
                 size_t nrComponents,
                 GLint magFilter = GL_LINEAR,
                 GLint minFilter = GL_LINEAR_MIPMAP_LINEAR,
-                GLint wrap = GL_REPEAT,
+                Wrap wrap = Repeat,
                 bool mipmaps = true);
 
         /**
@@ -89,7 +97,7 @@ namespace glpp {
                 GLsizei samples = 0,
                 GLint magFilter = GL_LINEAR,
                 GLint minFilter = GL_LINEAR_MIPMAP_LINEAR,
-                GLint wrap = GL_REPEAT,
+                Wrap wrap = Repeat,
                 bool mipmaps = true);
 
         /// Free all opengl resources

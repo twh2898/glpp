@@ -11,7 +11,7 @@ namespace glpp {
                      size_t nrComponents,
                      GLint magFilter,
                      GLint minFilter,
-                     GLint wrap,
+                     Wrap wrap,
                      bool mipmaps)
         : textureId(0),
           size(size),
@@ -36,7 +36,7 @@ namespace glpp {
                      GLsizei samples,
                      GLint magFilter,
                      GLint minFilter,
-                     GLint wrap,
+                     Wrap wrap,
                      bool mipmaps)
         : textureId(0),
           size(size),
