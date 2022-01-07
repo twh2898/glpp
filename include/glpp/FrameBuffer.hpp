@@ -45,8 +45,8 @@ namespace glpp {
                            Format format = RGBA,
                            GLenum type = GL_FLOAT,
                            GLsizei samples = 0,
-                           GLint magFilter = GL_NEAREST,
-                           GLint minFilter = GL_NEAREST,
+                           Filter magFilter = Nearest,
+                           Filter minFilter = Nearest,
                            Wrap wrap = Repeat);
 
         /**

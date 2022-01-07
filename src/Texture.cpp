@@ -9,8 +9,8 @@ namespace glpp {
     Texture::Texture(const unsigned char * data,
                      const glm::uvec2 & size,
                      size_t nrComponents,
-                     GLint magFilter,
-                     GLint minFilter,
+                     Filter magFilter,
+                     Filter minFilter,
                      Wrap wrap,
                      bool mipmaps)
         : textureId(0),
@@ -34,8 +34,8 @@ namespace glpp {
                      Format format,
                      GLenum type,
                      GLsizei samples,
-                     GLint magFilter,
-                     GLint minFilter,
+                     Filter magFilter,
+                     Filter minFilter,
                      Wrap wrap,
                      bool mipmaps)
         : textureId(0),

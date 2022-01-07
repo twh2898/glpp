@@ -26,6 +26,21 @@ namespace glpp {
             RGBA = GL_RGBA,
         };
 
+        /**
+         * Mag filter only accepts Nearest or Linear.
+         */
+        enum Filter {
+            // Min and Mag filter
+            Nearest = GL_NEAREST,
+            Linear = GL_LINEAR,
+
+            // Min filter only
+            NearestMmNearest = GL_NEAREST_MIPMAP_NEAREST,
+            LinearMmNearest = GL_LINEAR_MIPMAP_NEAREST,
+            NearestMmLinear = GL_NEAREST_MIPMAP_LINEAR,
+            LinearMmLinear = GL_LINEAR_MIPMAP_LINEAR,
+        };
+
         enum Wrap {
             Clamp = GL_CLAMP_TO_EDGE,
             Border = GL_CLAMP_TO_BORDER,
@@ -43,7 +58,7 @@ namespace glpp {
         GLsizei samples;
         GLenum target;
 
-        GLint magFilter, minFilter;
+        Filter magFilter, minFilter;
         Wrap wrap;
         bool mipmaps;
 
@@ -67,8 +82,8 @@ namespace glpp {
         Texture(const unsigned char * data,
                 const glm::uvec2 & size,
                 size_t nrComponents,
-                GLint magFilter = GL_LINEAR,
-                GLint minFilter = GL_LINEAR_MIPMAP_LINEAR,
+                Filter magFilter = Linear,
+                Filter minFilter = LinearMmLinear,
                 Wrap wrap = Repeat,
                 bool mipmaps = true);
 
@@ -95,8 +110,8 @@ namespace glpp {
                 Format format = RGBA,
                 GLenum type = GL_FLOAT,
                 GLsizei samples = 0,
-                GLint magFilter = GL_LINEAR,
-                GLint minFilter = GL_LINEAR_MIPMAP_LINEAR,
+                Filter magFilter = Linear,
+                Filter minFilter = LinearMmLinear,
                 Wrap wrap = Repeat,
                 bool mipmaps = true);
 
