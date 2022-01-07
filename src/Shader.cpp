@@ -101,20 +101,12 @@ namespace glpp {
 
 namespace glpp {
     ShaderCompileException::ShaderCompileException(GLuint shader)
-        : msg(compileError(shader)) {}
-
-    const char * ShaderCompileException::what() const noexcept {
-        return msg.c_str();
-    }
+        : std::runtime_error(compileError(shader)) {}
 }
 
 namespace glpp {
     ShaderLinkException::ShaderLinkException(GLuint program)
-        : msg(linkError(program)) {}
-
-    const char * ShaderLinkException::what() const noexcept {
-        return msg.c_str();
-    }
+        : std::runtime_error(linkError(program)) {}
 }
 
 namespace glpp {

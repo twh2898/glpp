@@ -4,8 +4,8 @@
 // gl.h after glew.h, clang-format don't sort
 #include <GL/gl.h>
 
-#include <exception>
 #include <glm/glm.hpp>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 
@@ -13,22 +13,14 @@
 
 namespace glpp {
 
-    class ShaderCompileException : public std::exception {
-        std::string msg;
-
+    class ShaderCompileException : public std::runtime_error {
     public:
         ShaderCompileException(GLuint shader);
-
-        const char * what() const noexcept override;
     };
 
-    class ShaderLinkException : public std::exception {
-        std::string msg;
-
+    class ShaderLinkException : public std::runtime_error {
     public:
         ShaderLinkException(GLuint program);
-
-        const char * what() const noexcept override;
     };
 
     /**
