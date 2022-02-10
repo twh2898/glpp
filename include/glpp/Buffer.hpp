@@ -154,7 +154,7 @@ namespace glpp {
         const std::vector<Attribute> attributes {
             Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
 
-        PositionBuffer(GLuint vaa, Usage usage = Usage::Static)
+        PositionBuffer(Usage usage = Usage::Static)
             : VectorBufferBase(attributes, usage) {}
     };
 
@@ -162,7 +162,7 @@ namespace glpp {
         const std::vector<Attribute> attributes {
             Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
 
-        ColorBuffer(GLuint vaa, Usage usage = Usage::Static)
+        ColorBuffer(Usage usage = Usage::Static)
             : VectorBufferBase(attributes, usage) {}
     };
 
@@ -170,7 +170,7 @@ namespace glpp {
         const std::vector<Attribute> attributes {
             Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
 
-        NormalBuffer(GLuint vaa, Usage usage = Usage::Static)
+        NormalBuffer(Usage usage = Usage::Static)
             : VectorBufferBase(attributes, usage) {}
     };
 
@@ -178,7 +178,7 @@ namespace glpp {
         const std::vector<Attribute> attributes {
             Attribute(0, 2, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
 
-        TexCoordBuffer(GLuint vaa, Usage usage = Usage::Static)
+        TexCoordBuffer(Usage usage = Usage::Static)
             : VectorBufferBase(attributes, usage) {}
     };
 
