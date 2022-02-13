@@ -88,14 +88,6 @@ namespace glpp {
         unbind();
     }
 
-    void Texture::loadFrom(const std::string & path) {
-        int x, y, n;
-        auto * data = stbi_load(path.c_str(), &x, &y, &n, 0);
-        if (!data)
-            throw TextureLoadException("Failed to load image from file");
-        loadFrom(data, glm::uvec2(x, y), n);
-    }
-
     GLuint Texture::getTextureId() const {
         return textureId;
     }
@@ -132,5 +124,13 @@ namespace glpp {
 
     void Texture::unbind() const {
         glBindTexture(target, 0);
+    }
+
+    Texture Texture::fromFile(const std::string & path) {
+        int x, y, n;
+        auto * data = stbi_load(path.c_str(), &x, &y, &n, 0);
+        if (!data)
+            throw TextureLoadException("Failed to load image from file");
+        return Texture(data, glm::uvec2(x, y), n);
     }
 }

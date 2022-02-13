@@ -146,19 +146,6 @@ namespace glpp {
                       size_t nrComponents);
 
         /**
-         * Load the texture from a file, setting the size from the image.
-         *
-         * Throw TextureLoadException if the image has an unsupported number of
-         * components. Only 1, 3 and 4 are supported.
-         *
-         * @param path the path to the image file
-         *
-         * @throws TextureLoadException if the image han an unsupported number
-         * of components
-         */
-        void loadFrom(const std::string & path);
-
-        /**
          * Get the OpenGL texture id.
          *
          * @return the texture id
@@ -188,5 +175,20 @@ namespace glpp {
          * Unbind the texture, effectively binding 0.
          */
         void unbind() const;
+
+        /**
+         * Load the texture from a file, setting the size from the image.
+         *
+         * Throw TextureLoadException if the image has an unsupported number of
+         * components. Only 1, 3 and 4 are supported.
+         *
+         * @param path the path to the image file
+         *
+         * @return the Texture object
+         *
+         * @throws TextureLoadException if the image han an unsupported number
+         * of components
+         */
+        static Texture fromFile(const std::string & path);
     };
 }
