@@ -15,29 +15,12 @@ namespace glpp {
      * Describes a vertex array attribute for a Buffer.
      */
     struct Attribute {
-        GLuint vaa;
+        GLuint index;
         GLint size;
         GLenum type;
         bool normalized;
         GLsizei stride;
         const void * pointer;
-
-        /**
-         * Create a new Attribute for an index vaa.
-         *
-         * @param vaa the vertex attribute index
-         * @param size the number of values per vertex
-         * @param type the opengl value type
-         * @param normalized are the values normalized
-         * @param stride the size in bytes of each value
-         * @param pointer pointer to the data or offset within the element
-         */
-        Attribute(GLuint vaa,
-                  GLint size,
-                  GLenum type,
-                  bool normalized,
-                  GLsizei stride,
-                  const void * pointer = nullptr);
 
         void enable() const;
 
@@ -49,6 +32,11 @@ namespace glpp {
      */
     class Buffer {
     public:
+        enum Target {
+            Array = GL_ARRAY_BUFFER,
+            Index = GL_ELEMENT_ARRAY_BUFFER,
+        };
+
         /**
          * OpenGL buffer usage.
          */
@@ -74,10 +62,11 @@ namespace glpp {
             TriangleFan = GL_TRIANGLE_FAN,
         };
 
-    protected:
-        GLuint vbo;
+    private:
+        Target target;
+        GLuint buffer;
         Usage usage;
-        std::vector<Attribute> attributes;
+        std::unique_ptr<Attribute> attrib;
 
     public:
         /**
@@ -89,98 +78,153 @@ namespace glpp {
          * After creating the vertex array attribute vaa will be enabled and the
          * new vbo will be bound.
          */
-        Buffer(const std::vector<Attribute> & attributes,
-               Usage usage = Usage::Static);
+        Buffer(Target target = Array, Usage usage = Static);
 
-        Buffer(std::vector<Attribute> && attributes, Usage usage = Usage::Static);
+        Buffer(const Attribute & attrib, Target target = Array, Usage usage = Static);
 
-        virtual ~Buffer();
+        Buffer(Buffer && other);
 
-        virtual const void * data() const = 0;
-        virtual size_t size() const = 0;
-        virtual size_t count() const = 0;
+        Buffer(const Buffer &) = delete;
+        Buffer & operator=(const Buffer &) = delete;
+        Buffer & operator=(Buffer &&) = delete;
 
-        /**
-         * Enable all attributes.
-         */
-        void enable() const;
+        ~Buffer();
 
-        /**
-         * Disable all attributes
-         */
-        void disable() const;
+        Target getTarget() const;
 
-        void bufferData();
+        GLuint getId() const;
+
+        Usage getUsage() const;
+
+        void setUsage(Usage usage);
+
+        Attribute * getAttribute() const;
 
         void bind() const;
 
         void unbind() const;
 
-        void draw(Mode mode) const;
+        void bufferData(GLsizeiptr size, const void * data);
+
+        void bufferSubData(GLintptr offset, GLsizeiptr size, const void * data);
     };
 
-    template<typename T>
-    struct VectorBufferBase : public Buffer {
-        using element_type = T;
+    class BufferArray {
+        GLuint array;
+        std::vector<Buffer> buffers;
+        std::unique_ptr<Buffer> elementBuffer;
 
-        std::vector<element_type> buff;
+    public:
+        using Mode = Buffer::Mode;
 
-        using Buffer::Buffer;
+        BufferArray();
 
-        const void * data() const override {
-            return buff.data();
-        }
+        BufferArray(std::vector<Buffer> && buffers);
 
-        size_t size() const override {
-            return buff.size() * sizeof(element_type);
-        }
+        BufferArray(const std::vector<Attribute> & attributes);
 
-        size_t count() const override {
-            return buff.size();
-        }
+        BufferArray(const BufferArray &) = delete;
+        BufferArray(BufferArray &&) = delete;
+        BufferArray & operator=(const BufferArray &) = delete;
+        BufferArray & operator=(BufferArray &&) = delete;
+
+        ~BufferArray();
+
+        GLuint getId() const;
 
         /**
-         * Load buffer with data from buff.
-         *
-         * @param buff the data to send to the buffer
+         * The number of buffers not including the optional index buffer.
          */
-        void loadFromPoints(const std::vector<element_type> & buff) {
-            this->buff = buff;
-            bufferData();
-        }
+        std::size_t count() const;
+
+        std::vector<Buffer> & getBuffers();
+
+        void bind() const;
+
+        void unbind() const;
+
+        void bufferData(size_t index, GLsizeiptr size, const void * data);
+
+        void bufferSubData(size_t index,
+                           GLintptr offset,
+                           GLsizeiptr size,
+                           const void * data);
+
+        void bufferElements(GLsizeiptr size, const void * data);
+
+        void drawArrays(GLint first, GLsizei count, Mode mode = Mode::Triangles) const;
+
+        void drawElements(GLsizei count,
+                          GLenum type = GL_UNSIGNED_INT,
+                          Mode mode = Mode::Triangles,
+                          const void * indices = nullptr) const;
     };
 
-    struct PositionBuffer : public VectorBufferBase<glm::vec3> {
-        const std::vector<Attribute> attributes {
-            Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
+    // template<typename T>
+    // class VectorBufferBase : public Buffer {
+    // public:
+    //     using element_type = T;
 
-        PositionBuffer(Usage usage = Usage::Static)
-            : VectorBufferBase(attributes, usage) {}
-    };
+    // private:
+    //     std::vector<element_type> buff;
 
-    struct ColorBuffer : public VectorBufferBase<glm::vec3> {
-        const std::vector<Attribute> attributes {
-            Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
+    // public:
+    //     using Buffer::Buffer;
 
-        ColorBuffer(Usage usage = Usage::Static)
-            : VectorBufferBase(attributes, usage) {}
-    };
+    //     const void * data() const override {
+    //         return buff.data();
+    //     }
 
-    struct NormalBuffer : public VectorBufferBase<glm::vec3> {
-        const std::vector<Attribute> attributes {
-            Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
+    //     size_t size() const override {
+    //         return buff.size() * sizeof(element_type);
+    //     }
 
-        NormalBuffer(Usage usage = Usage::Static)
-            : VectorBufferBase(attributes, usage) {}
-    };
+    //     size_t count() const override {
+    //         return buff.size();
+    //     }
 
-    struct TexCoordBuffer : public VectorBufferBase<glm::vec2> {
-        const std::vector<Attribute> attributes {
-            Attribute(0, 2, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
+    //     /**
+    //      * Load buffer with data from buff.
+    //      *
+    //      * @param buff the data to send to the buffer
+    //      */
+    //     void loadFromPoints(const std::vector<element_type> & buff) {
+    //         this->buff = buff;
+    //         bufferData();
+    //     }
+    // };
 
-        TexCoordBuffer(Usage usage = Usage::Static)
-            : VectorBufferBase(attributes, usage) {}
-    };
+    // struct PositionBuffer : public VectorBufferBase<glm::vec3> {
+    //     const std::vector<Attribute> attributes {
+    //         Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
+
+    //     PositionBuffer(Usage usage = Usage::Static)
+    //         : VectorBufferBase(attributes, usage) {}
+    // };
+
+    // struct ColorBuffer : public VectorBufferBase<glm::vec3> {
+    //     const std::vector<Attribute> attributes {
+    //         Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
+
+    //     ColorBuffer(Usage usage = Usage::Static)
+    //         : VectorBufferBase(attributes, usage) {}
+    // };
+
+    // struct NormalBuffer : public VectorBufferBase<glm::vec3> {
+    //     const std::vector<Attribute> attributes {
+    //         Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
+
+    //     NormalBuffer(Usage usage = Usage::Static)
+    //         : VectorBufferBase(attributes, usage) {}
+    // };
+
+    // struct TexCoordBuffer : public VectorBufferBase<glm::vec2> {
+    //     const std::vector<Attribute> attributes {
+    //         Attribute(0, 2, GL_FLOAT, GL_FALSE, sizeof(element_type), 0)};
+
+    //     TexCoordBuffer(Usage usage = Usage::Static)
+    //         : VectorBufferBase(attributes, usage) {}
+    // };
 
     /**
      * A single point in the format accepted by VBO, Mesh and Model.
@@ -265,112 +309,27 @@ namespace glpp {
         Vertex & operator-=(const Vertex & other);
     };
 
-    struct TextureVertexBuffer : public VectorBufferBase<Vertex> {
-        const std::vector<Attribute> attributes {
-            Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0),
-            Attribute(0,
-                      3,
-                      GL_FLOAT,
-                      GL_FALSE,
-                      sizeof(element_type),
-                      (void *)(3 * sizeof(float))),
-            Attribute(0,
-                      2,
-                      GL_FLOAT,
-                      GL_FALSE,
-                      sizeof(element_type),
-                      (void *)(6 * sizeof(float)))};
+    // struct TextureVertexBuffer : public VectorBufferBase<Vertex> {
+    //     const std::vector<Attribute> attributes {
+    //         Attribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(element_type), 0),
+    //         Attribute(0,
+    //                   3,
+    //                   GL_FLOAT,
+    //                   GL_FALSE,
+    //                   sizeof(element_type),
+    //                   (void *)(3 * sizeof(float))),
+    //         Attribute(0,
+    //                   2,
+    //                   GL_FLOAT,
+    //                   GL_FALSE,
+    //                   sizeof(element_type),
+    //                   (void *)(6 * sizeof(float)))};
 
-        TextureVertexBuffer(Usage usage = Usage::Static)
-            : VectorBufferBase(attributes, usage) {}
-    };
+    //     TextureVertexBuffer(Usage usage = Usage::Static)
+    //         : VectorBufferBase(attributes, usage) {}
+    // };
 
     void draw_array(const std::vector<Vertex> & vertices, GLenum mode);
 
     void draw_quad(const glm::vec2 & pos, const glm::vec2 & size);
-
-    /**
-     * Manages a single vertex buffered object and vertex array object.
-     */
-    class BufferArray {
-    public:
-        using Mode = Buffer::Mode;
-
-    private:
-        GLuint vao;
-        size_t nPoints;
-        Mode mode;
-        std::vector<std::shared_ptr<Buffer>> buffers;
-
-    public:
-        /**
-         * Create a new VBO with mode and usage.
-         *
-         * @param mode the OpenGL draw mode
-         * @param usage the OpenGL buffer usage
-         */
-        BufferArray(const std::vector<std::shared_ptr<Buffer>> & buffers,
-                    Mode mode = Mode::Triangles);
-
-        /**
-         * Create a new VBO with mode and usage.
-         *
-         * @param mode the OpenGL draw mode
-         * @param usage the OpenGL buffer usage
-         */
-        BufferArray(std::vector<std::shared_ptr<Buffer>> && buffers,
-                    Mode mode = Mode::Triangles);
-
-        /**
-         * Free OpenGL buffers.
-         */
-        virtual ~BufferArray();
-
-        /**
-         * Default move constructor.
-         */
-        BufferArray(BufferArray && other) = default;
-
-        /**
-         * Default move assign operator.
-         */
-        BufferArray & operator=(BufferArray && other) = default;
-
-        /**
-         * Get the OpenGL vao id.
-         *
-         * @return the vao id
-         */
-        GLuint getId() const;
-
-        /**
-         * Get the number of points.
-         *
-         * @return the number of points
-         */
-        size_t size() const;
-
-        /**
-         * Get the OpenGL draw mode.
-         *
-         * @return the VBO::Mode
-         */
-        Mode getMode() const;
-
-        /**
-         * Set the OpenGL draw mode.
-         *
-         * @param mode the new mode
-         */
-        void setMode(Mode mode);
-
-        /**
-         * Bind the vao, then draw, then unbind the vao.
-         */
-        void draw() const;
-
-        void bind() const;
-
-        void unbind() const;
-    };
 }
