@@ -5,17 +5,7 @@ project(glpp
     DESCRIPTION "Helper Classes that wrap OpenGL functionality"
     LANGUAGES CXX)
 
-# Set the default build type if non is specified
-set(default_build_type "Release")
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    message(STATUS "Setting build type to '${default_build_type}' since none was specified.")
-    set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE
-        STRING "Choose the type of build." FORCE)
-
-    # Set possible values of build type for cmake-gui
-    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
-        "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
-endif()
+option(GLPP_BUILD_EXAMPLES "Should examples be built" ON)
 
 # Only if this is the top level project (not included with add_subdirectory)
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -47,9 +37,17 @@ include_directories(PRIVATE ${CMAKE_BINARY_DIR}/include)
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(GLUT REQUIRED)
 find_package(glm REQUIRED CONFIG)
 
 add_subdirectory(src)
+
+if (GLPP_BUILD_EXAMPLES)
+    set(GLFWPP_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # disable building GLFWPP examples
+    add_subdirectory(glfwpp EXCLUDE_FROM_ALL)
+    
+    add_subdirectory(examples)
+endif()
 
 # Create Targets file
 install(EXPORT ${PROJECT_NAME}Targets
