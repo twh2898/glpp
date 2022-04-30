@@ -11,139 +11,75 @@
 
 namespace glpp {
 
-    /**
-     * Manages a texture used in a `FrameBufferObject`.
-     */
-    class FrameBufferTexture : public Texture {
-        GLuint attachment;
+    class RenderBuffer {
+        GLuint buffer;
+        GLenum internal;
+        glm::uvec2 size;
 
     public:
-        /**
-         * Construct a new empty FrameBufferTexture.
-         */
-        FrameBufferTexture();
+        RenderBuffer(const glm::uvec2 & size, GLenum internal);
 
-        /**
-         * Construct a new FrameBufferTexture and generate a 2d texture.
-         *
-         * @param attachment the frame buffer attachment like
-         *                   GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT, etc.
-         * @param size the image size in pixels
-         * @param internal the internal format like GL_RGBA16F, GL_RGBA,
-         *                 GL_DEPTH_COMPONENT, etc.
-         * @param format the format of pixel data
-         * @param type the data type of pixel data
-         * @param samples the number of samples to use, 0 to disable
-         *                multisampling
-         * @param magFilter the magnification filter (default GL_NEAREST)
-         * @param minFilter the minification filter (default GL_NEAREST)
-         * @param wrap the wrap mode when drawing
-         */
-        FrameBufferTexture(GLuint attachment,
-                           const glm::uvec2 & size,
-                           Format internal = RGBA,
-                           Format format = RGBA,
-                           GLenum type = GL_FLOAT,
-                           GLsizei samples = 0,
-                           Filter magFilter = Nearest,
-                           Filter minFilter = Nearest,
-                           Wrap wrap = Repeat);
+        RenderBuffer(RenderBuffer && other);
 
-        /**
-         * Destruct the FrameBufferTexture.
-         */
-        virtual ~FrameBufferTexture();
+        RenderBuffer & operator=(RenderBuffer && other);
 
-        /**
-         * Default move constructor.
-         */
-        FrameBufferTexture(FrameBufferTexture && other) = default;
+        RenderBuffer(const RenderBuffer &) = delete;
+        RenderBuffer & operator=(const RenderBuffer &) = delete;
 
-        /**
-         * Default move assign operator.
-         */
-        FrameBufferTexture & operator=(FrameBufferTexture && other) = default;
+        ~RenderBuffer();
 
-        /**
-         * Get the attachment GLenum used in glFramebufferTexture2D.
-         *
-         * @return the attachment GLenum
-         */
-        GLuint getAttachment() const;
+        GLuint getBufferId() const;
 
-        /**
-         * Set the attachment GLenum used in glFramebufferTexture2D.
-         *
-         * @param attachment the new attachment GLenum
-         */
-        void setAttachment(GLuint attachment);
-    };
+        const glm::uvec2 & getSize() const;
 
-    /**
-     * Describes an attachment for a FrameBuffer.
-     */
-    struct FrameBufferAttachment {
-        GLenum attachment;
-        Texture::Format internal = Texture::RGBA;
-        Texture::Format format = Texture::RGBA;
-        GLenum type = GL_FLOAT;
+        void resize(const glm::uvec2 & size);
 
-        FrameBufferAttachment(GLenum attachment,
-                              Texture::Format internal = Texture::RGBA,
-                              Texture::Format format = Texture::RGBA,
-                              GLenum type = GL_FLOAT)
-            : attachment(attachment),
-              internal(internal),
-              format(format),
-              type(type) {}
+        void bind() const;
 
-        /**
-         * Default copy constructor.
-         */
-        FrameBufferAttachment(const FrameBufferAttachment & other) = default;
-
-        /**
-         * Default move constructor.
-         */
-        FrameBufferAttachment(FrameBufferAttachment && other) = default;
-
-        /**
-         * Default copy assign operator.
-         */
-        FrameBufferAttachment & operator=(const FrameBufferAttachment & other) = default;
-
-        /**
-         * Default move assign operator.
-         */
-        FrameBufferAttachment & operator=(FrameBufferAttachment && other) = default;
+        void unbind() const;
     };
 
     /**
      * Manage a single frame buffer object.
      */
     class FrameBuffer {
-        GLuint fboId;
+    public:
+        struct Attachment {
+            enum Type {
+                TEXTURE,
+                RENDER_BUFFER,
+            };
+
+            union {
+                Texture * texture;
+                RenderBuffer * buffer;
+            };
+            Type type;
+            GLenum attachment;
+
+            Attachment(Texture * texture, GLenum attachment);
+
+            Attachment(RenderBuffer * buffer, GLenum attachment);
+
+            void resize(const glm::uvec2 & size);
+        };
+
+    private:
+        GLuint buffer;
+        std::vector<Attachment> attachments;
         glm::uvec2 size;
-        const std::vector<FrameBufferAttachment> attachments;
-        bool depthBuffer;
-        std::vector<FrameBufferTexture> textures;
-        GLuint rboDepth;
-        GLsizei samples;
+
+        FrameBuffer(GLuint buffer) : buffer(buffer) {}
 
     public:
-        /**
-         * Construct a new FrameBuffer with the given size.
-         *
-         * @param size the size in pixels
-         * @param attachments a list of texture attachments for this frame buffer
-         * @param depthBuffer should a render buffer be crated for depth
-         * @param samples the number of samples to use, 0 to disable
-         *                multisampling
-         */
-        FrameBuffer(const glm::uvec2 & size,
-                    std::vector<FrameBufferAttachment> attachments,
-                    bool depthBuffer = true,
-                    GLsizei samples = 0);
+        FrameBuffer(const glm::uvec2 & size);
+
+        FrameBuffer(FrameBuffer && other);
+
+        FrameBuffer & operator=(FrameBuffer && other);
+
+        FrameBuffer(const FrameBuffer &) = delete;
+        FrameBuffer & operator=(const FrameBuffer &) = delete;
 
         /**
          * Destruct the FrameBuffer.
@@ -151,21 +87,18 @@ namespace glpp {
         virtual ~FrameBuffer();
 
         /**
-         * Default move constructor.
-         */
-        FrameBuffer(FrameBuffer && other) = default;
-
-        /**
-         * Default copy constructor.
-         */
-        FrameBuffer & operator=(FrameBuffer && other) = default;
-
-        /**
          * Get the FrameBuffer id.
          *
          * @return the opengl id
          */
-        GLuint getId() const;
+        GLuint getBufferId() const;
+
+        /**
+         * Get the attachments.
+         *
+         * @return the attachments
+         */
+        const std::vector<Attachment> & getAttachments() const;
 
         /**
          * Get the current size in pixels.
@@ -180,77 +113,21 @@ namespace glpp {
          *
          * @param size the new size in pixels
          */
-        void setSize(const glm::uvec2 & size);
-
-        /**
-         * Does this FrameBuffer have a depth buffer.
-         *
-         * @return does this have a depth buffer
-         */
-        bool hasDepthBuffer() const;
-
-        /**
-         * Does the FrameBuffer support multisampling. If so, you need to use
-         * the FrameBuffer from resolve() for any sampleing.
-         */
-        bool isMultisampled() const;
-
-        /**
-         * Return the number of samples used for this FrameBuffer.
-         *
-         * If the number of samples is > 0, the FrameBuffer is considered to be
-         * multisamples and must be resolved or handled by the multisample
-         * texture bindings.
-         *
-         * @return the number of samples
-         */
-        GLsizei getSamples() const;
-
-        /**
-         * Get the number of FrameBufferTexture textures in the FrameBuffer.
-         *
-         * @return the number of FrameBufferTexture textures
-         */
-        size_t count(void) const;
-
-        /**
-         * Get the attachments.
-         *
-         * @return the attachments
-         */
-        const std::vector<FrameBufferAttachment> & getAttachments() const;
-
-        /**
-         * Get the textures.
-         *
-         * @return the textures
-         */
-        const std::vector<FrameBufferTexture> & getTextures() const;
+        void resize(const glm::uvec2 & size);
 
         /**
          * Call glBlitFramebuffer with the FrameBuffer as the source and dest
          * as the destination. Use bitfield to select color, depth or stencil.
-         *
-         * @param dest the destination FrameBuffer id or 0 for the default
-         * @param bitfield the buffers to copy (GL_COLOR_BUFFER_BIT,
-         * GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT)
          */
-        void blit(GLint dest, GLbitfield bitfield = GL_COLOR_BUFFER_BIT) const;
-
-        /**
-         * Get the resolved FrameBuffer. If this FrameBuffer is multisampled,
-         * the resolved FrameBuffer will be an identical FrameBuffer that is
-         * not multisampled.
-         *
-         * @returns the resolved FrameBuffer
-         */
-        const FrameBuffer resolve() const;
+        void blit(const FrameBuffer & source,
+                  GLbitfield mask = GL_COLOR_BUFFER_BIT,
+                  GLenum filter = GL_NEAREST) const;
 
         /**
          * Bind the FrameBuffer. All draw calls after this will be sent to the
          * FrameBuffer.
          */
-        void bind() const;
+        void bind(GLenum target = GL_FRAMEBUFFER) const;
 
         /**
          * Unbind this FrameBuffer, effectively binding the default FrameBuffer.
@@ -261,5 +138,7 @@ namespace glpp {
          * Call glClear with Color, Depth and Stencil buffer bits.
          */
         static void clear();
+
+        static FrameBuffer & getDefault();
     };
 }

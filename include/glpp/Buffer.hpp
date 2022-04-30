@@ -21,6 +21,7 @@ namespace glpp {
         bool normalized;
         GLsizei stride;
         const void * pointer;
+        GLuint divisor = 0;
 
         void enable() const;
 
@@ -65,98 +66,135 @@ namespace glpp {
     private:
         Target target;
         GLuint buffer;
-        Usage usage;
-        std::unique_ptr<Attribute> attrib;
 
     public:
         /**
          * Create a new VBO.
          *
-         * @param vaa the Vertex Attribute index
-         * @param usage the OpenGL buffer usage
+         * @param target the target buffer
          *
          * After creating the vertex array attribute vaa will be enabled and the
          * new vbo will be bound.
          */
-        Buffer(Target target = Array, Usage usage = Static);
-
-        Buffer(const Attribute & attrib, Target target = Array, Usage usage = Static);
+        Buffer(Target target = Array);
 
         Buffer(Buffer && other);
 
+        Buffer & operator=(Buffer && other);
+
         Buffer(const Buffer &) = delete;
         Buffer & operator=(const Buffer &) = delete;
-        Buffer & operator=(Buffer &&) = delete;
 
         ~Buffer();
 
         Target getTarget() const;
 
-        GLuint getId() const;
-
-        Usage getUsage() const;
-
-        void setUsage(Usage usage);
-
-        Attribute * getAttribute() const;
+        GLuint getBufferId() const;
 
         void bind() const;
 
         void unbind() const;
 
-        void bufferData(GLsizeiptr size, const void * data);
+        void bufferData(GLsizeiptr size, const void * data, Usage usage = Static);
 
         void bufferSubData(GLintptr offset, GLsizeiptr size, const void * data);
     };
 
+    struct AttributedBuffer {
+        std::vector<Attribute> attrib;
+        Buffer buffer;
+
+        using Usage = Buffer::Usage;
+
+        AttributedBuffer(const std::vector<Attribute> & attrib, Buffer && buffer);
+
+        AttributedBuffer(AttributedBuffer && other);
+
+        AttributedBuffer & operator=(AttributedBuffer && other);
+
+        AttributedBuffer(const AttributedBuffer &) = delete;
+        AttributedBuffer & operator=(const AttributedBuffer &) = delete;
+
+        void bufferData(GLsizeiptr size,
+                        const void * data,
+                        Usage usage = Usage::Static);
+
+        inline void bufferSubData(GLintptr offset, GLsizeiptr size, const void * data) {
+            buffer.bufferSubData(offset, size, data);
+        }
+    };
+
     class BufferArray {
         GLuint array;
-        std::vector<Buffer> buffers;
+        std::vector<AttributedBuffer> buffers;
         std::unique_ptr<Buffer> elementBuffer;
 
     public:
+        using Usage = Buffer::Usage;
         using Mode = Buffer::Mode;
 
         BufferArray();
 
+        BufferArray(const std::vector<std::vector<Attribute>> & attributes);
+
         BufferArray(std::vector<Buffer> && buffers);
 
-        BufferArray(const std::vector<Attribute> & attributes);
+        BufferArray(BufferArray && other);
+
+        BufferArray & operator=(BufferArray && other);
 
         BufferArray(const BufferArray &) = delete;
-        BufferArray(BufferArray &&) = delete;
         BufferArray & operator=(const BufferArray &) = delete;
-        BufferArray & operator=(BufferArray &&) = delete;
 
         ~BufferArray();
 
-        GLuint getId() const;
+        GLuint getArrayId() const;
 
         /**
          * The number of buffers not including the optional index buffer.
          */
-        std::size_t count() const;
+        std::size_t size() const;
 
-        std::vector<Buffer> & getBuffers();
+        const std::vector<AttributedBuffer> & getBuffers() const;
+
+        std::vector<AttributedBuffer> & getBuffers();
 
         void bind() const;
 
         void unbind() const;
 
-        void bufferData(size_t index, GLsizeiptr size, const void * data);
+        void bufferData(size_t index,
+                        GLsizeiptr size,
+                        const void * data,
+                        Usage usage = Usage::Static);
 
         void bufferSubData(size_t index,
                            GLintptr offset,
                            GLsizeiptr size,
                            const void * data);
 
-        void bufferElements(GLsizeiptr size, const void * data);
+        void bufferElements(GLsizeiptr size,
+                            const void * data,
+                            Usage usage = Usage::Static);
 
-        void drawArrays(GLint first, GLsizei count, Mode mode = Mode::Triangles) const;
+        void drawArrays(Mode mode, GLint first, GLsizei count) const;
 
-        void drawElements(GLsizei count,
-                          GLenum type = GL_UNSIGNED_INT,
-                          Mode mode = Mode::Triangles,
-                          const void * indices = nullptr) const;
+
+        void drawArraysInstanced(Mode mode,
+                                 GLint first,
+                                 GLsizei count,
+                                 GLsizei primcount) const;
+
+        void drawElements(Mode mode,
+                          GLsizei count,
+                          GLenum type,
+                          const void * indices) const;
+
+
+        void drawElementsInstanced(Mode mode,
+                                   GLsizei count,
+                                   GLenum type,
+                                   const void * indices,
+                                   GLsizei primcount) const;
     };
 }

@@ -118,15 +118,12 @@ namespace glpp {
         /// Free all opengl resources
         virtual ~Texture();
 
-        /**
-         * Default move constructor.
-         */
-        Texture(Texture && other) = default;
+        Texture(Texture && other);
 
-        /**
-         * Default move assign operator.
-         */
-        Texture & operator=(Texture && other) = default;
+        Texture & operator=(Texture && other);
+
+        Texture(const Texture &) = delete;
+        Texture & operator=(const Texture &) = delete;
 
         /**
          * Load the texture from an image, setting the size to match
@@ -151,6 +148,20 @@ namespace glpp {
          * @return the texture id
          */
         GLuint getTextureId() const;
+
+        /**
+         * Get the number of samples. Any value > 0 is multi-samples.
+         *
+         * @return the samples
+         */
+        GLsizei getSamples() const;
+
+        /**
+         * Get the OpenGL texture taget.
+         *
+         * @return the texture target
+         */
+        GLenum getTarget() const;
 
         /**
          * Get the texture size
@@ -189,6 +200,6 @@ namespace glpp {
          * @throws TextureLoadException if the image han an unsupported number
          * of components
          */
-        static Texture fromFile(const std::string & path);
+        static Texture fromPath(const std::string & path);
     };
 }

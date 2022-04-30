@@ -110,6 +110,54 @@ namespace glpp {
 }
 
 namespace glpp {
+    Uniform::Uniform(GLuint location) : location(location) {}
+
+    GLuint Uniform::getLocation() const {
+        return location;
+    }
+
+    void Uniform::setBool(bool value) const {
+        glUniform1i(location, static_cast<int>(value));
+    }
+
+    void Uniform::setInt(int value) const {
+        glUniform1i(location, value);
+    }
+
+    void Uniform::setUInt(unsigned int value) const {
+        glUniform1ui(location, value);
+    }
+
+    void Uniform::setFloat(float value) const {
+        glUniform1f(location, value);
+    }
+
+    void Uniform::setVec2(const glm::vec2 & value) const {
+        glUniform2fv(location, 1, &value.x);
+    }
+
+    void Uniform::setVec3(const glm::vec3 & value) const {
+        glUniform3fv(location, 1, &value.x);
+    }
+
+    void Uniform::setVec4(const glm::vec4 & value) const {
+        glUniform4fv(location, 1, &value.x);
+    }
+
+    void Uniform::setMat2(const glm::mat2 & value) const {
+        glUniformMatrix2fv(location, 1, GL_FALSE, &value[0][0]);
+    }
+
+    void Uniform::setMat3(const glm::mat3 & value) const {
+        glUniformMatrix3fv(location, 1, GL_FALSE, &value[0][0]);
+    }
+
+    void Uniform::setMat4(const glm::mat4 & value) const {
+        glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]);
+    }
+}
+
+namespace glpp {
     Shader::Shader(const std::string_view & vertexSource,
                    const std::string_view & fragmentSource) {
         GLuint vShader = compileShader(GL_VERTEX_SHADER, vertexSource);
@@ -132,8 +180,19 @@ namespace glpp {
         }
     }
 
+    Shader::Shader(Shader && other) : program(other.program) {
+        other.program = 0;
+    }
+
+    Shader & Shader::operator=(Shader && other) {
+        program = other.program;
+        other.program = 0;
+        return *this;
+    }
+
     Shader::~Shader() {
-        glDeleteProgram(program);
+        if (program)
+            glDeleteProgram(program);
     }
 
     GLuint Shader::getProgram() const {
@@ -148,88 +207,9 @@ namespace glpp {
         glUseProgram(0);
     }
 
-    GLuint Shader::uniformLocation(const std::string & name) const {
-        return glGetUniformLocation(program, name.c_str());
-    }
-
-    void Shader::setBool(const std::string & name, bool value) const {
-        setBool(uniformLocation(name), value);
-    }
-
-    void Shader::setBool(GLuint location, bool value) const {
-        glUniform1i(location, static_cast<int>(value));
-    }
-
-    void Shader::setInt(const std::string & name, int value) const {
-        setInt(uniformLocation(name), value);
-    }
-
-    void Shader::setInt(GLuint location, int value) const {
-        glUniform1i(location, value);
-    }
-
-    void Shader::setUInt(const std::string & name, unsigned int value) const {
-        setUInt(uniformLocation(name), value);
-    }
-
-    void Shader::setUInt(GLuint location, unsigned int value) const {
-        glUniform1ui(location, value);
-    }
-
-    void Shader::setFloat(const std::string & name, float value) const {
-        setFloat(uniformLocation(name), value);
-    }
-
-    void Shader::setFloat(GLuint location, float value) const {
-        glUniform1f(location, value);
-    }
-
-    void Shader::setVec2(const std::string & name, const glm::vec2 & value) const {
-        setVec2(uniformLocation(name), value);
-    }
-
-    void Shader::setVec2(GLuint location, const glm::vec2 & value) const {
-        glUniform2fv(location, 1, &value.x);
-    }
-
-    void Shader::setVec3(const std::string & name, const glm::vec3 & value) const {
-        setVec3(uniformLocation(name), value);
-    }
-
-    void Shader::setVec3(GLuint location, const glm::vec3 & value) const {
-        glUniform3fv(location, 1, &value.x);
-    }
-
-    void Shader::setVec4(const std::string & name, const glm::vec4 & value) const {
-        setVec4(uniformLocation(name), value);
-    }
-
-    void Shader::setVec4(GLuint location, const glm::vec4 & value) const {
-        glUniform4fv(location, 1, &value.x);
-    }
-
-    void Shader::setMat2(const std::string & name, const glm::mat2 & value) const {
-        setMat2(uniformLocation(name), value);
-    }
-
-    void Shader::setMat2(GLuint location, const glm::mat2 & value) const {
-        glUniformMatrix2fv(location, 1, GL_FALSE, &value[0][0]);
-    }
-
-    void Shader::setMat3(const std::string & name, const glm::mat3 & value) const {
-        setMat3(uniformLocation(name), value);
-    }
-
-    void Shader::setMat3(GLuint location, const glm::mat3 & value) const {
-        glUniformMatrix3fv(location, 1, GL_FALSE, &value[0][0]);
-    }
-
-    void Shader::setMat4(const std::string & name, const glm::mat4 & value) const {
-        setMat4(uniformLocation(name), value);
-    }
-
-    void Shader::setMat4(GLuint location, const glm::mat4 & value) const {
-        glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]);
+    Uniform Shader::uniform(const char * name) const {
+        GLuint location = glGetUniformLocation(program, name);
+        return Uniform(location);
     }
 }
 

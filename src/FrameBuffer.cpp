@@ -3,175 +3,125 @@
 #include <stdexcept>
 
 namespace glpp {
-    FrameBufferTexture::FrameBufferTexture()
-        : FrameBufferTexture(GL_COLOR_ATTACHMENT0, {0, 0}) {}
-
-    FrameBufferTexture::FrameBufferTexture(GLuint attachment,
-                                           const glm::uvec2 & size,
-                                           Format internal,
-                                           Format format,
-                                           GLenum type,
-                                           GLsizei samples,
-                                           Filter magFilter,
-                                           Filter minFilter,
-                                           Wrap wrap)
-        : Texture(
-            size, internal, format, type, samples, magFilter, minFilter, wrap, false),
-          attachment(attachment) {}
-
-    FrameBufferTexture::~FrameBufferTexture() {
-        Texture::~Texture();
+    RenderBuffer::RenderBuffer(const glm::uvec2 & size, GLenum internal)
+        : internal(internal), size(size) {
+        glGenRenderbuffers(1, &buffer);
+        resize(size);
     }
 
-    GLuint FrameBufferTexture::getAttachment() const {
-        return attachment;
+    RenderBuffer::RenderBuffer(RenderBuffer && other)
+        : buffer(other.buffer), internal(other.internal), size(other.size) {
+        other.buffer = 0;
     }
 
-    void FrameBufferTexture::setAttachment(GLuint attachment) {
-        this->attachment = attachment;
+    RenderBuffer & RenderBuffer::operator=(RenderBuffer && other) {
+        buffer = other.buffer;
+        other.buffer = 0;
+        internal = other.internal;
+        size = other.size;
+        return *this;
+    }
+
+    RenderBuffer::~RenderBuffer() {
+        if (buffer)
+            glDeleteRenderbuffers(1, &buffer);
+    }
+
+    GLuint RenderBuffer::getBufferId() const {
+        return buffer;
+    }
+
+    const glm::uvec2 & RenderBuffer::getSize() const {
+        return size;
+    }
+
+    void RenderBuffer::resize(const glm::uvec2 & size) {
+        this->size = size;
+        bind();
+        glRenderbufferStorage(GL_RENDERBUFFER, internal, size.x, size.y);
+    }
+
+    void RenderBuffer::bind() const {
+        glBindRenderbuffer(GL_RENDERBUFFER, buffer);
+    }
+
+    void RenderBuffer::unbind() const {
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
     }
 }
 
 namespace glpp {
-    FrameBuffer::FrameBuffer(const glm::uvec2 & size,
-                             std::vector<FrameBufferAttachment> attachments,
-                             bool depthBuffer,
-                             GLsizei samples)
-        : size(size),
-          rboDepth(0),
-          samples(samples),
-          attachments(attachments),
-          depthBuffer(depthBuffer) {
+    FrameBuffer::Attachment::Attachment(Texture * texture, GLenum attachment)
+        : texture(texture), type(TEXTURE), attachment(attachment) {}
 
-        glGenFramebuffers(1, &fboId);
+    FrameBuffer::Attachment::Attachment(RenderBuffer * buffer, GLenum attachment)
+        : buffer(buffer), type(RENDER_BUFFER), attachment(attachment) {}
 
+    void FrameBuffer::Attachment::resize(const glm::uvec2 & size) {
+        if (type == TEXTURE)
+            texture->resize(size);
+        else
+            buffer->resize(size);
+    }
+}
+
+namespace glpp {
+    FrameBuffer::FrameBuffer(const glm::uvec2 & size) : size(size) {
+        glGenFramebuffers(1, &buffer);
         bind();
+    }
 
-        for (auto & a : attachments) {
-            auto & texture = textures.emplace_back(
-                a.attachment, size, a.internal, a.format, a.type, samples,
-                Texture::Nearest, Texture::Nearest, Texture::Clamp);
+    FrameBuffer::FrameBuffer(FrameBuffer && other)
+        : buffer(other.buffer),
+          attachments(std::move(other.attachments)),
+          size(other.size) {
+        other.buffer = 0;
+    }
 
-            GLenum textarget = GL_TEXTURE_2D;
-            if (samples > 0)
-                textarget = GL_TEXTURE_2D_MULTISAMPLE;
-
-            glFramebufferTexture2D(GL_FRAMEBUFFER, a.attachment, textarget,
-                                   texture.getTextureId(), 0);
-        }
-
-        if (depthBuffer) {
-            glGenRenderbuffers(1, &rboDepth);
-            glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-
-            if (samples > 0)
-                glRenderbufferStorageMultisample(
-                    GL_RENDERBUFFER, samples, GL_DEPTH_COMPONENT, size.x, size.y);
-            else
-                glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT,
-                                      size.x, size.y);
-
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                      GL_RENDERBUFFER, rboDepth);
-        }
-
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            throw std::runtime_error("FrameBuffer is not complete");
-
-        std::vector<GLuint> buffers;
-        for (int i = 0; i < count(); i++) {
-            auto a = textures[i].getAttachment();
-            if (a != GL_DEPTH_ATTACHMENT && a != GL_STENCIL_ATTACHMENT)
-                buffers.push_back(a);
-        }
-        glDrawBuffers(buffers.size(), &buffers[0]);
-
-        unbind();
+    FrameBuffer & FrameBuffer::operator=(FrameBuffer && other) {
+        buffer = other.buffer;
+        other.buffer = 0;
+        attachments = std::move(other.attachments);
+        size = other.size;
+        return *this;
     }
 
     FrameBuffer::~FrameBuffer() {
-        glDeleteFramebuffers(1, &fboId);
-        if (rboDepth > 0)
-            glDeleteRenderbuffers(1, &rboDepth);
+        if (buffer)
+            glDeleteFramebuffers(1, &buffer);
     }
 
-    GLuint FrameBuffer::getId() const {
-        return fboId;
+    GLuint FrameBuffer::getBufferId() const {
+        return buffer;
+    }
+
+    const std::vector<FrameBuffer::Attachment> & FrameBuffer::getAttachments() const {
+        return attachments;
     }
 
     const glm::uvec2 & FrameBuffer::getSize() const {
         return size;
     }
 
-    void FrameBuffer::setSize(const glm::uvec2 & size) {
+    void FrameBuffer::resize(const glm::uvec2 & size) {
         this->size = size;
-        for (auto & texture : textures) {
-            texture.resize(size);
-        }
-
-        if (rboDepth > 0) {
-            glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-            if (samples > 0)
-                glRenderbufferStorageMultisample(
-                    GL_RENDERBUFFER, samples, GL_DEPTH_COMPONENT, size.x, size.y);
-            else
-                glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT,
-                                      size.x, size.y);
+        for (auto & att : attachments) {
+            att.resize(size);
         }
     }
 
-    const std::vector<FrameBufferAttachment> & FrameBuffer::getAttachments() const {
-        return attachments;
+    void FrameBuffer::blit(const FrameBuffer & source,
+                           GLbitfield mask,
+                           GLenum filter) const {
+        source.bind(GL_READ_FRAMEBUFFER);
+        bind(GL_DRAW_FRAMEBUFFER);
+        glBlitFramebuffer(0, 0, source.size.x, source.size.y, //
+                          0, 0, size.x, size.y, //
+                          mask, filter);
     }
 
-    const std::vector<FrameBufferTexture> & FrameBuffer::getTextures() const {
-        return textures;
-    }
-
-    bool FrameBuffer::hasDepthBuffer() const {
-        return depthBuffer;
-    }
-
-    bool FrameBuffer::isMultisampled() const {
-        return samples > 0;
-    }
-
-    GLsizei FrameBuffer::getSamples() const {
-        return samples;
-    }
-
-    size_t FrameBuffer::count() const {
-        return textures.size();
-    }
-
-    void FrameBuffer::blit(GLint dest, GLbitfield bitfield) const {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, fboId);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dest);
-        if (count() > 1) {
-            for (int i = 0; i < count(); i++) {
-                auto a = textures[i].getAttachment();
-                if (a != GL_DEPTH_ATTACHMENT && a != GL_STENCIL_ATTACHMENT) {
-                    glReadBuffer(a);
-                    glDrawBuffer(a);
-                    glBlitFramebuffer(0, 0, size.x, size.y, 0, 0, size.x,
-                                      size.y, bitfield, GL_NEAREST);
-                }
-            }
-        }
-        else
-            glBlitFramebuffer(0, 0, size.x, size.y, 0, 0, size.x, size.y,
-                              bitfield, GL_NEAREST);
-    }
-
-    const FrameBuffer FrameBuffer::resolve() const {
-        FrameBuffer resolved(size, attachments, depthBuffer, 0);
-        blit(resolved.getId(),
-             GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        return resolved;
-    }
-
-    void FrameBuffer::bind() const {
-        glBindFramebuffer(GL_FRAMEBUFFER, fboId);
+    void FrameBuffer::bind(GLenum target) const {
+        glBindFramebuffer(target, buffer);
     }
 
     void FrameBuffer::unbind() {
@@ -180,5 +130,10 @@ namespace glpp {
 
     void FrameBuffer::clear() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    }
+
+    FrameBuffer & FrameBuffer::getDefault() {
+        static FrameBuffer buffer(0);
+        return buffer;
     }
 }

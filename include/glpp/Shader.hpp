@@ -32,6 +32,85 @@ namespace glpp {
      */
     std::string shaderSource(const std::string & path);
 
+    class Uniform {
+        GLuint location;
+
+    public:
+        Uniform(GLuint location);
+
+        GLuint getLocation() const;
+
+        /**
+         * Set the value to integer 0 or 1.
+         *
+         * @param value the value to set
+         */
+        void setBool(bool value) const;
+
+        /**
+         * Set the value.
+         *
+         * @param value the value to set
+         */
+        void setInt(int value) const;
+
+        /**
+         * Set the value.
+         *
+         * @param value the value to set
+         */
+        void setUInt(unsigned int value) const;
+
+        /**
+         * Set the value.
+         *
+         * @param value the value to set
+         */
+        void setFloat(float value) const;
+
+        /**
+         * Set the value.
+         *
+         * @param value the value to set
+         */
+        void setVec2(const glm::vec2 & value) const;
+
+        /**
+         * Set the value.
+         *
+         * @param value the value to set
+         */
+        void setVec3(const glm::vec3 & value) const;
+
+        /**
+         * Set the value.
+         *
+         * @param value the value to set
+         */
+        void setVec4(const glm::vec4 & value) const;
+
+        /**
+         * Set the value.
+         *
+         * @param value the value to set
+         */
+        void setMat2(const glm::mat2 & value) const;
+
+        /**
+         * Set the value.
+         *
+         * @param value the value to set
+         */
+        void setMat3(const glm::mat3 & value) const;
+
+        /**
+         * Set the value.
+         *
+         * @param value the value to set
+         */
+        void setMat4(const glm::mat4 & value) const;
+    };
+
     /**
      * Manages a single OpenGL shader.
      */
@@ -50,18 +129,15 @@ namespace glpp {
         Shader(const std::string_view & vertexSource,
                const std::string_view & fragmentSource);
 
+        Shader(Shader && other);
+
+        Shader & operator=(Shader && other);
+
+        Shader(const Shader &) = delete;
+        Shader & operator=(const Shader &) = delete;
+
         /// Free OpenGL resources
-        virtual ~Shader();
-
-        /**
-         * Default move constructor.
-         */
-        Shader(Shader && other) = default;
-
-        /**
-         * Default move assign operator.
-         */
-        Shader & operator=(Shader && other) = default;
+        ~Shader();
 
         /**
          * Get the OpenGL shader program id.
@@ -81,173 +157,13 @@ namespace glpp {
         void unbind() const;
 
         /**
-         * Get the uniform location for name in this shader.
+         * Get the uniform for name in this shader.
          *
          * @param name the uniform name
          *
-         * @return the uniform location
+         * @return the uniform
          */
-        GLuint uniformLocation(const std::string & name) const;
-
-        /**
-         * Get the uniform location for name and set the value to integer 0 or 1.
-         *
-         * @param name the uniform name
-         * @param value the value to set
-         */
-        void setBool(const std::string & name, bool value) const;
-
-        /**
-         * Set the value to integer 0 or 1.
-         *
-         * @param location the uniform location
-         * @param value the value to set
-         */
-        void setBool(GLuint location, bool value) const;
-
-        /**
-         * Get the uniform location for name and set the value.
-         *
-         * @param name the uniform name
-         * @param value the value to set
-         */
-        void setInt(const std::string & name, int value) const;
-
-        /**
-         * Set the value.
-         *
-         * @param location the uniform location
-         * @param value the value to set
-         */
-        void setInt(GLuint location, int value) const;
-
-        /**
-         * Get the uniform location for name and set the value.
-         *
-         * @param name the uniform name
-         * @param value the value to set
-         */
-        void setUInt(const std::string & name, unsigned int value) const;
-
-        /**
-         * Set the value.
-         *
-         * @param location the uniform location
-         * @param value the value to set
-         */
-        void setUInt(GLuint location, unsigned int value) const;
-
-        /**
-         * Get the uniform location for name and set the value.
-         *
-         * @param name the uniform name
-         * @param value the value to set
-         */
-        void setFloat(const std::string & name, float value) const;
-
-        /**
-         * Set the value.
-         *
-         * @param location the uniform location
-         * @param value the value to set
-         */
-        void setFloat(GLuint location, float value) const;
-
-        /**
-         * Get the uniform location for name and set the value.
-         *
-         * @param name the uniform name
-         * @param value the value to set
-         */
-        void setVec2(const std::string & name, const glm::vec2 & value) const;
-
-        /**
-         * Set the value.
-         *
-         * @param location the uniform location
-         * @param value the value to set
-         */
-        void setVec2(GLuint location, const glm::vec2 & value) const;
-
-        /**
-         * Get the uniform location for name and set the value.
-         *
-         * @param name the uniform name
-         * @param value the value to set
-         */
-        void setVec3(const std::string & name, const glm::vec3 & value) const;
-
-        /**
-         * Set the value.
-         *
-         * @param location the uniform location
-         * @param value the value to set
-         */
-        void setVec3(GLuint location, const glm::vec3 & value) const;
-
-        /**
-         * Get the uniform location for name and set the value.
-         *
-         * @param name the uniform name
-         * @param value the value to set
-         */
-        void setVec4(const std::string & name, const glm::vec4 & value) const;
-
-        /**
-         * Set the value.
-         *
-         * @param location the uniform location
-         * @param value the value to set
-         */
-        void setVec4(GLuint location, const glm::vec4 & value) const;
-
-        /**
-         * Get the uniform location for name and set the value.
-         *
-         * @param name the uniform name
-         * @param value the value to set
-         */
-        void setMat2(const std::string & name, const glm::mat2 & value) const;
-
-        /**
-         * Set the value.
-         *
-         * @param location the uniform location
-         * @param value the value to set
-         */
-        void setMat2(GLuint location, const glm::mat2 & value) const;
-
-        /**
-         * Get the uniform location for name and set the value.
-         *
-         * @param name the uniform name
-         * @param value the value to set
-         */
-        void setMat3(const std::string & name, const glm::mat3 & value) const;
-
-        /**
-         * Set the value.
-         *
-         * @param location the uniform location
-         * @param value the value to set
-         */
-        void setMat3(GLuint location, const glm::mat3 & value) const;
-
-        /**
-         * Get the uniform location for name and set the value.
-         *
-         * @param name the uniform name
-         * @param value the value to set
-         */
-        void setMat4(const std::string & name, const glm::mat4 & value) const;
-
-        /**
-         * Set the value.
-         *
-         * @param location the uniform location
-         * @param value the value to set
-         */
-        void setMat4(GLuint location, const glm::mat4 & value) const;
+        Uniform uniform(const char * name) const;
 
         /**
          * Load the default shader from the internal source.

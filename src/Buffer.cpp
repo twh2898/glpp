@@ -2,8 +2,9 @@
 
 namespace glpp {
     void Attribute::enable() const {
-        glEnableVertexAttribArray(index);
         glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+        glVertexAttribDivisor(index, divisor);
+        glEnableVertexAttribArray(index);
     }
 
     void Attribute::disable() const {
@@ -12,21 +13,20 @@ namespace glpp {
 }
 
 namespace glpp {
-    Buffer::Buffer(Target target, Usage usage)
-        : target(target), usage(usage), attrib(nullptr) {
+    Buffer::Buffer(Target target) : target(target) {
         glGenBuffers(1, &buffer);
     }
 
-    Buffer::Buffer(const Attribute & attrib, Target target, Usage usage)
-        : Buffer(target, usage) {
-        this->attrib = std::make_unique<Attribute>(attrib);
+    Buffer::Buffer(Buffer && other)
+        : target(other.target), buffer(other.buffer) {
+        other.buffer = 0;
     }
 
-    Buffer::Buffer(Buffer && other) {
+    Buffer & Buffer::operator=(Buffer && other) {
         target = other.target;
-        usage = other.usage;
         buffer = other.buffer;
         other.buffer = 0;
+        return *this;
     }
 
     Buffer::~Buffer() {
@@ -38,31 +38,19 @@ namespace glpp {
         return target;
     }
 
-    GLuint Buffer::getId() const {
+    GLuint Buffer::getBufferId() const {
         return buffer;
     }
 
-    Buffer::Usage Buffer::getUsage() const {
-        return usage;
-    }
-
-    void Buffer::setUsage(Buffer::Usage usage) {
-        this->usage = usage;
-    }
-
-    Attribute * Buffer::getAttribute() const {
-        return attrib.get();
-    }
-
     void Buffer::bind() const {
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
+        glBindBuffer(target, buffer);
     }
 
     void Buffer::unbind() const {
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(target, 0);
     }
 
-    void Buffer::bufferData(GLsizeiptr size, const void * data) {
+    void Buffer::bufferData(GLsizeiptr size, const void * data, Usage usage) {
         bind();
         glBufferData(target, size, data, usage);
     }
@@ -74,37 +62,77 @@ namespace glpp {
 }
 
 namespace glpp {
+    AttributedBuffer::AttributedBuffer(const std::vector<Attribute> & attrib,
+                                       Buffer && buffer)
+        : attrib(attrib), buffer(std::move(buffer)) {}
 
+    AttributedBuffer::AttributedBuffer(AttributedBuffer && other)
+        : attrib(std::move(other.attrib)), buffer(std::move(other.buffer)) {}
+
+    AttributedBuffer & AttributedBuffer::operator=(AttributedBuffer && other) {
+        attrib = std::move(other.attrib);
+        buffer = std::move(other.buffer);
+        return *this;
+    }
+
+    void AttributedBuffer::bufferData(GLsizeiptr size, const void * data, Usage usage) {
+        buffer.bufferData(size, data, usage);
+        for (auto & a : attrib) {
+            a.enable();
+        }
+    }
+}
+
+namespace glpp {
     BufferArray::BufferArray() : elementBuffer(nullptr) {
         glGenVertexArrays(1, &array);
     }
 
-    BufferArray::BufferArray(std::vector<Buffer> && buffers)
-        : buffers(std::move(buffers)) {
-        BufferArray();
-    }
-
-    BufferArray::BufferArray(const std::vector<Attribute> & attributes) {
+    BufferArray::BufferArray(const std::vector<std::vector<Attribute>> & attributes)
+        : BufferArray() {
         for (auto & attr : attributes) {
-            buffers.emplace_back(attr);
+            Buffer buffer(Buffer::Array);
+            buffers.emplace_back(attr, std::move(buffer));
         }
-        BufferArray();
     }
 
+    BufferArray::BufferArray(std::vector<Buffer> && buffers) : BufferArray() {
+        buffers = std::move(buffers);
+    }
+
+    BufferArray::BufferArray(BufferArray && other)
+        : array(other.array),
+          buffers(std::move(other.buffers)),
+          elementBuffer(std::move(other.elementBuffer)) {
+        other.array = 0;
+    }
+
+    BufferArray & BufferArray::operator=(BufferArray && other) {
+        array = other.array;
+        other.array = 0;
+        buffers = std::move(other.buffers);
+        elementBuffer = std::move(other.elementBuffer);
+        return *this;
+    }
 
     BufferArray::~BufferArray() {
-        glDeleteVertexArrays(1, &array);
+        if (array)
+            glDeleteVertexArrays(1, &array);
     }
 
-    GLuint BufferArray::getId() const {
+    GLuint BufferArray::getArrayId() const {
         return array;
     }
 
-    std::size_t BufferArray::count() const {
+    std::size_t BufferArray::size() const {
         return buffers.size();
     }
 
-    std::vector<Buffer> & BufferArray::getBuffers() {
+    const std::vector<AttributedBuffer> & BufferArray::getBuffers() const {
+        return buffers;
+    }
+
+    std::vector<AttributedBuffer> & BufferArray::getBuffers() {
         return buffers;
     }
 
@@ -116,11 +144,11 @@ namespace glpp {
         glBindVertexArray(0);
     }
 
-    void BufferArray::bufferData(size_t index, GLsizeiptr size, const void * data) {
-        buffers[index].bufferData(size, data);
-        auto * attr = buffers[index].getAttribute();
-        if (attr)
-            attr->enable();
+    void BufferArray::bufferData(size_t index,
+                                 GLsizeiptr size,
+                                 const void * data,
+                                 Usage usage) {
+        buffers[index].bufferData(size, data, usage);
     }
 
     void BufferArray::bufferSubData(size_t index,
@@ -130,24 +158,39 @@ namespace glpp {
         buffers[index].bufferSubData(offset, size, data);
     }
 
-    void BufferArray::bufferElements(GLsizeiptr size, const void * data) {
+    void BufferArray::bufferElements(GLsizeiptr size, const void * data, Usage usage) {
         if (!elementBuffer)
             elementBuffer = std::make_unique<Buffer>(Buffer::Index);
-        elementBuffer->bufferData(size, data);
+        elementBuffer->bufferData(size, data, usage);
     }
 
-    void BufferArray::drawArrays(GLint first,
-                                 GLsizei count,
-                                 BufferArray::Mode mode) const {
+    void BufferArray::drawArrays(Mode mode, GLint first, GLsizei count) const {
         bind();
         glDrawArrays(mode, first, count);
     }
 
-    void BufferArray::drawElements(GLsizei count,
+    void BufferArray::drawArraysInstanced(Mode mode,
+                                          GLint first,
+                                          GLsizei count,
+                                          GLsizei primcount) const {
+        bind();
+        glDrawArraysInstanced(mode, first, count, primcount);
+    }
+
+    void BufferArray::drawElements(Mode mode,
+                                   GLsizei count,
                                    GLenum type,
-                                   BufferArray::Mode mode,
                                    const void * indices) const {
         bind();
         glDrawElements(mode, count, type, indices);
+    }
+
+    void BufferArray::drawElementsInstanced(Mode mode,
+                                            GLsizei count,
+                                            GLenum type,
+                                            const void * indices,
+                                            GLsizei primcount) const {
+        bind();
+        glDrawElementsInstanced(mode, count, type, indices, primcount);
     }
 }

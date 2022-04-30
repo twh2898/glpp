@@ -53,7 +53,39 @@ namespace glpp {
     }
 
     Texture::~Texture() {
-        glDeleteTextures(1, &textureId);
+        if (textureId)
+            glDeleteTextures(1, &textureId);
+    }
+
+    Texture::Texture(Texture && other)
+        : textureId(other.textureId),
+          size(other.size),
+          internal(other.internal),
+          format(other.format),
+          type(other.type),
+          samples(other.samples),
+          target(other.target),
+          magFilter(other.magFilter),
+          minFilter(other.minFilter),
+          wrap(other.wrap),
+          mipmaps(other.mipmaps) {
+        other.textureId = 0;
+    }
+
+    Texture & Texture::operator=(Texture && other) {
+        textureId = other.textureId;
+        other.textureId = 0;
+        size = other.size;
+        internal = other.internal;
+        format = other.format;
+        type = other.type;
+        samples = other.samples;
+        target = other.target;
+        magFilter = other.magFilter;
+        minFilter = other.minFilter;
+        wrap = other.wrap;
+        mipmaps = other.mipmaps;
+        return *this;
     }
 
     void Texture::loadFrom(const unsigned char * data,
@@ -92,6 +124,14 @@ namespace glpp {
         return textureId;
     }
 
+    GLsizei Texture::getSamples() const {
+        return samples;
+    }
+
+    GLenum Texture::getTarget() const {
+        return target;
+    }
+
     const glm::uvec2 & Texture::getSize() const {
         return size;
     }
@@ -126,7 +166,7 @@ namespace glpp {
         glBindTexture(target, 0);
     }
 
-    Texture Texture::fromFile(const std::string & path) {
+    Texture Texture::fromPath(const std::string & path) {
         int x, y, n;
         auto * data = stbi_load(path.c_str(), &x, &y, &n, 0);
         if (!data)
