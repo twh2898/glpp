@@ -34,6 +34,51 @@ namespace glpp::extra {
 }
 
 namespace glpp::extra {
+    void Quad::updateBuffer() {
+        vertices[0] = vertices[2] = x;
+        vertices[4] = vertices[6] = x + width;
+        vertices[1] = vertices[7] = y + height;
+        vertices[3] = vertices[5] = y;
+    }
+
+    Quad::Quad(float x, float y, float w, float h)
+        : array(std::vector<std::vector<Attribute>> {
+            {Attribute {0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0}},
+            {Attribute {1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0}},
+        }),
+          vertices {0},
+          x(x),
+          y(y),
+          width(w),
+          height(h) {
+        updateBuffer();
+        array.bind();
+        array.bufferData(0, sizeof(vertices), vertices);
+        array.bufferData(1, sizeof(texCoords), texCoords);
+        array.bufferElements(sizeof(indices), indices);
+        array.unbind();
+    }
+
+    void Quad::setPos(float x, float y) {
+        this->x = x;
+        this->y = y;
+        updateBuffer();
+        array.bufferSubData(0, 0, sizeof(vertices), vertices);
+    }
+
+    void Quad::setSize(float w, float h) {
+        width = w;
+        height = h;
+        updateBuffer();
+        array.bufferSubData(0, 0, sizeof(vertices), vertices);
+    }
+
+    void Quad::draw() const {
+        array.drawElements(Buffer::Triangles, 6, GL_UNSIGNED_INT, 0);
+    }
+}
+
+namespace glpp::extra {
     void draw_array(const std::vector<Vertex> & vertices, GLenum mode) {
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
