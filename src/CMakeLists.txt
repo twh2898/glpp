@@ -6,6 +6,7 @@ set(TARGET glpp)
 
 set(HEADER_LIST
     extra/Buffer.hpp
+    extra/Transform.hpp
     Buffer.hpp
     FrameBuffer.hpp
     Shader.hpp
@@ -14,6 +15,7 @@ list(TRANSFORM HEADER_LIST PREPEND "${${PROJECT_NAME}_SOURCE_DIR}/include/${PROJ
 
 set(SOURCE_LIST
     extra/Buffer.cpp
+    extra/Transform.cpp
     Buffer.cpp
     FrameBuffer.cpp
     Shader.cpp
