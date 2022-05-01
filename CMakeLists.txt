@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15...3.20)
 
 project(glpp
-    VERSION 0.4.0
+    VERSION 0.4.1
     DESCRIPTION "Helper Classes that wrap OpenGL functionality"
     LANGUAGES CXX)
 
