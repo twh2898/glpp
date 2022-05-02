@@ -36,7 +36,7 @@ namespace glpp {
         GLuint location;
 
     public:
-        Uniform(GLuint location);
+        Uniform(GLuint location = 0);
 
         GLuint getLocation() const;
 
