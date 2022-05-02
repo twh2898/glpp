@@ -152,6 +152,6 @@ namespace glpp::extra {
          *
          * @return the projection matrix
          */
-        glm::mat4 projMatrix();
+        glm::mat4 projMatrix() const;
     };
 }

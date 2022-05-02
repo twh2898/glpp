@@ -98,7 +98,7 @@ namespace glpp::extra {
         return matrix;
     }
 
-    glm::mat4 Camera::projMatrix() {
+    glm::mat4 Camera::projMatrix() const {
         float r = (float)screenSize.x / (float)screenSize.y;
         if (projectionMode == Perspective)
             return glm::perspective(glm::radians(fov), r, near, far);
