@@ -88,7 +88,7 @@ namespace glpp::extra {
         changed = true;
     }
 
-    glm::mat4 Camera::toMatrix() const {
+    glm::mat4 Camera::viewMatrix() const {
         if (changed) {
             auto rotX = glm::rotate(glm::mat4(1), rot.x, glm::vec3(1, 0, 0));
             auto rotY = glm::rotate(rotX, rot.y, glm::vec3(0, 1, 0));

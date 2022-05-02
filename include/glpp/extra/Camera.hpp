@@ -144,7 +144,7 @@ namespace glpp::extra {
          *
          * @return the view matrix
          */
-        glm::mat4 toMatrix() const;
+        glm::mat4 viewMatrix() const;
 
         /**
          * Get the projection matrix. This is generated from screen size and

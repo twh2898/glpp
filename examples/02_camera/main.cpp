@@ -172,7 +172,7 @@ int main() {
         }
 
         shader.bind();
-        mvp.setMat4(camera.projMatrix() * camera.toMatrix());
+        mvp.setMat4(camera.projMatrix() * camera.viewMatrix());
         array.drawArrays(Buffer::Triangles, 0, 9);
 
         window.swapBuffers();
