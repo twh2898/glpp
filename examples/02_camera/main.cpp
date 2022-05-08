@@ -1,5 +1,6 @@
 #include <glpp/Buffer.hpp>
 #include <glpp/Shader.hpp>
+#include <glpp/extra/debug.hpp>
 using namespace glpp;
 
 #include <glpp/extra/Camera.hpp>
@@ -30,27 +31,6 @@ void main() {
     FragColor = vec4(color, 1.0);
 })";
 
-static void GLAPIENTRY MessageCallback(GLenum source,
-                                       GLenum type,
-                                       GLuint id,
-                                       GLenum severity,
-                                       GLsizei length,
-                                       const GLchar * message,
-                                       const void * userParam) {
-
-    cerr << "GL Error: " << (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "")
-         << " type = " << type << " severity = " << severity
-         << " message = " << message << endl;
-}
-
-void initDebug() {
-    // During init, enable debug output
-    glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(MessageCallback, 0);
-
-    cout << "Debug messages enabled" << endl;
-}
-
 int main() {
     auto GLFW = glfw::init();
     glfw::WindowHints {.contextVersionMajor = 3,
@@ -66,7 +46,7 @@ int main() {
         throw runtime_error("Could not initialize GLEW");
     }
 
-    initDebug();
+    glpp::extra::initDebug();
 
     Camera camera({width, height}, Camera::Perspective, 83.0f, {0, 0.1, 1});
 

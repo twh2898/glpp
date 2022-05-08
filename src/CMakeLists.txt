@@ -7,6 +7,7 @@ set(TARGET glpp)
 set(HEADER_LIST
     extra/Buffer.hpp
     extra/Camera.hpp
+    extra/debug.hpp
     extra/Transform.hpp
     Buffer.hpp
     FrameBuffer.hpp
@@ -17,6 +18,7 @@ list(TRANSFORM HEADER_LIST PREPEND "${${PROJECT_NAME}_SOURCE_DIR}/include/${PROJ
 set(SOURCE_LIST
     extra/Buffer.cpp
     extra/Camera.cpp
+    extra/debug.cpp
     extra/Transform.cpp
     Buffer.cpp
     FrameBuffer.cpp
