@@ -18,6 +18,10 @@ namespace glpp::extra {
         return Vertex(pos - other.pos, norm - other.norm, uv - other.uv);
     }
 
+    Vertex Vertex::operator-(const glm::vec3 & offset) const {
+        return Vertex(pos - offset, norm, uv);
+    }
+
     Vertex & Vertex::operator+=(const Vertex & other) {
         pos += other.pos;
         norm += other.norm;

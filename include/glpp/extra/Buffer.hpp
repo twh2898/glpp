@@ -69,6 +69,15 @@ namespace glpp::extra {
         Vertex operator-(const Vertex & other) const;
 
         /**
+         * Subtract offset from just the position field.
+         *
+         * @param offset the offset to add to pos
+         *
+         * @return a new Vertex with the difference of pos and offset
+         */
+        Vertex operator-(const glm::vec3 & offset) const;
+
+        /**
          * Add the fields element wise of other to the fields of this.
          *
          * @param other the Vertex to add to this
