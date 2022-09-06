@@ -19,8 +19,8 @@ namespace {
         glm::vec3 norm(4, 5, 6);
         glm::vec2 uv(7, 8);
 
-        Vertex v (pos, norm, uv);
-        
+        Vertex v(pos, norm, uv);
+
         EXPECT_EQ(pos, v.pos);
         EXPECT_EQ(norm, v.norm);
         EXPECT_EQ(uv, v.uv);
@@ -31,8 +31,12 @@ namespace {
         glm::vec3 norm(4, 5, 6);
         glm::vec2 uv(7, 8);
 
-        Vertex v (pos, norm, uv);
-        Vertex v2 (v);
+        Vertex v(pos, norm, uv);
+        Vertex v2(v);
+
+        v.pos.x++;
+        v.norm.x++;
+        v.uv.x++;
 
         EXPECT_EQ(pos, v2.pos);
         EXPECT_EQ(norm, v2.norm);
@@ -44,8 +48,12 @@ namespace {
         glm::vec3 norm(4, 5, 6);
         glm::vec2 uv(7, 8);
 
-        Vertex v (pos, norm, uv);
+        Vertex v(pos, norm, uv);
         Vertex v2 = v;
+
+        v.pos.x++;
+        v.norm.x++;
+        v.uv.x++;
 
         EXPECT_EQ(pos, v2.pos);
         EXPECT_EQ(norm, v2.norm);
@@ -57,8 +65,12 @@ namespace {
         glm::vec3 norm(4, 5, 6);
         glm::vec2 uv(7, 8);
 
-        Vertex v (pos, norm, uv);
-        Vertex v2 (std::move(v));
+        Vertex v(pos, norm, uv);
+        Vertex v2(std::move(v));
+
+        v.pos.x++;
+        v.norm.x++;
+        v.uv.x++;
 
         EXPECT_EQ(pos, v2.pos);
         EXPECT_EQ(norm, v2.norm);
@@ -70,8 +82,12 @@ namespace {
         glm::vec3 norm(4, 5, 6);
         glm::vec2 uv(7, 8);
 
-        Vertex v (pos, norm, uv);
+        Vertex v(pos, norm, uv);
         Vertex v2 = std::move(v);
+
+        v.pos.x++;
+        v.norm.x++;
+        v.uv.x++;
 
         EXPECT_EQ(pos, v2.pos);
         EXPECT_EQ(norm, v2.norm);
@@ -83,8 +99,8 @@ namespace {
         glm::vec3 norm(4, 5, 6);
         glm::vec2 uv(7, 8);
 
-        Vertex v ({1, 1, 1}, {2, 2, 2}, {3, 3});
-        Vertex v2 (v);
+        Vertex v({1, 1, 1}, {2, 2, 2}, {3, 3});
+        Vertex v2(v);
 
         Vertex v3 = v + v2;
 
@@ -98,8 +114,8 @@ namespace {
         glm::vec3 norm(4, 5, 6);
         glm::vec2 uv(7, 8);
 
-        Vertex v ({1, 1, 1}, {2, 2, 2}, {3, 3});
-        Vertex v2 (v);
+        Vertex v({1, 1, 1}, {2, 2, 2}, {3, 3});
+        Vertex v2(v);
 
         Vertex v3 = v - v2;
 
@@ -113,8 +129,8 @@ namespace {
         glm::vec3 norm(4, 5, 6);
         glm::vec2 uv(7, 8);
 
-        Vertex v ({1, 1, 1}, {2, 2, 2}, {3, 3});
-        Vertex v2 (v);
+        Vertex v({1, 1, 1}, {2, 2, 2}, {3, 3});
+        Vertex v2(v);
 
         v2 += v;
 
@@ -128,8 +144,8 @@ namespace {
         glm::vec3 norm(4, 5, 6);
         glm::vec2 uv(7, 8);
 
-        Vertex v ({1, 1, 1}, {2, 2, 2}, {3, 3});
-        Vertex v2 (v);
+        Vertex v({1, 1, 1}, {2, 2, 2}, {3, 3});
+        Vertex v2(v);
 
         v2 -= v;
 
