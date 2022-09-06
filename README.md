@@ -43,6 +43,19 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(glpp)
 ```
 
+## CMake External Project
+
+```cmake
+include(ExternalProject)
+ExternalProject_Add(
+    glpp
+    GIT_REPOSITORY  https://github.com/twh2898/glpp.git
+    GIT_TAG         0.1.0
+    UPDATE_COMMAND  ""
+    INSTALL_COMMAND ""
+)
+```
+
 ## License
 
 This project uses the [MIT](LICENSE) License.

@@ -69,6 +69,15 @@ namespace glpp::extra {
         Vertex operator-(const Vertex & other) const;
 
         /**
+         * Subtract offset from just the position field.
+         *
+         * @param offset the offset to add to pos
+         *
+         * @return a new Vertex with the difference of pos and offset
+         */
+        Vertex operator-(const glm::vec3 & offset) const;
+
+        /**
          * Add the fields element wise of other to the fields of this.
          *
          * @param other the Vertex to add to this
@@ -91,8 +100,8 @@ namespace glpp::extra {
     class Quad {
         BufferArray array;
         float vertices[8];
-        float x, y;
-        float width, height;
+        glm::vec2 pos;
+        glm::vec2 size;
 
         const float texCoords[8] = {
             0.0f, 1.0f, //
@@ -109,17 +118,30 @@ namespace glpp::extra {
         void updateBuffer();
 
     public:
-        Quad(float x = -1, float y = -1, float w = 2, float h = 2);
+        Quad(const glm::vec2 & pos = glm::vec2(-1),
+             const glm::vec2 & size = glm::vec2(2));
 
-        void setPos(float x, float y);
+        Quad(Quad && other);
+        
+        Quad & operator=(Quad && other);
+        
+        Quad(const Quad &) = delete;
+        Quad & operator=(const Quad &) = delete;
 
-        void setSize(float w, float h);
+        const glm::vec2 & getPos() const;
+
+        void setPos(const glm::vec2 & pos);
+
+        const glm::vec2 & getSize() const;
+
+        void setSize(const glm::vec2 & size);
 
         void draw() const;
     };
 
-
+    [[deprecated("Use Quad instead")]]
     void draw_array(const std::vector<Vertex> & vertices, GLenum mode);
 
+    [[deprecated("Use Quad instead")]]
     void draw_quad(const glm::vec2 & pos, const glm::vec2 & size);
 }
