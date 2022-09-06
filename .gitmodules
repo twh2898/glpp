@@ -4,3 +4,6 @@
 [submodule "glfwpp"]
 	path = glfwpp
 	url = https://github.com/janekb04/glfwpp.git
+[submodule "googletest"]
+	path = googletest
+	url = https://github.com/google/googletest
