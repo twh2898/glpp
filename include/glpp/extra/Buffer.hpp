@@ -139,7 +139,9 @@ namespace glpp::extra {
         void draw() const;
     };
 
+    [[deprecated("Use Quad instead")]]
     void draw_array(const std::vector<Vertex> & vertices, GLenum mode);
 
+    [[deprecated("Use Quad instead")]]
     void draw_quad(const glm::vec2 & pos, const glm::vec2 & size);
 }
