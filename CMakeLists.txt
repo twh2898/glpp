@@ -51,7 +51,7 @@ ExternalProject_Add(
 )
 
 ExternalProject_Add(
-    glfw
+    glfw3
     GIT_REPOSITORY https://github.com/glfw/glfw
     GIT_TAG        3.3.8
     UPDATE_COMMAND  ""
