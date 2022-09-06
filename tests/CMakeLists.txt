@@ -18,6 +18,7 @@ macro(define_test name)
 endmacro()
 
 define_test(shader)
+define_test(uniform)
 define_test(texture)
 define_test(vertex)
 define_test(quad)
