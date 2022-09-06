@@ -40,11 +40,29 @@ find_package(GLEW REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(glm REQUIRED CONFIG)
 
+include(ExternalProject)
+
+ExternalProject_Add(
+    googletest
+    GIT_REPOSITORY  https://github.com/google/googletest
+    GIT_TAG         release-1.12.1
+    UPDATE_COMMAND  ""
+    INSTALL_COMMAND ""
+)
+
+ExternalProject_Add(
+    glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw
+    GIT_TAG        3.3.8
+    UPDATE_COMMAND  ""
+    INSTALL_COMMAND ""
+)
+
 add_subdirectory(src)
+add_subdirectory(tests)
 
 if (GLPP_BUILD_EXAMPLES)
     set(GLFWPP_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # disable building GLFWPP examples
-    add_subdirectory(glfwpp EXCLUDE_FROM_ALL)
     
     add_subdirectory(examples)
 endif()
