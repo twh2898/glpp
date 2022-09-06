@@ -19,3 +19,4 @@ endmacro()
 
 define_test(shader)
 define_test(texture)
+define_test(vertex)
