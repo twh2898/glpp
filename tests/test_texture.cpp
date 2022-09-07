@@ -24,7 +24,7 @@ namespace {
         EXPECT_EQ(1, t.getSize().x);
         EXPECT_EQ(2, t.getSize().y);
     }
-    
+
     /*
     TODO:
     - Wrong nrComponents

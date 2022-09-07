@@ -122,9 +122,9 @@ namespace glpp::extra {
              const glm::vec2 & size = glm::vec2(2));
 
         Quad(Quad && other);
-        
+
         Quad & operator=(Quad && other);
-        
+
         Quad(const Quad &) = delete;
         Quad & operator=(const Quad &) = delete;
 
@@ -139,9 +139,9 @@ namespace glpp::extra {
         void draw() const;
     };
 
-    [[deprecated("Use Quad instead")]]
-    void draw_array(const std::vector<Vertex> & vertices, GLenum mode);
+    [[deprecated("Use Quad instead")]] void draw_array(
+        const std::vector<Vertex> & vertices, GLenum mode);
 
-    [[deprecated("Use Quad instead")]]
-    void draw_quad(const glm::vec2 & pos, const glm::vec2 & size);
+    [[deprecated("Use Quad instead")]] void draw_quad(const glm::vec2 & pos,
+                                                      const glm::vec2 & size);
 }
