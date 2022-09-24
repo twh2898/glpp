@@ -5,8 +5,6 @@ project(glpp
     DESCRIPTION "Helper Classes that wrap OpenGL functionality"
     LANGUAGES CXX)
 
-option(GLPP_BUILD_EXAMPLES "Should examples be built" ON)
-
 # Only if this is the top level project (not included with add_subdirectory)
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # Use -std=c++xx instead of -std=g++xx
@@ -60,10 +58,6 @@ ExternalProject_Add(
 
 add_subdirectory(src)
 
-if (GLPP_BUILD_EXAMPLES)
-    add_subdirectory(examples)
-endif()
-
 # Create Targets file
 install(EXPORT ${PROJECT_NAME}Targets
     FILE ${PROJECT_NAME}Targets.cmake
@@ -86,7 +80,8 @@ install(FILES
     "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
-# Add tests
+# Add examples and tests
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING) AND BUILD_TESTING)
-   add_subdirectory(tests)
+    add_subdirectory(examples)
+    add_subdirectory(tests)
 endif()
