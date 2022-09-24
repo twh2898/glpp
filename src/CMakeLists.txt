@@ -48,6 +48,8 @@ if(result)
     set_target_properties(${TARGET} PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
+set_property(TARGET ${TARGET} PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 # Add ALIAS target for use in add_subdirectory or build directory
 add_library(${PROJECT_NAME}::${TARGET} ALIAS ${TARGET})
 
