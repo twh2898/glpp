@@ -59,11 +59,8 @@ ExternalProject_Add(
 )
 
 add_subdirectory(src)
-add_subdirectory(tests)
 
 if (GLPP_BUILD_EXAMPLES)
-    set(GLFWPP_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # disable building GLFWPP examples
-    
     add_subdirectory(examples)
 endif()
 
@@ -90,6 +87,6 @@ install(FILES
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 # Add tests
-#if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING) AND BUILD_TESTING)
-#    add_subdirectory(tests)
-#endif()
+if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING) AND BUILD_TESTING)
+   add_subdirectory(tests)
+endif()
