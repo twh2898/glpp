@@ -36,10 +36,9 @@ target_include_directories(${TARGET} PUBLIC
 target_compile_features(${TARGET} PUBLIC cxx_std_17)
 
 target_link_libraries(${TARGET}
-    PRIVATE
+    PUBLIC
     OpenGL::OpenGL
     GLEW::GLEW
-    PUBLIC
     glm)
 
 # Check for Inter Procedural Optimization (IPO)
