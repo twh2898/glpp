@@ -165,7 +165,7 @@ namespace glpp {
 
         void bind() const;
 
-        void unbind() const;
+        static void unbind();
 
         inline void bufferData(size_t index,
                                GLsizeiptr size,

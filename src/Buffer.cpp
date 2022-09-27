@@ -151,7 +151,7 @@ namespace glpp {
         glBindVertexArray(array);
     }
 
-    void BufferArray::unbind() const {
+    void BufferArray::unbind() {
         glBindVertexArray(0);
     }
 
