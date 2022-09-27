@@ -115,9 +115,13 @@ namespace glpp {
         AttributedBuffer(const AttributedBuffer &) = delete;
         AttributedBuffer & operator=(const AttributedBuffer &) = delete;
 
-        void bufferData(GLsizeiptr size,
-                        const void * data,
-                        Usage usage = Usage::Static);
+        void attach() const;
+
+        inline void bufferData(GLsizeiptr size,
+                               const void * data,
+                               Usage usage = Usage::Static) {
+            buffer.bufferData(size, data, usage);
+        }
 
         inline void bufferSubData(GLintptr offset, GLsizeiptr size, const void * data) {
             buffer.bufferSubData(offset, size, data);
@@ -137,7 +141,7 @@ namespace glpp {
 
         BufferArray(const std::vector<std::vector<Attribute>> & attributes);
 
-        BufferArray(std::vector<Buffer> && buffers);
+        BufferArray(std::vector<AttributedBuffer> && buffers);
 
         BufferArray(BufferArray && other);
 
@@ -163,15 +167,19 @@ namespace glpp {
 
         void unbind() const;
 
-        void bufferData(size_t index,
-                        GLsizeiptr size,
-                        const void * data,
-                        Usage usage = Usage::Static);
+        inline void bufferData(size_t index,
+                               GLsizeiptr size,
+                               const void * data,
+                               Usage usage = Usage::Static) {
+            buffers[index].bufferData(size, data, usage);
+        }
 
-        void bufferSubData(size_t index,
-                           GLintptr offset,
-                           GLsizeiptr size,
-                           const void * data);
+        inline void bufferSubData(size_t index,
+                                  GLintptr offset,
+                                  GLsizeiptr size,
+                                  const void * data) {
+            buffers[index].bufferSubData(offset, size, data);
+        }
 
         void bufferElements(GLsizeiptr size,
                             const void * data,

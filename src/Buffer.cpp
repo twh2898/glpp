@@ -75,8 +75,8 @@ namespace glpp {
         return *this;
     }
 
-    void AttributedBuffer::bufferData(GLsizeiptr size, const void * data, Usage usage) {
-        buffer.bufferData(size, data, usage);
+    void AttributedBuffer::attach() const {
+        buffer.bind();
         for (auto & a : attrib) {
             a.enable();
         }
@@ -90,20 +90,31 @@ namespace glpp {
 
     BufferArray::BufferArray(const std::vector<std::vector<Attribute>> & attributes)
         : BufferArray() {
+
+        bind();
         for (auto & attr : attributes) {
             Buffer buffer(Buffer::Array);
-            buffers.emplace_back(attr, std::move(buffer));
+            auto & ab = buffers.emplace_back(attr, std::move(buffer));
+            ab.attach();
         }
     }
 
-    BufferArray::BufferArray(std::vector<Buffer> && buffers) : BufferArray() {
-        buffers = std::move(buffers);
+    BufferArray::BufferArray(std::vector<AttributedBuffer> && buffers)
+        : BufferArray() {
+
+        bind();
+        this->buffers = std::move(buffers);
+        for (auto & ab : buffers) {
+            ab.buffer.bind();
+            ab.attach();
+        }
     }
 
     BufferArray::BufferArray(BufferArray && other)
         : array(other.array),
           buffers(std::move(other.buffers)),
           elementBuffer(std::move(other.elementBuffer)) {
+
         other.array = 0;
     }
 
@@ -142,20 +153,6 @@ namespace glpp {
 
     void BufferArray::unbind() const {
         glBindVertexArray(0);
-    }
-
-    void BufferArray::bufferData(size_t index,
-                                 GLsizeiptr size,
-                                 const void * data,
-                                 Usage usage) {
-        buffers[index].bufferData(size, data, usage);
-    }
-
-    void BufferArray::bufferSubData(size_t index,
-                                    GLintptr offset,
-                                    GLsizeiptr size,
-                                    const void * data) {
-        buffers[index].bufferSubData(offset, size, data);
     }
 
     void BufferArray::bufferElements(GLsizeiptr size, const void * data, Usage usage) {
