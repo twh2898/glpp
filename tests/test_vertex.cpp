@@ -1,4 +1,4 @@
-#include <glpp/extra/Buffer.hpp>
+#include <glpp/extra/Vertex.hpp>
 using namespace glpp::extra;
 
 #include <gtest/gtest.h>

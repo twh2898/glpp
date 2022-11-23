@@ -5,10 +5,11 @@ set(TARGET glpp)
 #file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${${PROJECT_NAME}_SOURCE_DIR}/include/${PROJECT_NAME}/*.hpp")
 
 set(HEADER_LIST
-    extra/Buffer.hpp
     extra/Camera.hpp
     extra/debug.hpp
+    extra/Quad.hpp
     extra/Transform.hpp
+    extra/Vertex.hpp
     Buffer.hpp
     FrameBuffer.hpp
     Shader.hpp
@@ -16,10 +17,11 @@ set(HEADER_LIST
 list(TRANSFORM HEADER_LIST PREPEND "${${PROJECT_NAME}_SOURCE_DIR}/include/${PROJECT_NAME}/")
 
 set(SOURCE_LIST
-    extra/Buffer.cpp
     extra/Camera.cpp
     extra/debug.cpp
+    extra/Quad.cpp
     extra/Transform.cpp
+    extra/Vertex.cpp
     Buffer.cpp
     FrameBuffer.cpp
     Shader.cpp
