@@ -1,2 +1,3 @@
 add_subdirectory(01_triangle)
 add_subdirectory(02_camera)
+add_subdirectory(03_grid)
