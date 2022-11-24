@@ -103,6 +103,7 @@ int main() {
     auto mvp = shader.uniform("mvp");
 
     Shader gridShader = Grid::shader();
+    Uniform gridMvp = gridShader.uniform("mvp");
 
     Grid grid(10, {1, 1, 1}, true);
 
@@ -176,6 +177,8 @@ int main() {
         mvp.setMat4(camera.projMatrix() * camera.viewMatrix());
         array.drawArrays(Buffer::Triangles, 0, 9);
 
+        gridShader.bind();
+        gridMvp.setMat4(camera.projMatrix() * camera.viewMatrix());
         grid.draw();
 
         glfwSwapBuffers(window);
