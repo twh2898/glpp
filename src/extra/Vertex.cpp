@@ -1,5 +1,7 @@
 #include "glpp/extra/Vertex.hpp"
 
+#include <vector>
+
 namespace glpp::extra {
     Vertex::Vertex() : pos(0), norm(0), uv(0) {}
 
@@ -34,5 +36,39 @@ namespace glpp::extra {
         norm -= other.norm;
         uv -= other.uv;
         return *this;
+    }
+}
+
+namespace glpp::extra {
+    using std::vector;
+
+    static const vector<Attribute> attrs {
+        {0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0},
+        {1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)(3 * sizeof(float))},
+        {2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)(6 * sizeof(float))},
+    };
+
+    VertexBufferArray::VertexBufferArray() : BufferArray({attrs}) {}
+
+    VertexBufferArray::VertexBufferArray(VertexBufferArray && other)
+        : BufferArray(std::move(other)) {}
+
+    VertexBufferArray & VertexBufferArray::operator=(VertexBufferArray && other) {
+        BufferArray::operator=(std::move(other));
+        return *this;
+    }
+
+    VertexBufferArray::~VertexBufferArray() {}
+
+    void VertexBufferArray::bufferData(GLsizeiptr size,
+                                       const Vertex * data,
+                                       Usage usage) {
+        BufferArray::bufferData(0, size, data, usage);
+    }
+
+    void VertexBufferArray::bufferSubData(GLintptr offset,
+                                          GLsizeiptr size,
+                                          const Vertex * data) {
+        BufferArray::bufferSubData(0, offset, size, data);
     }
 }

@@ -95,4 +95,28 @@ namespace glpp::extra {
          */
         Vertex & operator-=(const Vertex & other);
     };
+
+    class VertexBufferArray : public BufferArray {
+    private:
+        using BufferArray::bufferData;
+        using BufferArray::bufferSubData;
+
+    public:
+        VertexBufferArray();
+
+        VertexBufferArray(VertexBufferArray && other);
+
+        VertexBufferArray & operator=(VertexBufferArray && other);
+
+        VertexBufferArray(const VertexBufferArray &) = delete;
+        VertexBufferArray & operator=(const VertexBufferArray &) = delete;
+
+        ~VertexBufferArray();
+
+        void bufferData(GLsizeiptr size,
+                        const Vertex * data,
+                        Usage usage = Usage::Static);
+
+        void bufferSubData(GLintptr offset, GLsizeiptr size, const Vertex * data);
+    };
 }
