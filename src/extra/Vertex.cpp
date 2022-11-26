@@ -1,7 +1,5 @@
 #include "glpp/extra/Vertex.hpp"
 
-#include <vector>
-
 namespace glpp::extra {
     Vertex::Vertex() : pos(0), norm(0), uv(0) {}
 
@@ -40,8 +38,6 @@ namespace glpp::extra {
 }
 
 namespace glpp::extra {
-    using std::vector;
-
     static const vector<Attribute> attrs {
         {0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0},
         {1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)(3 * sizeof(float))},

@@ -1,8 +1,11 @@
 #pragma once
 
+#include <vector>
+
 #include "glpp/Buffer.hpp"
 
 namespace glpp::extra {
+    using std::vector;
 
     /**
      * A single point in the format accepted by VBO, Mesh and Model.
@@ -112,6 +115,11 @@ namespace glpp::extra {
         VertexBufferArray & operator=(const VertexBufferArray &) = delete;
 
         ~VertexBufferArray();
+
+        inline void bufferData(const vector<Vertex> & data,
+                               Usage usage = Usage::Static) {
+            bufferData(data.size(), data.data(), usage);
+        }
 
         void bufferData(GLsizeiptr size,
                         const Vertex * data,
