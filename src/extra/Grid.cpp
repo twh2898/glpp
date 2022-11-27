@@ -5,9 +5,9 @@
 static const char * vertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aCol;
+layout (location = 1) in vec4 aCol;
 uniform mat4 mvp;
-out vec3 color;
+out vec4 color;
 void main() {
     gl_Position = mvp * vec4(aPos, 1.0);
     color = aCol;
@@ -15,10 +15,10 @@ void main() {
 
 static const char * fragmentShaderSource = R"(
 #version 330 core
-in vec3 color;
+in vec4 color;
 out vec4 FragColor;
 void main() {
-    FragColor = vec4(color, 1.0);
+    FragColor = color;
 })";
 
 namespace glpp::extra {
@@ -26,7 +26,7 @@ namespace glpp::extra {
 
     void Grid::updateBuffer() {
         vector<glm::vec3> vertices;
-        vector<glm::vec3> colors;
+        vector<glm::vec4> colors;
 
         for (int i = 0; i <= size; i++) {
             // TODO: color axis
@@ -34,13 +34,13 @@ namespace glpp::extra {
             // X axis
             vertices.emplace_back(size, 0, i);
             if (i == 0 && colorAxis)
-                colors.push_back({1, 0, 0});
+                colors.push_back({1, 0, 0, color.a});
             else
                 colors.push_back(color);
 
             vertices.emplace_back(-size, 0, i);
             if (i == 0 && colorAxis)
-                colors.push_back({1, 0, 0});
+                colors.push_back({1, 0, 0, color.a});
             else
                 colors.push_back(color);
 
@@ -55,13 +55,13 @@ namespace glpp::extra {
             // Z axis
             vertices.emplace_back(i, 0, size);
             if (i == 0 && colorAxis)
-                colors.push_back({0, 0, 1});
+                colors.push_back({0, 0, 1, color.a});
             else
                 colors.push_back(color);
 
             vertices.emplace_back(i, 0, -size);
             if (i == 0 && colorAxis)
-                colors.push_back({0, 0, 1});
+                colors.push_back({0, 0, 1, color.a});
             else
                 colors.push_back(color);
 
@@ -78,11 +78,11 @@ namespace glpp::extra {
 
         array.bind();
         array.bufferData(0, n * sizeof(glm::vec3), vertices.data());
-        array.bufferData(1, n * sizeof(glm::vec3), colors.data());
+        array.bufferData(1, n * sizeof(glm::vec4), colors.data());
         array.unbind();
     }
 
-    Grid::Grid(int size, const glm::vec3 & color, bool colorAxis)
+    Grid::Grid(int size, const glm::vec4 & color, bool colorAxis)
         : n(0),
           size(size),
           color(color),
@@ -114,11 +114,11 @@ namespace glpp::extra {
         updateBuffer();
     }
 
-    const glm::vec3 & Grid::getColor() const {
+    const glm::vec4 & Grid::getColor() const {
         return color;
     }
 
-    void Grid::setColor(const glm::vec3 & color) {
+    void Grid::setColor(const glm::vec4 & color) {
         this->color = color;
         updateBuffer();
     }

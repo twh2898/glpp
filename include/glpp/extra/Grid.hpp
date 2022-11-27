@@ -10,13 +10,13 @@ namespace glpp::extra {
         BufferArray array;
         int n;
         int size;
-        glm::vec3 color;
+        glm::vec4 color;
         bool colorAxis;
 
         void updateBuffer();
 
     public:
-        Grid(int size, const glm::vec3 & color, bool colorAxis = false);
+        Grid(int size, const glm::vec4 & color, bool colorAxis = false);
 
         Grid(Grid && other);
 
@@ -29,9 +29,9 @@ namespace glpp::extra {
 
         void setSize(int size);
 
-        const glm::vec3 & getColor() const;
+        const glm::vec4 & getColor() const;
 
-        void setColor(const glm::vec3 & color);
+        void setColor(const glm::vec4 & color);
 
         void draw() const;
 

@@ -105,7 +105,7 @@ int main() {
     Shader gridShader = Grid::shader();
     Uniform gridMvp = gridShader.uniform("mvp");
 
-    Grid grid(10, {1, 1, 1}, true);
+    Grid grid(10, {1, 1, 1, 1}, true);
 
     const float vertices[] = {
         -0.5f, -0.5f, 0.0f, // Bottom Left
