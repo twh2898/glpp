@@ -118,7 +118,7 @@ namespace glpp::extra {
 
         inline void bufferData(const vector<Vertex> & data,
                                Usage usage = Usage::Static) {
-            bufferData(data.size(), data.data(), usage);
+            bufferData(data.size() * sizeof(Vertex), data.data(), usage);
         }
 
         void bufferData(GLsizeiptr size,
