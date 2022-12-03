@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glpp/FrameBuffer.hpp"
+#include "glpp/Shader.hpp"
 #include "glpp/Texture.hpp"
 
 namespace glpp::extra {
@@ -18,5 +19,7 @@ namespace glpp::extra {
         GeometryBuffer(const glm::uvec2 & size);
 
         void bindTextures() const;
+
+        static Shader getShader();
     };
 }
