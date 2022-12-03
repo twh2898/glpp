@@ -17,7 +17,8 @@ namespace glpp {
         glm::uvec2 size;
 
     public:
-        RenderBuffer(const glm::uvec2 & size, GLenum internal);
+        RenderBuffer(const glm::uvec2 & size,
+                     GLenum internal = GL_DEPTH24_STENCIL8);
 
         RenderBuffer(RenderBuffer && other);
 
