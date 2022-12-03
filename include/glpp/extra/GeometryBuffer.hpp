@@ -12,10 +12,11 @@ namespace glpp::extra {
         Texture specular;
         RenderBuffer depth;
 
-    public:
+        // TODO: implement these as public, remember to move textures
         using FrameBuffer::FrameBuffer;
         using FrameBuffer::operator=;
 
+    public:
         GeometryBuffer(const glm::uvec2 & size);
 
         void bindTextures() const;
