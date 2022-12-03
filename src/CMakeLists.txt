@@ -7,6 +7,7 @@ set(TARGET glpp)
 set(HEADER_LIST
     extra/Camera.hpp
     extra/debug.hpp
+    extra/GeometryBuffer.hpp
     extra/Grid.hpp
     extra/Quad.hpp
     extra/Transform.hpp
@@ -20,6 +21,7 @@ list(TRANSFORM HEADER_LIST PREPEND "${${PROJECT_NAME}_SOURCE_DIR}/include/${PROJ
 set(SOURCE_LIST
     extra/Camera.cpp
     extra/debug.cpp
+    extra/GeometryBuffer.cpp
     extra/Grid.cpp
     extra/Quad.cpp
     extra/Transform.cpp
