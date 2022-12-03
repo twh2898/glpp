@@ -150,7 +150,7 @@ namespace glpp {
         BufferArray(const BufferArray &) = delete;
         BufferArray & operator=(const BufferArray &) = delete;
 
-        virtual ~BufferArray();
+        ~BufferArray();
 
         GLuint getArrayId() const;
 
