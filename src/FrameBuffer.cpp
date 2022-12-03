@@ -91,6 +91,11 @@ namespace glpp {
             glDeleteFramebuffers(1, &buffer);
     }
 
+    bool FrameBuffer::isComplete() const {
+        bind();
+        return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+    }
+
     GLuint FrameBuffer::getBufferId() const {
         return buffer;
     }

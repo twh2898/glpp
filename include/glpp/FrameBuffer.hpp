@@ -86,6 +86,8 @@ namespace glpp {
          */
         virtual ~FrameBuffer();
 
+        bool isComplete() const;
+
         /**
          * Get the FrameBuffer id.
          *
