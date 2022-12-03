@@ -180,7 +180,7 @@ namespace glpp {
         /**
          * Bind the texture.
          */
-        void bind() const;
+        void bind(int index = 0) const;
 
         /**
          * Unbind the texture, effectively binding 0.

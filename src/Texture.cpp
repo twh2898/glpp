@@ -158,7 +158,8 @@ namespace glpp {
         }
     }
 
-    void Texture::bind() const {
+    void Texture::bind(int index) const {
+        glActiveTexture(GL_TEXTURE0 + index);
         glBindTexture(target, textureId);
     }
 
