@@ -95,6 +95,29 @@ namespace glpp {
         return buffer;
     }
 
+    void FrameBuffer::attach(Texture * texture, GLenum attachment) {
+        if (texture->getSize() != size)
+            texture->resize(size);
+
+        attachments.emplace_back(texture, attachment);
+        glFramebufferTexture2D(GL_FRAMEBUFFER,
+                               attachment,
+                               texture->getTarget(),
+                               texture->getTextureId(),
+                               0);
+    }
+
+    void FrameBuffer::attach(RenderBuffer * buffer, GLenum attachment) {
+        if (buffer->getSize() != size)
+            buffer->resize(size);
+
+        attachments.emplace_back(buffer, attachment);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                                  attachment,
+                                  GL_RENDERBUFFER,
+                                  buffer->getBufferId());
+    }
+
     const std::vector<FrameBuffer::Attachment> & FrameBuffer::getAttachments() const {
         return attachments;
     }

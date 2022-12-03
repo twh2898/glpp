@@ -93,6 +93,11 @@ namespace glpp {
          */
         GLuint getBufferId() const;
 
+        void attach(Texture * texture, GLenum attachment = GL_COLOR_ATTACHMENT0);
+
+        void attach(RenderBuffer * buffer,
+                    GLenum attachment = GL_DEPTH_STENCIL_ATTACHMENT);
+
         /**
          * Get the attachments.
          *
