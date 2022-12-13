@@ -38,13 +38,7 @@ find_package(GLEW REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(glm REQUIRED CONFIG)
 
-include(FetchContent)
-
-FetchContent_Declare(
-    glfw
-    GIT_REPOSITORY https://github.com/glfw/glfw
-    GIT_TAG        3.3.8
-)
+add_subdirectory(external)
 
 FetchContent_GetProperties(glfw)
 if(NOT glfw_POPULATED)
