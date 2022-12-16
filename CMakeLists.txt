@@ -48,48 +48,6 @@ find_package(glm REQUIRED CONFIG)
 
 add_subdirectory(external)
 
-FetchContent_GetProperties(glfw)
-if(NOT glfw_POPULATED)
-    FetchContent_Populate(glfw)
-
-    set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
-    set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "Build the GLFW test programs")
-    set(GLFW_BUILD_DOCS OFF CACHE INTERNAL "Build the GLFW documentation")
-    set(GLFW_INSTALL OFF CACHE INTERNAL "Generate installation target")
-
-    add_subdirectory(${glfw_SOURCE_DIR} ${glfw_BINARY_DIR})
-endif()
-
-FetchContent_MakeAvailable(glfw)
-
-# FetchContent_Declare(
-#   glm
-#   GIT_REPOSITORY https://github.com/g-truc/glm.git
-#   GIT_TAG        0.9.9.8 
-# )
-
-# FetchContent_GetProperties(glm)
-# if(NOT glm_POPULATED)
-# 	FetchContent_Populate(glm)
-# 	set(GLM_TEST_ENABLE OFF CACHE BOOL "" FORCE)
-# 	add_subdirectory(${glm_SOURCE_DIR} ${glm_BINARY_DIR})
-# endif()
-
-# FetchContent_MakeAvailable(glm)
-
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG        release-1.12.1
-)
-
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
-set(BUILD_GTEST ON CACHE BOOL "" FORCE)
-set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
-
-FetchContent_MakeAvailable(googletest)
-
 add_subdirectory(src)
 
 if(GLPP_BUILD_EXAMPLES)
