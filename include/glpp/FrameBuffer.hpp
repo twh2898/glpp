@@ -145,7 +145,8 @@ namespace glpp {
         /**
          * Call glClear with Color, Depth and Stencil buffer bits.
          */
-        static void clear();
+        static void clear(GLbitfield mask = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
+                                            | GL_STENCIL_BUFFER_BIT);
 
         static FrameBuffer & getDefault();
     };
