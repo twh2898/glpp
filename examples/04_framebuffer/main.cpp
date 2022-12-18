@@ -6,6 +6,7 @@ using namespace glpp;
 
 #include <glpp/extra/Camera.hpp>
 #include <glpp/extra/Grid.hpp>
+#include <glpp/extra/Quad.hpp>
 using namespace glpp::extra;
 
 #include <GLFW/glfw3.h>
@@ -134,6 +135,8 @@ int main() {
     array.bufferElements(sizeof(indices), indices);
     array.unbind();
 
+    Quad quad ({0, 0}, {1, 1});
+
     // Needed because FrameBuffer is storing size for future blit to default
     FrameBuffer::getDefault().resize(uvec2(width, height));
 
@@ -142,7 +145,15 @@ int main() {
     RenderBuffer rbo(uvec2(width, height), GL_DEPTH24_STENCIL8);
     fbo.attach(&rbo, GL_DEPTH_STENCIL_ATTACHMENT);
 
-    Texture tex2(uvec2(width, height), Texture::RGB, Texture::RGB);
+    Texture tex2(uvec2(width, height),
+                 Texture::RGBA,
+                 Texture::RGBA,
+                 GL_FLOAT,
+                 0,
+                 Texture::Linear,
+                 Texture::Linear,
+                 Texture::Clamp,
+                 false);
     fbo.attach(&tex2, GL_COLOR_ATTACHMENT0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -190,6 +201,10 @@ int main() {
         // You should notice some aliasing since fbo is not being resized when
         // the window is
         FrameBuffer::getDefault().blit(fbo);
+
+        shader.bind();
+        tex2.bind();
+        quad.draw();
 
         glfwSwapBuffers(window);
     }
