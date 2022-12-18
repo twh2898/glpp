@@ -136,11 +136,10 @@ int main() {
     FrameBuffer fbo(uvec2(width, height));
 
     RenderBuffer rbo(uvec2(width, height), GL_DEPTH24_STENCIL8);
-
     fbo.attach(&rbo, GL_DEPTH_STENCIL_ATTACHMENT);
 
-    RenderBuffer rbo2(uvec2(width, height), GL_RGB8);
-    fbo.attach(&rbo2, GL_COLOR_ATTACHMENT0);
+    Texture tex2(uvec2(width, height), Texture::RGB, Texture::RGB);
+    fbo.attach(&tex2, GL_COLOR_ATTACHMENT0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         cerr << "FBO is not complete!" << endl;
