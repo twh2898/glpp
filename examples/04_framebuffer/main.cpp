@@ -52,7 +52,10 @@ static void key_callback(
 }
 
 static void framebuffer_size_callback(GLFWwindow * window, int width, int height) {
-    glViewport(0, 0, width, height);
+    // Don't call glViewport here because it should be the viewport
+    // for rendering, not for blit
+    // glViewport(0, 0, width, height);
+    FrameBuffer::getDefault().resize(uvec2(width, height));
 }
 
 Camera * scam;
@@ -131,6 +134,7 @@ int main() {
     array.bufferElements(sizeof(indices), indices);
     array.unbind();
 
+    // Needed because FrameBuffer is storing size for future blit to default
     FrameBuffer::getDefault().resize(uvec2(width, height));
 
     FrameBuffer fbo(uvec2(width, height));
@@ -172,15 +176,19 @@ int main() {
         }
 
         fbo.bind();
-        glClear(GL_COLOR_BUFFER_BIT);
+        fbo.setViewport();
+        fbo.clear();
 
         shader.bind();
         texture.bind();
         array.drawElements(Buffer::Triangles, 3, GL_UNSIGNED_INT, 0);
 
         FrameBuffer::getDefault().bind();
-        glClear(GL_COLOR_BUFFER_BIT);
+        FrameBuffer::getDefault().setViewport();
+        FrameBuffer::getDefault().clear();
 
+        // You should notice some aliasing since fbo is not being resized when
+        // the window is
         FrameBuffer::getDefault().blit(fbo);
 
         glfwSwapBuffers(window);
