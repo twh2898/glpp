@@ -132,10 +132,31 @@ namespace glpp {
                   GLenum filter = GL_NEAREST) const;
 
         /**
+         * Call glBlitFramebuffer with the FrameBuffer as the source and dest
+         * as the destination. Use bitfield to select color, depth or stencil.
+         */
+        void blit(const FrameBuffer & source,
+                  GLint sx0,
+                  GLint sy0,
+                  GLint sx1,
+                  GLint sy1,
+                  GLint dx0,
+                  GLint dy0,
+                  GLint dx1,
+                  GLint dy1,
+                  GLbitfield mask = GL_COLOR_BUFFER_BIT,
+                  GLenum filter = GL_NEAREST) const;
+
+        /**
          * Bind the FrameBuffer. All draw calls after this will be sent to the
          * FrameBuffer.
          */
         void bind(GLenum target = GL_FRAMEBUFFER) const;
+
+        /**
+         * Set the viewport ot the curren size.
+         */
+        void setViewport() const;
 
         /**
          * Unbind this FrameBuffer, effectively binding the default FrameBuffer.

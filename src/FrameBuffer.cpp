@@ -121,6 +121,14 @@ namespace glpp {
                                   attachment,
                                   GL_RENDERBUFFER,
                                   buffer->getBufferId());
+
+        std::vector<GLenum> attrs;
+        for (auto & att : attachments) {
+            if (att.attachment == GL_DEPTH_STENCIL_ATTACHMENT)
+                continue;
+            attrs.push_back(att.attachment);
+        }
+        glDrawBuffers(attrs.size(), attrs.data());
     }
 
     const std::vector<FrameBuffer::Attachment> & FrameBuffer::getAttachments() const {
@@ -141,15 +149,36 @@ namespace glpp {
     void FrameBuffer::blit(const FrameBuffer & source,
                            GLbitfield mask,
                            GLenum filter) const {
+        blit(source, //
+             0, 0, source.size.x, source.size.y, //
+             0, 0, size.x, size.y, //
+             mask, filter);
+    }
+
+    void FrameBuffer::blit(const FrameBuffer & source,
+                           GLint sx0,
+                           GLint sy0,
+                           GLint sx1,
+                           GLint sy1,
+                           GLint dx0,
+                           GLint dy0,
+                           GLint dx1,
+                           GLint dy1,
+                           GLbitfield mask,
+                           GLenum filter) const {
         source.bind(GL_READ_FRAMEBUFFER);
         bind(GL_DRAW_FRAMEBUFFER);
-        glBlitFramebuffer(0, 0, source.size.x, source.size.y, //
-                          0, 0, size.x, size.y, //
+        glBlitFramebuffer(sx0, sy0, sx1, sy1, //
+                          dx0, dy0, dx1, dy1, //
                           mask, filter);
     }
 
     void FrameBuffer::bind(GLenum target) const {
         glBindFramebuffer(target, buffer);
+    }
+
+    void FrameBuffer::setViewport() const {
+        glViewport(0, 0, size.x, size.y);
     }
 
     void FrameBuffer::unbind() {
