@@ -260,7 +260,8 @@ int main() {
     gb.unbind();
 
     Shader gShader = GeometryBuffer::getShader();
-    auto gmvp = gShader.uniform("mvp");
+    auto gvp = gShader.uniform("vp");
+    auto gmodel = gShader.uniform("model");
 
     Shader screenShader(screenVertexShaderSource, screenFragmentShaderSource);
 
@@ -305,7 +306,8 @@ int main() {
             glEnable(GL_DEPTH_TEST);
             gShader.bind();
             texture.bind();
-            mvp.setMat4(camera.projMatrix() * camera.viewMatrix());
+            gvp.setMat4(camera.projMatrix() * camera.viewMatrix());
+            gmodel.setMat4(glm::mat4(1));
             vba.drawArrays(Buffer::Triangles, 0, cube.size());
         }
 
@@ -324,7 +326,7 @@ int main() {
             grid.draw();
 
             glEnable(GL_DEPTH_TEST);
-            gShader.bind();
+            shader.bind();
             mvp.setMat4(camera.projMatrix() * camera.viewMatrix());
             vba.drawArrays(Buffer::Triangles, 0, cube.size());
 
