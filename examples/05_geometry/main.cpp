@@ -131,10 +131,6 @@ static vector<Vertex> cube = {
      glm::vec3(0.500000, 0.707100, 0.500000), glm::vec2(0.625000, 0.750000)},
 };
 
-// static vector<Vertex> quad = {
-//     {{0, 0, -1}, {0}, {0, 0}},
-// };
-
 void error_callback(int error, const char * description) {
     cerr << "Error: " << description << endl;
 }
