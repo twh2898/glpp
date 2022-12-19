@@ -32,6 +32,6 @@ namespace glpp::extra {
 
         void draw(const VertexBufferArray & vba) const;
 
-        static Shader getShader();
+        static Shader & getShader();
     };
 }

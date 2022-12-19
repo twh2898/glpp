@@ -223,7 +223,7 @@ int main() {
 
     Texture texture = Texture::fromPath("../../../examples/05_geometry/uv.png");
 
-    Shader gridShader = Grid::shader();
+    Shader & gridShader = Grid::shader();
     Uniform gridMvp = gridShader.uniform("mvp");
 
     Grid grid(10, {1, 1, 1, 1}, true);
@@ -237,7 +237,7 @@ int main() {
         throw runtime_error("GBO is not complete");
     gb.unbind();
 
-    Shader gShader = GeometryBuffer::getShader();
+    Shader & gShader = GeometryBuffer::getShader();
     auto gvp = gShader.uniform("vp");
     auto gmodel = gShader.uniform("model");
 

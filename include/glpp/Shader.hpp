@@ -176,7 +176,7 @@ namespace glpp {
          *
          * @return the default shader
          */
-        static Shader defaultShader();
+        static Shader & defaultShader();
 
         /**
          * Load a shader using the default vertex shader and a fragment shader.

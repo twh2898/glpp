@@ -99,7 +99,8 @@ void main() {
     oSpecular = 1.0;
 })";
 
-    Shader GeometryBuffer::getShader() {
-        return Shader(geometryVertexShaderSource, geometryFragmentShaderSource);
+    Shader & GeometryBuffer::getShader() {
+        static Shader shader(geometryVertexShaderSource, geometryFragmentShaderSource);
+        return shader;
     }
 }

@@ -241,8 +241,10 @@ void main() {
     FragColor = texture(gTexture, FragTex);
 })";
 
-    Shader Shader::defaultShader() {
-        return Shader(defaultVertexShaderSource, defaultFragmentShaderSource);
+    Shader & Shader::defaultShader() {
+        static Shader shader(defaultVertexShaderSource,
+                             defaultFragmentShaderSource);
+        return shader;
     }
 
     Shader Shader::fromFragmentSource(const std::string_view & fragmentSource) {

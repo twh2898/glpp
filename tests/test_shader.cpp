@@ -22,7 +22,7 @@ void main() {
 namespace {
     class ShaderTest : public GLTest {
     protected:
-        Shader shader;
+        Shader & shader;
         Uniform mvp, gTexture;
 
         ShaderTest()

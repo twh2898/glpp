@@ -102,7 +102,7 @@ int main() {
     Shader shader(vertexShaderSource, fragmentShaderSource);
     auto mvp = shader.uniform("mvp");
 
-    Shader gridShader = Grid::shader();
+    Shader & gridShader = Grid::shader();
     Uniform gridMvp = gridShader.uniform("mvp");
 
     Grid grid(10, {1, 1, 1, 1}, true);

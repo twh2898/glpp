@@ -128,7 +128,8 @@ namespace glpp::extra {
         array.drawArrays(Buffer::Lines, 0, n);
     }
 
-    Shader Grid::shader() {
-        return Shader(vertexShaderSource, fragmentShaderSource);
+    Shader & Grid::shader() {
+        static Shader shader(vertexShaderSource, fragmentShaderSource);
+        return shader;
     }
 }
