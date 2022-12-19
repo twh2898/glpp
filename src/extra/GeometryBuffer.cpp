@@ -5,11 +5,44 @@
 namespace glpp::extra {
     GeometryBuffer::GeometryBuffer(const glm::uvec2 & size)
         : FrameBuffer(size),
-          diffuse(size),
-          normal(size),
-          position(size),
-          specular(size),
+          diffuse(size,
+                  Texture::RGB,
+                  Texture::RGB,
+                  GL_FLOAT,
+                  0,
+                  Texture::Linear,
+                  Texture::Linear,
+                  Texture::Clamp,
+                  false),
+          normal(size,
+                 (Texture::Format)GL_RGB16F,
+                 Texture::RGB,
+                 GL_FLOAT,
+                 0,
+                 Texture::Linear,
+                 Texture::Linear,
+                 Texture::Clamp,
+                 false),
+          position(size,
+                   (Texture::Format)GL_RGB16F,
+                   Texture::RGB,
+                   GL_FLOAT,
+                   0,
+                   Texture::Linear,
+                   Texture::Linear,
+                   Texture::Clamp,
+                   false),
+          specular(size,
+                   (Texture::Format)GL_R16F,
+                   Texture::Gray,
+                   GL_FLOAT,
+                   0,
+                   Texture::Linear,
+                   Texture::Linear,
+                   Texture::Clamp,
+                   false),
           depth(size, GL_DEPTH24_STENCIL8) {
+
         attach(&diffuse, GL_COLOR_ATTACHMENT0);
         attach(&normal, GL_COLOR_ATTACHMENT1);
         attach(&position, GL_COLOR_ATTACHMENT2);
@@ -36,8 +69,10 @@ layout (location = 2) in vec2 aTex;
 out vec3 FragPos;
 out vec3 FragNorm;
 out vec2 FragTex;
+// uniform mat4 m;
 uniform mat4 mvp;
 void main() {
+    // mat4 mvp = m * vp;
     gl_Position = mvp * vec4(aPos, 1.0);
     FragPos = vec3(mvp * vec4(aPos, 1.0));
     FragNorm = aNorm;
@@ -52,16 +87,16 @@ in vec2 FragTex;
 
 uniform sampler2D gTexture;
 
-out vec4 oDiffuse;
-out vec4 oNormal;
-out vec4 oPosition;
-out vec4 oSpecular;
+layout (location = 0) out vec3 oDiffuse;
+layout (location = 1) out vec3 oNormal;
+layout (location = 2) out vec3 oPosition;
+layout (location = 3) out float oSpecular;
 
 void main() {
-    oDiffuse = texture(gTexture, FragTex);
-    oNormal = vec4(FragNorm, 1.0);
-    oPosition = vec4(FragPos, 1.0);
-    oSpecular = vec4(1.0);
+    oDiffuse = texture(gTexture, FragTex).xyz;
+    oNormal = normalize(FragNorm);
+    oPosition = FragPos;
+    oSpecular = 1.0;
 })";
 
     Shader GeometryBuffer::getShader() {
