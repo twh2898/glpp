@@ -240,34 +240,6 @@ int main() {
     Camera camera({width, height}, Camera::Perspective, 83.0f, {0, 0.2, 3});
     scam = &camera;
 
-    Shader triangleShader(triangleVertexShaderSource, triangleFragmentShaderSource);
-
-    const float vertices[] = {
-        -0.5f, -0.5f, 0.0f, // Bottom Left
-        0.5f,  -0.5f, 0.0f, // Bottom Right
-        0.0f,  0.5f,  0.0f // Top Center
-    };
-
-    const float colors[] = {
-        1.0, 0.0, 0.0, // Bottom Left
-        0.0, 1.0, 0.0, // Bottom Right
-        0.0, 0.0, 1.0 // Top Center
-    };
-
-    const unsigned int indices[] = {
-        0, 1, 2, // First Triangle
-    };
-
-    Attribute a0 {0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0};
-    Attribute a1 {1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0};
-
-    BufferArray triangle(vector<vector<Attribute>> {{a0}, {a1}});
-    triangle.bind();
-    triangle.bufferData(0, sizeof(vertices), vertices);
-    triangle.bufferData(1, sizeof(colors), colors);
-    triangle.bufferElements(sizeof(indices), indices);
-    triangle.unbind();
-
     Shader shader(vertexShaderSource, fragmentShaderSource);
     auto mvp = shader.uniform("mvp");
 
@@ -282,18 +254,6 @@ int main() {
     vba.bufferData(cube);
     vba.unbind();
 
-    FrameBuffer fbo(uvec2(width, height));
-
-    RenderBuffer rbo(uvec2(width, height));
-    fbo.attach(&rbo, GL_DEPTH_STENCIL_ATTACHMENT);
-
-    RenderBuffer rbo2(uvec2(width, height), GL_RGB8);
-    fbo.attach(&rbo2, GL_COLOR_ATTACHMENT0);
-
-    if (!fbo.isComplete())
-        throw runtime_error("FBO is not complete");
-    FrameBuffer::getDefault().bind();
-
     GeometryBuffer gb(uvec2(width, height));
     if (!gb.isComplete())
         throw runtime_error("GBO is not complete");
@@ -302,7 +262,6 @@ int main() {
     Shader gShader = GeometryBuffer::getShader();
     auto gmvp = gShader.uniform("mvp");
 
-    // Quad quad({0, 0}, {1, 1});
     Shader screenShader(screenVertexShaderSource, screenFragmentShaderSource);
 
     TextureViewport diffTV(gb.diffuse, Quad({0.5, 0.5}, {0.5, 0.5}));
@@ -359,10 +318,6 @@ int main() {
         FrameBuffer::getDefault().blit(gb);
 
         {
-            glDisable(GL_DEPTH_TEST);
-            triangleShader.bind();
-            triangle.drawElements(Buffer::Triangles, 3, GL_UNSIGNED_INT, 0);
-
             glEnable(GL_DEPTH_TEST);
             gridShader.bind();
             gridMvp.setMat4(camera.projMatrix() * camera.viewMatrix());
@@ -380,30 +335,6 @@ int main() {
             normTV.draw();
             posTV.draw();
         }
-
-        // Render to geometry buffer
-        // Render to default buffer
-        // Blit to default buffer
-
-        // gb.bind();
-        // gb.setViewport();
-        // gb.clear();
-
-        // gShader.bind();
-        // triangleShader.bind();
-        // gb.bindTextures();
-        // gmvp.setMat4(camera.projMatrix() * camera.viewMatrix());
-        // vba.drawArrays(Buffer::Triangles, 0, cube.size());
-
-        // glDisable(GL_DEPTH_TEST);
-        // triangle.drawElements(Buffer::Triangles, 3, GL_UNSIGNED_INT, 0);
-
-        // auto & dfbo = FrameBuffer::getDefault();
-        // dfbo.bind();
-        // dfbo.setViewport();
-        // dfbo.clear();
-
-        // dfbo.blit(gb);
 
         glfwSwapBuffers(window);
     }
