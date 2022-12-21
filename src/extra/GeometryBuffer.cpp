@@ -3,13 +3,13 @@
 #include <string_view>
 
 namespace glpp::extra {
-    GeometryBuffer::GeometryBuffer(const glm::uvec2 & size)
+    GeometryBuffer::GeometryBuffer(const glm::uvec2 & size, GLsizei samples)
         : FrameBuffer(size),
           diffuse(size,
                   Texture::RGB,
                   Texture::RGB,
                   GL_FLOAT,
-                  0,
+                  samples,
                   Texture::Linear,
                   Texture::Linear,
                   Texture::Clamp,
@@ -18,7 +18,7 @@ namespace glpp::extra {
                  (Texture::Format)GL_RGB16F,
                  Texture::RGB,
                  GL_FLOAT,
-                 0,
+                 samples,
                  Texture::Linear,
                  Texture::Linear,
                  Texture::Clamp,
@@ -27,7 +27,7 @@ namespace glpp::extra {
                    (Texture::Format)GL_RGB16F,
                    Texture::RGB,
                    GL_FLOAT,
-                   0,
+                   samples,
                    Texture::Linear,
                    Texture::Linear,
                    Texture::Clamp,
@@ -36,12 +36,12 @@ namespace glpp::extra {
                    (Texture::Format)GL_R16F,
                    Texture::Gray,
                    GL_FLOAT,
-                   0,
+                   samples,
                    Texture::Linear,
                    Texture::Linear,
                    Texture::Clamp,
                    false),
-          depth(size, GL_DEPTH24_STENCIL8) {
+          depth(size, GL_DEPTH24_STENCIL8, samples) {
 
         attach(&diffuse, GL_COLOR_ATTACHMENT0);
         attach(&normal, GL_COLOR_ATTACHMENT1);
@@ -100,7 +100,8 @@ void main() {
 })";
 
     Shader & GeometryBuffer::getShader() {
-        static Shader shader(geometryVertexShaderSource, geometryFragmentShaderSource);
+        static Shader shader(geometryVertexShaderSource,
+                             geometryFragmentShaderSource);
         return shader;
     }
 }

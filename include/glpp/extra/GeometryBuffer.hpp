@@ -26,7 +26,7 @@ namespace glpp::extra {
         using FrameBuffer::attach;
 
     public:
-        GeometryBuffer(const uvec2 & size);
+        GeometryBuffer(const uvec2 & size, GLsizei samples = 0);
 
         void bindTextures() const;
 
