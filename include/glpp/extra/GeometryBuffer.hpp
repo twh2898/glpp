@@ -30,8 +30,6 @@ namespace glpp::extra {
 
         void bindTextures() const;
 
-        void draw(const VertexBufferArray & vba) const;
-
         static Shader & getShader();
     };
 }
