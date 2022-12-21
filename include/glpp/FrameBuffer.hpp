@@ -14,11 +14,13 @@ namespace glpp {
     class RenderBuffer {
         GLuint buffer;
         GLenum internal;
+        GLsizei samples;
         glm::uvec2 size;
 
     public:
         RenderBuffer(const glm::uvec2 & size,
-                     GLenum internal = GL_DEPTH24_STENCIL8);
+                     GLenum internal = GL_DEPTH24_STENCIL8,
+                     GLsizei samples = 0);
 
         RenderBuffer(RenderBuffer && other);
 
@@ -30,6 +32,8 @@ namespace glpp {
         ~RenderBuffer();
 
         GLuint getBufferId() const;
+        
+        GLsizei getSamples() const;
 
         const glm::uvec2 & getSize() const;
 

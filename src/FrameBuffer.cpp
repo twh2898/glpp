@@ -3,8 +3,8 @@
 #include <stdexcept>
 
 namespace glpp {
-    RenderBuffer::RenderBuffer(const glm::uvec2 & size, GLenum internal)
-        : internal(internal), size(size) {
+    RenderBuffer::RenderBuffer(const glm::uvec2 & size, GLenum internal, GLsizei samples)
+        : internal(internal), size(size), samples(samples) {
         glGenRenderbuffers(1, &buffer);
         resize(size);
     }
@@ -31,6 +31,10 @@ namespace glpp {
         return buffer;
     }
 
+    GLsizei RenderBuffer::getSamples() const {
+        return samples;
+    }
+
     const glm::uvec2 & RenderBuffer::getSize() const {
         return size;
     }
@@ -38,7 +42,14 @@ namespace glpp {
     void RenderBuffer::resize(const glm::uvec2 & size) {
         this->size = size;
         bind();
-        glRenderbufferStorage(GL_RENDERBUFFER, internal, size.x, size.y);
+        if (samples > 0)
+            glRenderbufferStorageMultisample(GL_RENDERBUFFER,
+                                             samples,
+                                             internal,
+                                             size.x,
+                                             size.y);
+        else
+            glRenderbufferStorage(GL_RENDERBUFFER, internal, size.x, size.y);
     }
 
     void RenderBuffer::bind() const {
