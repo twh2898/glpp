@@ -56,6 +56,46 @@ void main() {
     FragColor = texture(gTexture, FragTex);
 })";
 
+static const char * lightPassVertexShaderSource = R"(
+#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aTex;
+out vec2 FragTex;
+void main() {
+    gl_Position = vec4(aPos, 1.0);
+    FragTex = aTex;
+})";
+
+static const char * lightPassFragmentShaderSource = R"(
+#version 330 core
+in vec2 FragTex;
+out vec4 FragColor;
+uniform sampler2D gDiffuse;
+uniform sampler2D gNormal;
+uniform sampler2D gPosition;
+uniform sampler2D gSpecular;
+uniform vec3 lightPos = vec3(1, 2, 3);
+uniform vec3 lightColor = vec3(1.0);
+void main() {
+    vec3 FragDiff = texture(gDiffuse, FragTex).xyz;
+    vec3 FragPos = texture(gPosition, FragTex).xyz;
+    vec3 FragNorm = texture(gNormal, FragTex).xyz;
+
+    float ambStr = 0.1;
+    vec3 ambient = ambStr * lightColor;
+
+    vec3 norm = normalize(FragNorm);
+    vec3 lightDir = normalize(lightPos - FragPos);
+
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+
+    vec3 objColor = FragDiff;
+    vec4 res = vec4((ambient + diffuse) * objColor, 1.0);
+    
+    FragColor = res;
+})";
+
 static vector<Vertex> cube = {
     {glm::vec3(0.292893, 0.000000, 1.707107),
      glm::vec3(-0.707100, 0.000000, 0.707100), glm::vec2(0.625000, 0.000000)},
@@ -218,9 +258,6 @@ int main() {
     Camera camera({width, height}, Camera::Perspective, 83.0f, {0, 0.2, 3});
     scam = &camera;
 
-    Shader shader(vertexShaderSource, fragmentShaderSource);
-    auto mvp = shader.uniform("mvp");
-
     Texture texture = Texture::fromPath("../../../examples/05_geometry/uv.png");
 
     Shader & gridShader = Grid::shader();
@@ -242,10 +279,18 @@ int main() {
     auto gmodel = gShader.uniform("model");
 
     Shader screenShader(screenVertexShaderSource, screenFragmentShaderSource);
+    Shader lightPassShader(lightPassVertexShaderSource,
+                           lightPassFragmentShaderSource);
+    auto lGdiff = lightPassShader.uniform("gDiffuse");
+    auto lGnorm = lightPassShader.uniform("gNormal");
+    auto lGpos = lightPassShader.uniform("gPosition");
+    
 
     TextureViewport diffTV(gb.diffuse, Quad({0.5, 0.5}, {0.5, 0.5}));
     TextureViewport normTV(gb.normal, Quad({0.5, 0}, {0.5, 0.5}));
     TextureViewport posTV(gb.position, Quad({0.5, -0.5}, {0.5, 0.5}));
+
+    Quad screenQuad;
 
     // uncomment this call to draw in wireframe polygons.
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -295,18 +340,21 @@ int main() {
 
         // You should notice some aliasing since fbo is not being resized when
         // the window is
-        FrameBuffer::getDefault().blit(gb);
+        // FrameBuffer::getDefault().blit(gb);
+
+        lightPassShader.bind();
+        glDisable(GL_DEPTH_TEST);
+        gb.bindTextures();
+        lGdiff.setInt(0);
+        lGnorm.setInt(1);
+        lGpos.setInt(2);
+        screenQuad.draw();
 
         {
-            glEnable(GL_DEPTH_TEST);
-            gridShader.bind();
-            gridMvp.setMat4(camera.projMatrix() * camera.viewMatrix());
-            grid.draw();
-
-            glEnable(GL_DEPTH_TEST);
-            shader.bind();
-            mvp.setMat4(camera.projMatrix() * camera.viewMatrix());
-            vba.drawArrays(Buffer::Triangles, 0, cube.size());
+            // glEnable(GL_DEPTH_TEST);
+            // gridShader.bind();
+            // gridMvp.setMat4(camera.projMatrix() * camera.viewMatrix());
+            // grid.draw();
 
             glDisable(GL_DEPTH_TEST);
             screenShader.bind();
