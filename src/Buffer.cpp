@@ -10,6 +10,10 @@ namespace glpp {
     void Attribute::disable() const {
         glDisableVertexAttribArray(index);
     }
+
+    bool Attribute::isInstanced() const {
+        return divisor > 0;
+    }
 }
 
 namespace glpp {

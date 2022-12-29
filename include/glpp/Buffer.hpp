@@ -26,6 +26,8 @@ namespace glpp {
         void enable() const;
 
         void disable() const;
+
+        bool isInstanced() const;
     };
 
     /**
