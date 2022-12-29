@@ -22,10 +22,11 @@ static const char * vertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aCol;
-uniform mat4 mvp;
+uniform mat4 vp;
+uniform mat4 model;
 out vec3 color;
 void main() {
-    gl_Position = mvp * vec4(aPos, 1.0);
+    gl_Position = vp * model * vec4(aPos, 1.0);
     color = aCol;
 })";
 
@@ -261,7 +262,8 @@ int main() {
     Texture texture = Texture::fromPath("../../../examples/05_geometry/uv.png");
 
     Shader & gridShader = Grid::shader();
-    Uniform gridMvp = gridShader.uniform("mvp");
+    Uniform gridVpUniform = gridShader.uniform("vp");
+    Uniform gridModelUniform = gridShader.uniform("model");
 
     Grid grid(10, {1, 1, 1, 1}, true);
 
@@ -353,7 +355,8 @@ int main() {
         {
             // glEnable(GL_DEPTH_TEST);
             // gridShader.bind();
-            // gridMvp.setMat4(camera.projMatrix() * camera.viewMatrix());
+            // gridVpUniform.setMat4(camera.projMatrix() * camera.viewMatrix());
+            // gridModelUniform.setMat4(glm::mat4(1));
             // grid.draw();
 
             glDisable(GL_DEPTH_TEST);

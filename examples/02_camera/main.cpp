@@ -16,10 +16,11 @@ static const char * vertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aCol;
-uniform mat4 mvp;
+uniform mat4 vp;
+uniform mat4 model;
 out vec3 color;
 void main() {
-    gl_Position = mvp * vec4(aPos, 1.0);
+    gl_Position = vp * model * vec4(aPos, 1.0);
     color = aCol;
 })";
 
@@ -99,7 +100,8 @@ int main() {
     scam = &camera;
 
     Shader shader(vertexShaderSource, fragmentShaderSource);
-    auto mvp = shader.uniform("mvp");
+    auto vpUniform = shader.uniform("vp");
+    auto modelUniform = shader.uniform("model");
 
     const float vertices[] = {
         -0.5f, -0.5f, 0.0f, // Bottom Left
@@ -167,7 +169,8 @@ int main() {
         }
 
         shader.bind();
-        mvp.setMat4(camera.projMatrix() * camera.viewMatrix());
+        vpUniform.setMat4(camera.projMatrix() * camera.viewMatrix());
+        modelUniform.setMat4(glm::mat4(1));
         array.drawArrays(Buffer::Triangles, 0, 9);
 
         glfwSwapBuffers(window);
