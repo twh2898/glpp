@@ -117,6 +117,8 @@ namespace glpp {
         AttributedBuffer(const AttributedBuffer &) = delete;
         AttributedBuffer & operator=(const AttributedBuffer &) = delete;
 
+        bool isInstanced() const;
+
         void attach() const;
 
         inline void bufferData(GLsizeiptr size,
@@ -164,6 +166,8 @@ namespace glpp {
         const std::vector<AttributedBuffer> & getBuffers() const;
 
         std::vector<AttributedBuffer> & getBuffers();
+
+        bool isInstanced() const;
 
         void bind() const;
 

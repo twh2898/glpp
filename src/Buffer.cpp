@@ -79,6 +79,14 @@ namespace glpp {
         return *this;
     }
 
+    bool AttributedBuffer::isInstanced() const {
+        for (auto & a : attrib) {
+            if (a.isInstanced())
+                return true;
+        }
+        return false;
+    }
+
     void AttributedBuffer::attach() const {
         buffer.bind();
         for (auto & a : attrib) {
@@ -149,6 +157,14 @@ namespace glpp {
 
     std::vector<AttributedBuffer> & BufferArray::getBuffers() {
         return buffers;
+    }
+
+    bool BufferArray::isInstanced() const {
+        for (auto & b : buffers) {
+            if (b.isInstanced())
+                return true;
+        }
+        return false;
     }
 
     void BufferArray::bind() const {
