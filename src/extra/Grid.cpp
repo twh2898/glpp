@@ -129,6 +129,13 @@ namespace glpp::extra {
         array.drawArrays(Buffer::Lines, 0, n);
     }
 
+    void Grid::draw(const glm::mat4 & transform) const {
+        shader().bind();
+        shader().uniform("vp").setMat4(transform);
+        shader().uniform("model").setMat4(glm::mat4(1));
+        array.drawArrays(Buffer::Lines, 0, n);
+    }
+
     Shader & Grid::shader() {
         static Shader shader(vertexShaderSource, fragmentShaderSource);
         return shader;

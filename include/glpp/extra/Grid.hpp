@@ -35,6 +35,8 @@ namespace glpp::extra {
 
         void draw() const;
 
+        void draw(const glm::mat4 & transform) const;
+
         static Shader & shader();
     };
 }
