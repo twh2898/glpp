@@ -261,10 +261,6 @@ int main() {
 
     Texture texture = Texture::fromPath("../../../examples/05_geometry/uv.png");
 
-    Shader & gridShader = Grid::shader();
-    Uniform gridVpUniform = gridShader.uniform("vp");
-    Uniform gridModelUniform = gridShader.uniform("model");
-
     Grid grid(10, {1, 1, 1, 1}, true);
 
     VertexBufferArray vba;
@@ -286,7 +282,7 @@ int main() {
     auto lGdiff = lightPassShader.uniform("gDiffuse");
     auto lGnorm = lightPassShader.uniform("gNormal");
     auto lGpos = lightPassShader.uniform("gPosition");
-    
+
 
     TextureViewport diffTV(gb.diffuse, Quad({0.5, 0.5}, {0.5, 0.5}));
     TextureViewport normTV(gb.normal, Quad({0.5, 0}, {0.5, 0.5}));
@@ -354,10 +350,7 @@ int main() {
 
         {
             // glEnable(GL_DEPTH_TEST);
-            // gridShader.bind();
-            // gridVpUniform.setMat4(camera.projMatrix() * camera.viewMatrix());
-            // gridModelUniform.setMat4(glm::mat4(1));
-            // grid.draw();
+            // grid.draw(camera.projMatrix() * camera.viewMatrix());
 
             glDisable(GL_DEPTH_TEST);
             screenShader.bind();
