@@ -29,42 +29,70 @@ namespace glpp::extra {
         vector<glm::vec4> colors;
 
         for (int i = -size; i <= size; i++) {
-            // TODO: color axis
+            if (i == 0)
+                continue;
 
             // X axis
             vertices.emplace_back(size, 0, i);
             vertices.emplace_back(-size, 0, i);
-
-            if (i == 0 && colorAxis) {
-                colors.push_back({1, 0, 0, color.a});
-                colors.push_back({1, 0, 0, color.a});
-            }
-            else {
-                colors.push_back(color);
-                colors.push_back(color);
-            }
+            colors.push_back(color);
+            colors.push_back(color);
 
             // Z axis
             vertices.emplace_back(i, 0, size);
             vertices.emplace_back(i, 0, -size);
-
-            if (i == 0 && colorAxis) {
-                colors.push_back({0, 0, 1, color.a});
-                colors.push_back({0, 0, 1, color.a});
-            }
-            else {
-                colors.push_back(color);
-                colors.push_back(color);
-            }
+            colors.push_back(color);
+            colors.push_back(color);
         }
 
-        // Y axis
-        vertices.emplace_back(0, size, 0);
+        // X axis center
+        vertices.emplace_back(-size, 0, 0);
+        vertices.emplace_back(0, 0, 0);
+        colors.push_back(color);
+        colors.push_back(color);
+
+        vertices.emplace_back(0, 0, 0);
+        vertices.emplace_back(size, 0, 0);
+
+        if (colorAxis) {
+            colors.push_back({1, 0, 0, color.a});
+            colors.push_back({1, 0, 0, color.a});
+        }
+        else {
+            colors.push_back(color);
+            colors.push_back(color);
+        }
+
+        // Y axis center
         vertices.emplace_back(0, -size, 0);
+        vertices.emplace_back(0, 0, 0);
+        colors.push_back(color);
+        colors.push_back(color);
+
+        vertices.emplace_back(0, 0, 0);
+        vertices.emplace_back(0, size, 0);
 
         if (colorAxis) {
             colors.push_back({0, 1, 0, color.a});
             colors.push_back({0, 1, 0, color.a});
+        }
+        else {
+            colors.push_back(color);
+            colors.push_back(color);
+        }
+
+        // Z axis center
+        vertices.emplace_back(0, 0, -size);
+        vertices.emplace_back(0, 0, 0);
+        colors.push_back(color);
+        colors.push_back(color);
+
+        vertices.emplace_back(0, 0, 0);
+        vertices.emplace_back(0, 0, size);
+
+        if (colorAxis) {
+            colors.push_back({0, 0, 1, color.a});
+            colors.push_back({0, 0, 1, color.a});
         }
         else {
             colors.push_back(color);
