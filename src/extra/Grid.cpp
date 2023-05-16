@@ -6,11 +6,10 @@ static const char * vertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec4 aCol;
-uniform mat4 vp;
-uniform mat4 model;
+uniform mat4 mvp;
 out vec4 color;
 void main() {
-    gl_Position = vp * model * vec4(aPos, 1.0);
+    gl_Position = mvp * vec4(aPos, 1.0);
     color = aCol;
 })";
 
@@ -131,8 +130,7 @@ namespace glpp::extra {
 
     void Grid::draw(const glm::mat4 & transform) const {
         shader().bind();
-        shader().uniform("vp").setMat4(transform);
-        shader().uniform("model").setMat4(glm::mat4(1));
+        shader().uniform("mvp").setMat4(transform);
         array.drawArrays(Buffer::Lines, 0, n);
     }
 
