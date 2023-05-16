@@ -28,50 +28,47 @@ namespace glpp::extra {
         vector<glm::vec3> vertices;
         vector<glm::vec4> colors;
 
-        for (int i = 0; i <= size; i++) {
+        for (int i = -size; i <= size; i++) {
             // TODO: color axis
 
             // X axis
             vertices.emplace_back(size, 0, i);
-            if (i == 0 && colorAxis)
-                colors.push_back({1, 0, 0, color.a});
-            else
-                colors.push_back(color);
-
             vertices.emplace_back(-size, 0, i);
-            if (i == 0 && colorAxis)
+
+            if (i == 0 && colorAxis) {
                 colors.push_back({1, 0, 0, color.a});
-            else
+                colors.push_back({1, 0, 0, color.a});
+            }
+            else {
                 colors.push_back(color);
-
-            if (i > 0) {
-                vertices.emplace_back(size, 0, -i);
-                colors.push_back(color);
-
-                vertices.emplace_back(-size, 0, -i);
                 colors.push_back(color);
             }
 
             // Z axis
             vertices.emplace_back(i, 0, size);
-            if (i == 0 && colorAxis)
-                colors.push_back({0, 0, 1, color.a});
-            else
-                colors.push_back(color);
-
             vertices.emplace_back(i, 0, -size);
-            if (i == 0 && colorAxis)
+
+            if (i == 0 && colorAxis) {
                 colors.push_back({0, 0, 1, color.a});
-            else
+                colors.push_back({0, 0, 1, color.a});
+            }
+            else {
                 colors.push_back(color);
-
-            if (i > 0) {
-                vertices.emplace_back(-i, 0, size);
-                colors.push_back(color);
-
-                vertices.emplace_back(-i, 0, -size);
                 colors.push_back(color);
             }
+        }
+
+        // Y axis
+        vertices.emplace_back(0, size, 0);
+        vertices.emplace_back(0, -size, 0);
+
+        if (colorAxis) {
+            colors.push_back({0, 1, 0, color.a});
+            colors.push_back({0, 1, 0, color.a});
+        }
+        else {
+            colors.push_back(color);
+            colors.push_back(color);
         }
 
         n = vertices.size();
@@ -89,7 +86,7 @@ namespace glpp::extra {
           colorAxis(colorAxis),
           array(std::vector<std::vector<Attribute>> {
               {Attribute {0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0}},
-              {Attribute {1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0}},
+              {Attribute {1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0}},
           }) {
         updateBuffer();
     }
