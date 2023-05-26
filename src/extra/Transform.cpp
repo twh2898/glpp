@@ -14,12 +14,15 @@ namespace glpp::extra {
           m_scale(scale),
           changed(true) {}
 
+    // Set changed to true so matrix will be re-calculated on first call to
+    // toMatrix(). Input matrix could have skew or perspective that are not
+    // captured by this class.
     Transform::Transform(const glm::mat4 & matrix)
-        : matrix(matrix), changed(false) {
+        : matrix(matrix), changed(true) {
         glm::vec3 skew;
         glm::vec4 perspective;
         glm::decompose(matrix, m_scale, m_rotation, m_position, skew, perspective);
-        m_rotation = glm::conjugate(m_rotation);
+        // m_rotation = glm::conjugate(m_rotation);
     }
 
     Transform::~Transform() {}
