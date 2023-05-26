@@ -22,3 +22,6 @@ define_test(uniform)
 define_test(texture)
 define_test(vertex)
 define_test(quad)
+
+define_test(glm_compare)
+define_test(extra_Transform)
