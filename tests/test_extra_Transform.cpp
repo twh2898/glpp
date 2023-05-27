@@ -149,4 +149,21 @@ namespace {
         t.scale(delta);
         EXPECT_GLM_EQUAL(t.getScale(), scale * delta);
     }
+
+    /**
+     * Generated matrix should correctly include all components.
+     */
+    TEST(TransformTest, ToMatrix) {
+        vec3 pos(1, 2, 3);
+        vec3 rot(0.4, 0.5, 0.6);
+        quat qRot(rot);
+        vec3 scale(7, 8, 9);
+        Transform t(pos, qRot, scale);
+
+        auto mTranslate = glm::translate(glm::mat4(1), pos);
+        auto mRotate = glm::toMat4(qRot);
+        auto mScale = glm::scale(glm::mat4(1), scale);
+        auto matrix = mTranslate * mRotate * mScale;
+        EXPECT_GLM_EQUAL(t.toMatrix(), matrix);
+    }
 }
