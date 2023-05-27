@@ -38,6 +38,7 @@ namespace glpp::extra {
     }
 
     void Transform::rotate(const glm::quat & delta) {
+        // Quaternion rotation is second * first which is why delta is first
         m_rotation = delta * m_rotation;
         changed = true;
     }
