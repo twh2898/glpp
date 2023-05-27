@@ -121,5 +121,32 @@ namespace {
         EXPECT_GLM_EQUAL(t.getScale(), scale);
     }
 
-    // TODO: test everything else
+    /**
+     * Modifier method should update the current value instead of replacing it.
+     */
+    TEST(TransformTest, Modifiers) {
+        vec3 pos(1, 2, 3);
+        vec3 rot(0.4, 0.5, 0.6);
+        quat qRot(rot);
+        vec3 scale(7, 8, 9);
+        Transform t(pos, qRot, scale);
+
+        vec3 delta(0.1, 0.2, 0.3);
+        quat qDelta(delta);
+
+        t.move(delta);
+        EXPECT_GLM_EQUAL(t.getPosition(), pos + delta);
+
+        t.rotate(qDelta);
+        EXPECT_GLM_EQUAL(t.getRotation(), qDelta * qRot);
+        EXPECT_GLM_EQUAL(t.getRotationEuler(), glm::eulerAngles(qDelta * qRot));
+
+        t.setRotation(qRot);
+        t.rotateEuler(delta);
+        EXPECT_GLM_EQUAL(t.getRotation(), qDelta * qRot);
+        EXPECT_GLM_EQUAL(t.getRotationEuler(), glm::eulerAngles(qDelta * qRot));
+
+        t.scale(delta);
+        EXPECT_GLM_EQUAL(t.getScale(), scale * delta);
+    }
 }
