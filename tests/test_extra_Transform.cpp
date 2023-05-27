@@ -29,11 +29,13 @@ namespace {
      */
     TEST(TransformTest, ComponentsConstructor) {
         vec3 pos(1, 2, 3);
-        quat rot(vec3(4, 5, 6));
+        vec3 rot(0.4, 0.5, 0.6);
+        quat qRot(rot);
         vec3 scale(7, 8, 9);
-        Transform t(pos, rot, scale);
+        Transform t(pos, qRot, scale);
         EXPECT_GLM_EQUAL(t.getPosition(), pos);
-        EXPECT_GLM_EQUAL(t.getRotation(), rot);
+        EXPECT_GLM_EQUAL(t.getRotation(), qRot);
+        // EXPECT_GLM_EQUAL(t.getRotationEuler(), rot);
         EXPECT_GLM_EQUAL(t.getScale(), scale);
     }
 
@@ -47,16 +49,18 @@ namespace {
      */
     TEST(TransformTest, MatrixConstructor) {
         vec3 pos(1, 2, 3);
-        quat rot(vec3(4, 5, 6));
+        vec3 rot(0.4, 0.5, 0.6);
+        quat qRot(rot);
         vec3 scale(7, 8, 9);
         auto mTranslate = glm::translate(glm::mat4(1), pos);
-        auto mRotate = glm::toMat4(rot);
+        auto mRotate = glm::toMat4(qRot);
         auto mScale = glm::scale(glm::mat4(1), scale);
         mat4 matrix = mTranslate * mRotate * mScale;
 
         Transform t(matrix);
         EXPECT_GLM_EQUAL(t.getPosition(), pos);
-        EXPECT_GLM_EQUAL(t.getRotation(), rot);
+        EXPECT_GLM_EQUAL(t.getRotation(), qRot);
+        EXPECT_GLM_EQUAL(t.getRotationEuler(), rot);
         EXPECT_GLM_EQUAL(t.getScale(), scale);
         EXPECT_GLM_EQUAL(t.toMatrix(), matrix);
     }
@@ -67,15 +71,54 @@ namespace {
      */
     TEST(TransformTest, MatrixConstructor2) {
         vec3 pos(1, 2, 3);
-        quat rot(vec3(4, 5, 6));
+        vec3 rot(0.4, 0.5, 0.6);
+        quat qRot(rot);
         vec3 scale(7, 8, 9);
-        Transform t1(pos, rot, scale);
+        Transform t1(pos, qRot, scale);
         Transform t2(t1.toMatrix());
 
         EXPECT_GLM_EQUAL(t2.getPosition(), pos);
-        EXPECT_GLM_EQUAL(t2.getRotation(), rot);
+        EXPECT_GLM_EQUAL(t2.getRotation(), qRot);
+        EXPECT_GLM_EQUAL(t2.getRotationEuler(), rot);
         EXPECT_GLM_EQUAL(t2.getScale(), scale);
         EXPECT_GLM_EQUAL(t2.toMatrix(), t1.toMatrix());
+    }
+
+    /**
+     * Getter method should return the value without modifying it.
+     */
+    TEST(TransformTest, Getters) {
+        vec3 pos(1, 2, 3);
+        vec3 rot(0.4, 0.5, 0.6);
+        quat qRot(rot);
+        vec3 scale(7, 8, 9);
+        Transform t(pos, qRot, scale);
+
+        EXPECT_GLM_EQUAL(t.getPosition(), pos);
+        EXPECT_GLM_EQUAL(t.getRotation(), qRot);
+        EXPECT_GLM_EQUAL(t.getRotationEuler(), rot);
+        EXPECT_GLM_EQUAL(t.getScale(), scale);
+    }
+
+    /**
+     * Setter method should store the value without modifying it.
+     */
+    TEST(TransformTest, Setters) {
+        Transform t;
+
+        vec3 pos(1, 2, 3);
+        t.setPosition(pos);
+        EXPECT_GLM_EQUAL(t.getPosition(), pos);
+
+        vec3 rot(0.4, 0.5, 0.6);
+        quat qRot(rot);
+        t.setRotation(qRot);
+        EXPECT_GLM_EQUAL(t.getRotation(), qRot);
+        EXPECT_GLM_EQUAL(t.getRotationEuler(), rot);
+
+        vec3 scale(7, 8, 9);
+        t.setScale(scale);
+        EXPECT_GLM_EQUAL(t.getScale(), scale);
     }
 
     // TODO: test everything else
