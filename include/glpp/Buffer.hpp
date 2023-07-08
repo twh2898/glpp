@@ -10,6 +10,7 @@
 #include <vector>
 
 namespace glpp {
+    using std::vector;
 
     /**
      * Describes a vertex array attribute for a Buffer.
@@ -103,12 +104,12 @@ namespace glpp {
     };
 
     struct AttributedBuffer {
-        std::vector<Attribute> attrib;
+        vector<Attribute> attrib;
         Buffer buffer;
 
         using Usage = Buffer::Usage;
 
-        AttributedBuffer(const std::vector<Attribute> & attrib, Buffer && buffer);
+        AttributedBuffer(const vector<Attribute> & attrib, Buffer && buffer);
 
         AttributedBuffer(AttributedBuffer && other);
 
@@ -134,7 +135,7 @@ namespace glpp {
 
     class BufferArray {
         GLuint array;
-        std::vector<AttributedBuffer> buffers;
+        vector<AttributedBuffer> buffers;
         std::unique_ptr<Buffer> elementBuffer;
 
     public:
@@ -143,9 +144,9 @@ namespace glpp {
 
         BufferArray();
 
-        BufferArray(const std::vector<std::vector<Attribute>> & attributes);
+        BufferArray(const vector<vector<Attribute>> & attributes);
 
-        BufferArray(std::vector<AttributedBuffer> && buffers);
+        BufferArray(vector<AttributedBuffer> && buffers);
 
         BufferArray(BufferArray && other);
 
@@ -163,9 +164,9 @@ namespace glpp {
          */
         std::size_t size() const;
 
-        const std::vector<AttributedBuffer> & getBuffers() const;
+        const vector<AttributedBuffer> & getBuffers() const;
 
-        std::vector<AttributedBuffer> & getBuffers();
+        vector<AttributedBuffer> & getBuffers();
 
         bool isInstanced() const;
 

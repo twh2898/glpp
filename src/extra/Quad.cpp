@@ -11,7 +11,7 @@ namespace glpp::extra {
     Quad::Quad(const glm::vec2 & pos, const glm::vec2 & size)
         : pos(pos),
           size(size),
-          array(std::vector<std::vector<Attribute>> {
+          array(vector<vector<Attribute>> {
               {Attribute {0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0}},
               {Attribute {1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0}},
           }),

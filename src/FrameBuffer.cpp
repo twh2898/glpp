@@ -133,7 +133,7 @@ namespace glpp {
                                   GL_RENDERBUFFER,
                                   buffer->getBufferId());
 
-        std::vector<GLenum> attrs;
+        vector<GLenum> attrs;
         for (auto & att : attachments) {
             if (att.attachment == GL_DEPTH_STENCIL_ATTACHMENT)
                 continue;
@@ -142,7 +142,7 @@ namespace glpp {
         glDrawBuffers(attrs.size(), attrs.data());
     }
 
-    const std::vector<FrameBuffer::Attachment> & FrameBuffer::getAttachments() const {
+    const vector<FrameBuffer::Attachment> & FrameBuffer::getAttachments() const {
         return attachments;
     }
 

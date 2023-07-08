@@ -112,7 +112,7 @@ namespace glpp::extra {
           size(size),
           color(color),
           colorAxis(colorAxis),
-          array(std::vector<std::vector<Attribute>> {
+          array(vector<vector<Attribute>> {
               {Attribute {0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0}},
               {Attribute {1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0}},
           }) {

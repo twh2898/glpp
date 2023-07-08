@@ -10,6 +10,7 @@
 #include "Texture.hpp"
 
 namespace glpp {
+    using std::vector;
 
     class RenderBuffer {
         GLuint buffer;
@@ -71,7 +72,7 @@ namespace glpp {
 
     private:
         GLuint buffer;
-        std::vector<Attachment> attachments;
+        vector<Attachment> attachments;
         glm::uvec2 size;
 
         FrameBuffer(GLuint buffer) : buffer(buffer) {}
@@ -110,7 +111,7 @@ namespace glpp {
          *
          * @return the attachments
          */
-        const std::vector<Attachment> & getAttachments() const;
+        const vector<Attachment> & getAttachments() const;
 
         /**
          * Get the current size in pixels.

@@ -5,6 +5,8 @@
 #include <vector>
 
 namespace glpp {
+    using std::vector;
+
     std::string shaderSource(const std::string & path) {
         std::ifstream is;
         is.exceptions(std::ifstream::badbit | std::ifstream::failbit);
@@ -53,7 +55,7 @@ namespace glpp {
         GLint logSize = 0;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logSize);
 
-        std::vector<GLchar> errorLog(logSize);
+        vector<GLchar> errorLog(logSize);
         glGetShaderInfoLog(shader, logSize, &logSize, &errorLog[0]);
 
         return std::string(errorLog.begin(), errorLog.end());
@@ -70,7 +72,7 @@ namespace glpp {
         GLint logSize = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logSize);
 
-        std::vector<GLchar> errorLog(logSize);
+        vector<GLchar> errorLog(logSize);
         glGetProgramInfoLog(program, logSize, &logSize, &errorLog[0]);
 
         return std::string(errorLog.begin(), errorLog.end());

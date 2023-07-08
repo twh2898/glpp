@@ -66,7 +66,7 @@ namespace glpp {
 }
 
 namespace glpp {
-    AttributedBuffer::AttributedBuffer(const std::vector<Attribute> & attrib,
+    AttributedBuffer::AttributedBuffer(const vector<Attribute> & attrib,
                                        Buffer && buffer)
         : attrib(attrib), buffer(std::move(buffer)) {}
 
@@ -100,7 +100,7 @@ namespace glpp {
         glGenVertexArrays(1, &array);
     }
 
-    BufferArray::BufferArray(const std::vector<std::vector<Attribute>> & attributes)
+    BufferArray::BufferArray(const vector<vector<Attribute>> & attributes)
         : BufferArray() {
 
         bind();
@@ -111,7 +111,7 @@ namespace glpp {
         }
     }
 
-    BufferArray::BufferArray(std::vector<AttributedBuffer> && buffers)
+    BufferArray::BufferArray(vector<AttributedBuffer> && buffers)
         : BufferArray() {
 
         bind();
@@ -151,11 +151,11 @@ namespace glpp {
         return buffers.size();
     }
 
-    const std::vector<AttributedBuffer> & BufferArray::getBuffers() const {
+    const vector<AttributedBuffer> & BufferArray::getBuffers() const {
         return buffers;
     }
 
-    std::vector<AttributedBuffer> & BufferArray::getBuffers() {
+    vector<AttributedBuffer> & BufferArray::getBuffers() {
         return buffers;
     }
 
