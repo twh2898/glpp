@@ -69,10 +69,11 @@ namespace glpp {
     private:
         Target target;
         GLuint buffer;
+        vector<Attribute> attrib;
 
     public:
         /**
-         * Create a new VBO.
+         * Create a new VBO with empty attributes.
          *
          * @param target the target buffer
          *
@@ -80,6 +81,17 @@ namespace glpp {
          * new vbo will be bound.
          */
         Buffer(Target target = Array);
+
+        /**
+         * Create a new VBO with attributes.
+         *
+         * @param attrib the VBO attributes
+         * @param target the target buffer
+         *
+         * After creating the vertex array attribute vaa will be enabled and the
+         * new vbo will be bound.
+         */
+        Buffer(const vector<Attribute> & attrib, Target target = Array);
 
         Buffer(Buffer && other);
 
@@ -94,6 +106,10 @@ namespace glpp {
 
         GLuint getBufferId() const;
 
+        bool isInstanced() const;
+
+        void attach() const;
+
         void bind() const;
 
         void unbind() const;
@@ -103,39 +119,9 @@ namespace glpp {
         void bufferSubData(GLintptr offset, GLsizeiptr size, const void * data);
     };
 
-    struct AttributedBuffer {
-        vector<Attribute> attrib;
-        Buffer buffer;
-
-        using Usage = Buffer::Usage;
-
-        AttributedBuffer(const vector<Attribute> & attrib, Buffer && buffer);
-
-        AttributedBuffer(AttributedBuffer && other);
-
-        AttributedBuffer & operator=(AttributedBuffer && other);
-
-        AttributedBuffer(const AttributedBuffer &) = delete;
-        AttributedBuffer & operator=(const AttributedBuffer &) = delete;
-
-        bool isInstanced() const;
-
-        void attach() const;
-
-        inline void bufferData(GLsizeiptr size,
-                               const void * data,
-                               Usage usage = Usage::Static) {
-            buffer.bufferData(size, data, usage);
-        }
-
-        inline void bufferSubData(GLintptr offset, GLsizeiptr size, const void * data) {
-            buffer.bufferSubData(offset, size, data);
-        }
-    };
-
     class BufferArray {
         GLuint array;
-        vector<AttributedBuffer> buffers;
+        vector<Buffer> buffers;
         std::unique_ptr<Buffer> elementBuffer;
 
     public:
@@ -146,7 +132,7 @@ namespace glpp {
 
         BufferArray(const vector<vector<Attribute>> & attributes);
 
-        BufferArray(vector<AttributedBuffer> && buffers);
+        BufferArray(vector<Buffer> && buffers);
 
         BufferArray(BufferArray && other);
 
@@ -164,9 +150,9 @@ namespace glpp {
          */
         std::size_t size() const;
 
-        const vector<AttributedBuffer> & getBuffers() const;
+        const vector<Buffer> & getBuffers() const;
 
-        vector<AttributedBuffer> & getBuffers();
+        vector<Buffer> & getBuffers();
 
         bool isInstanced() const;
 

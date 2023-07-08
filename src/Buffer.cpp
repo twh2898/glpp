@@ -17,18 +17,22 @@ namespace glpp {
 }
 
 namespace glpp {
-    Buffer::Buffer(Target target) : target(target) {
+    Buffer::Buffer(Target target) : Buffer({}, target) {}
+
+    Buffer::Buffer(const vector<Attribute> & attrib, Target target)
+        : attrib(attrib), target(target) {
         glGenBuffers(1, &buffer);
     }
 
     Buffer::Buffer(Buffer && other)
-        : target(other.target), buffer(other.buffer) {
+        : target(other.target), buffer(other.buffer), attrib(other.attrib) {
         other.buffer = 0;
     }
 
     Buffer & Buffer::operator=(Buffer && other) {
         target = other.target;
         buffer = other.buffer;
+        attrib = other.attrib;
         other.buffer = 0;
         return *this;
     }
@@ -46,6 +50,19 @@ namespace glpp {
         return buffer;
     }
 
+    bool Buffer::isInstanced() const {
+        for (auto & a : attrib) {
+            if (a.isInstanced())
+                return true;
+        }
+        return false;
+    }
+
+    void Buffer::attach() const {
+        for (auto & a : attrib) {
+            a.enable();
+        }
+    }
     void Buffer::bind() const {
         glBindBuffer(target, buffer);
     }
@@ -66,36 +83,6 @@ namespace glpp {
 }
 
 namespace glpp {
-    AttributedBuffer::AttributedBuffer(const vector<Attribute> & attrib,
-                                       Buffer && buffer)
-        : attrib(attrib), buffer(std::move(buffer)) {}
-
-    AttributedBuffer::AttributedBuffer(AttributedBuffer && other)
-        : attrib(std::move(other.attrib)), buffer(std::move(other.buffer)) {}
-
-    AttributedBuffer & AttributedBuffer::operator=(AttributedBuffer && other) {
-        attrib = std::move(other.attrib);
-        buffer = std::move(other.buffer);
-        return *this;
-    }
-
-    bool AttributedBuffer::isInstanced() const {
-        for (auto & a : attrib) {
-            if (a.isInstanced())
-                return true;
-        }
-        return false;
-    }
-
-    void AttributedBuffer::attach() const {
-        buffer.bind();
-        for (auto & a : attrib) {
-            a.enable();
-        }
-    }
-}
-
-namespace glpp {
     BufferArray::BufferArray() : elementBuffer(nullptr) {
         glGenVertexArrays(1, &array);
     }
@@ -106,19 +93,18 @@ namespace glpp {
         bind();
         for (auto & attr : attributes) {
             Buffer buffer(Buffer::Array);
-            auto & ab = buffers.emplace_back(attr, std::move(buffer));
-            ab.attach();
+            auto & buff = buffers.emplace_back(attr);
+            buff.attach();
         }
     }
 
-    BufferArray::BufferArray(vector<AttributedBuffer> && buffers)
-        : BufferArray() {
+    BufferArray::BufferArray(vector<Buffer> && buffers) : BufferArray() {
 
         bind();
         this->buffers = std::move(buffers);
-        for (auto & ab : buffers) {
-            ab.buffer.bind();
-            ab.attach();
+        for (auto & buff : buffers) {
+            buff.bind();
+            buff.attach();
         }
     }
 
@@ -151,11 +137,11 @@ namespace glpp {
         return buffers.size();
     }
 
-    const vector<AttributedBuffer> & BufferArray::getBuffers() const {
+    const vector<Buffer> & BufferArray::getBuffers() const {
         return buffers;
     }
 
-    vector<AttributedBuffer> & BufferArray::getBuffers() {
+    vector<Buffer> & BufferArray::getBuffers() {
         return buffers;
     }
 
