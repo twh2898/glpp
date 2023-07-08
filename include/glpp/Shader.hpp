@@ -12,6 +12,8 @@
 // https://www.khronos.org/opengl/wiki/Shader_Compilation
 
 namespace glpp {
+    using std::string;
+    using std::string_view;
 
     class ShaderCompileException : public std::runtime_error {
     public:
@@ -30,7 +32,7 @@ namespace glpp {
      *
      * @return a string that contains the file's contents
      */
-    std::string shaderSource(const std::string & path);
+    string shaderSource(const string & path);
 
     class Uniform {
         GLuint location;
@@ -126,8 +128,8 @@ namespace glpp {
          *
          * @pre vertexSource and fragmentSource must be null terminated.
          */
-        Shader(const std::string_view & vertexSource,
-               const std::string_view & fragmentSource);
+        Shader(const string_view & vertexSource,
+               const string_view & fragmentSource);
 
         Shader(Shader && other);
 
@@ -198,7 +200,7 @@ namespace glpp {
          *
          * @return the shader
          */
-        static Shader fromFragmentSource(const std::string_view & source);
+        static Shader fromFragmentSource(const string_view & source);
 
         /**
          * Load a shader using a vertex and fragment shader path.
@@ -208,8 +210,8 @@ namespace glpp {
          *
          * @return the shader
          */
-        static Shader fromPaths(const std::string & vertexPath,
-                                const std::string & fragmentPath);
+        static Shader fromPaths(const string & vertexPath,
+                                const string & fragmentPath);
 
         /**
          * Load a shader using the default vertex shader and a fragment shader.
@@ -229,6 +231,6 @@ namespace glpp {
          *
          * @return the shader
          */
-        static Shader fromFragmentPath(const std::string & path);
+        static Shader fromFragmentPath(const string & path);
     };
 }

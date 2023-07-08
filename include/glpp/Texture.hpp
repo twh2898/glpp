@@ -9,6 +9,7 @@
 #include <string>
 
 namespace glpp {
+    using std::string;
 
     class TextureLoadException : public std::runtime_error {
     public:
@@ -200,6 +201,6 @@ namespace glpp {
          * @throws TextureLoadException if the image han an unsupported number
          * of components
          */
-        static Texture fromPath(const std::string & path);
+        static Texture fromPath(const string & path);
     };
 }

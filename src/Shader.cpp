@@ -7,12 +7,12 @@
 namespace glpp {
     using std::vector;
 
-    std::string shaderSource(const std::string & path) {
+    string shaderSource(const string & path) {
         std::ifstream is;
         is.exceptions(std::ifstream::badbit | std::ifstream::failbit);
         is.open(path);
 
-        std::string text((std::istreambuf_iterator<char>(is)),
+        string text((std::istreambuf_iterator<char>(is)),
                          std::istreambuf_iterator<char>());
 
         return text;
@@ -51,14 +51,14 @@ namespace glpp {
      *
      * @return a string with the shader compile error message
      */
-    static std::string compileError(GLuint shader) {
+    static string compileError(GLuint shader) {
         GLint logSize = 0;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logSize);
 
         vector<GLchar> errorLog(logSize);
         glGetShaderInfoLog(shader, logSize, &logSize, &errorLog[0]);
 
-        return std::string(errorLog.begin(), errorLog.end());
+        return string(errorLog.begin(), errorLog.end());
     }
 
     /**
@@ -68,14 +68,14 @@ namespace glpp {
      *
      * @return a string with the shader link error message
      */
-    static std::string linkError(GLuint program) {
+    static string linkError(GLuint program) {
         GLint logSize = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logSize);
 
         vector<GLchar> errorLog(logSize);
         glGetProgramInfoLog(program, logSize, &logSize, &errorLog[0]);
 
-        return std::string(errorLog.begin(), errorLog.end());
+        return string(errorLog.begin(), errorLog.end());
     }
 
     /**
@@ -89,7 +89,7 @@ namespace glpp {
      * @pre shaderSource must be null terminated
      */
     static GLuint compileShader(GLuint shaderType,
-                                const std::string_view & shaderSource) {
+                                const string_view & shaderSource) {
         GLuint shader = glCreateShader(shaderType);
         const char * source = shaderSource.data();
         glShaderSource(shader, 1, &source, NULL);
@@ -160,8 +160,8 @@ namespace glpp {
 }
 
 namespace glpp {
-    Shader::Shader(const std::string_view & vertexSource,
-                   const std::string_view & fragmentSource) {
+    Shader::Shader(const string_view & vertexSource,
+                   const string_view & fragmentSource) {
         GLuint vShader = compileShader(GL_VERTEX_SHADER, vertexSource);
         GLuint fShader = compileShader(GL_FRAGMENT_SHADER, fragmentSource);
 
@@ -216,7 +216,7 @@ namespace glpp {
 }
 
 namespace glpp {
-    static const std::string_view defaultVertexShaderSource = R"(
+    static const string_view defaultVertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNorm;
@@ -234,7 +234,7 @@ void main() {
     FragTex = aTex;
 })";
 
-    static const std::string_view defaultFragmentShaderSource = R"(
+    static const string_view defaultFragmentShaderSource = R"(
 #version 330 core
 out vec4 FragColor;
 uniform sampler2D gTexture;
@@ -251,18 +251,18 @@ void main() {
         return shader;
     }
 
-    Shader Shader::fromFragmentSource(const std::string_view & fragmentSource) {
+    Shader Shader::fromFragmentSource(const string_view & fragmentSource) {
         return Shader(defaultVertexShaderSource, fragmentSource);
     }
 
-    Shader Shader::fromPaths(const std::string & vertexPath,
-                             const std::string & fragmentPath) {
+    Shader Shader::fromPaths(const string & vertexPath,
+                             const string & fragmentPath) {
         auto vertexSource = shaderSource(vertexPath);
         auto fragmentSource = shaderSource(fragmentPath);
         return Shader(vertexSource, fragmentSource);
     }
 
-    Shader Shader::fromFragmentPath(const std::string & path) {
+    Shader Shader::fromFragmentPath(const string & path) {
         auto source = shaderSource(path);
         return fromFragmentSource(source);
     }

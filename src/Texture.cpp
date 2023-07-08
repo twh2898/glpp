@@ -167,7 +167,7 @@ namespace glpp {
         glBindTexture(target, 0);
     }
 
-    Texture Texture::fromPath(const std::string & path) {
+    Texture Texture::fromPath(const string & path) {
         int x, y, n;
         auto * data = stbi_load(path.c_str(), &x, &y, &n, 0);
         if (!data)
