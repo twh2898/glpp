@@ -3,7 +3,12 @@
 namespace glpp {
     void Attribute::enable() const {
         glVertexAttribPointer(index, size, type, normalized, stride, pointer);
-        glVertexAttribDivisor(index, divisor);
+        // Switch starting with OpenGL 4.3
+        // https://stackoverflow.com/a/50651756
+        if (glVertexBindingDivisor != nullptr)
+            glVertexBindingDivisor(index, divisor);
+        else
+            glVertexAttribDivisor(index, divisor);
         glEnableVertexAttribArray(index);
     }
 
@@ -92,8 +97,8 @@ namespace glpp {
 
         bind();
         for (auto & attr : attributes) {
-            Buffer buffer(Buffer::Array);
-            auto & buff = buffers.emplace_back(attr);
+            auto & buff = buffers.emplace_back(attr, Buffer::Array);
+            buff.bind();
             buff.attach();
         }
     }
