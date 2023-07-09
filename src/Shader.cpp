@@ -227,7 +227,7 @@ out vec2 FragTex;
 uniform mat4 vp;
 uniform mat4 model;
 void main() {
-    mat4 mpv = vp * model;
+    mat4 mvp = vp * model;
     gl_Position = mvp * vec4(aPos, 1.0);
     FragPos = vec3(model * vec4(aPos, 1.0));
     FragNorm = aNorm;
