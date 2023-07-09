@@ -99,12 +99,18 @@ namespace glpp::extra {
         Vertex & operator-=(const Vertex & other);
     };
 
+    /**
+     * Derived from BufferArray for use with the Vertex type.
+     */
     class VertexBufferArray : public BufferArray {
     private:
         using BufferArray::bufferData;
         using BufferArray::bufferSubData;
 
     public:
+        /**
+         * Create an empty VertexBufferArray.
+         */
         VertexBufferArray();
 
         VertexBufferArray(VertexBufferArray && other);
@@ -116,15 +122,39 @@ namespace glpp::extra {
 
         ~VertexBufferArray();
 
+        /**
+         * Send a vector of Vertex to the buffer.
+         *
+         * @param data the buffer data
+         * @param usage the buffer usage hint
+         *
+         * @see BufferArray::bufferData
+         */
         inline void bufferData(const vector<Vertex> & data,
                                Usage usage = Usage::Static) {
             bufferData(data.size() * sizeof(Vertex), data.data(), usage);
         }
 
+        /**
+         * Send Vertex to the buffer from pointer and size.
+         *
+         * @param size the number of elements in data
+         * @param data the buffer data
+         * @param usage the buffer usage hint
+         *
+         * @see BufferArray::bufferData
+         */
         void bufferData(GLsizeiptr size,
                         const Vertex * data,
                         Usage usage = Usage::Static);
 
+        /**
+         * Replace a subset of the buffer with new data.
+         *
+         * @param offset the start index
+         * @param size the number of elements to replace
+         * @param data the buffer data
+         */
         void bufferSubData(GLintptr offset, GLsizeiptr size, const Vertex * data);
     };
 }
