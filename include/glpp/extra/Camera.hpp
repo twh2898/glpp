@@ -117,18 +117,38 @@ namespace glpp::extra {
          */
         void setProjection(ProjectionMode mode);
 
+        /**
+         * Get the camera position.
+         *
+         * @return the position
+         */
         const glm::vec3 & getPosition() const;
 
+        /**
+         * Set the camera position.
+         *
+         * @param pos the new position
+         */
         void setPosition(const glm::vec3 & pos);
 
+        /**
+         * Get the euler camera rotation.
+         *
+         * @return the euler rotation
+         */
         const glm::vec3 & getRotation() const;
 
+        /**
+         * Set the euler camera rotation.
+         *
+         * @param rot the euler rotation
+         */
         void setRotation(const glm::vec3 & rot);
 
         /**
          * Rotate by the euler delta.
          *
-         * @param delta the delta rotation
+         * @param delta the delta euler rotation
          */
         void rotateDolly(const glm::vec3 & delta);
 
