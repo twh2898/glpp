@@ -1,11 +1,13 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 #include "glpp/Buffer.hpp"
 
 namespace glpp::extra {
     using std::vector;
+    using std::shared_ptr;
 
     /**
      * A single point in the format accepted by VBO, Mesh and Model.
@@ -103,6 +105,10 @@ namespace glpp::extra {
      * Derived from BufferArray for use with the Vertex type.
      */
     class VertexBufferArray : public BufferArray {
+    public:
+        using Ptr = shared_ptr<VertexBufferArray>;
+        using ConstPtr = const shared_ptr<VertexBufferArray>;
+
     private:
         using BufferArray::bufferData;
         using BufferArray::bufferSubData;

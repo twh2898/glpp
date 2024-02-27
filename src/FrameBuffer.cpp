@@ -62,10 +62,11 @@ namespace glpp {
 }
 
 namespace glpp {
-    FrameBuffer::Attachment::Attachment(Texture * texture, GLenum attachment)
+    FrameBuffer::Attachment::Attachment(const Texture::Ptr & texture, GLenum attachment)
         : texture(texture), type(TEXTURE), attachment(attachment) {}
 
-    FrameBuffer::Attachment::Attachment(RenderBuffer * buffer, GLenum attachment)
+    FrameBuffer::Attachment::Attachment(const RenderBuffer::Ptr & buffer,
+                                        GLenum attachment)
         : buffer(buffer), type(RENDER_BUFFER), attachment(attachment) {}
 
     void FrameBuffer::Attachment::resize(const glm::uvec2 & size) {
@@ -111,7 +112,7 @@ namespace glpp {
         return buffer;
     }
 
-    void FrameBuffer::attach(Texture * texture, GLenum attachment) {
+    void FrameBuffer::attach(const Texture::Ptr & texture, GLenum attachment) {
         if (texture->getSize() != size)
             texture->resize(size);
 
@@ -123,7 +124,7 @@ namespace glpp {
                                0);
     }
 
-    void FrameBuffer::attach(RenderBuffer * buffer, GLenum attachment) {
+    void FrameBuffer::attach(const RenderBuffer::Ptr & buffer, GLenum attachment) {
         if (buffer->getSize() != size)
             buffer->resize(size);
 

@@ -3,58 +3,60 @@
 #include <string_view>
 
 namespace glpp::extra {
+    using std::make_shared;
+
     GeometryBuffer::GeometryBuffer(const glm::uvec2 & size, GLsizei samples)
         : FrameBuffer(size),
-          diffuse(size,
-                  Texture::RGB,
-                  Texture::RGB,
-                  GL_FLOAT,
-                  samples,
-                  Texture::Linear,
-                  Texture::Linear,
-                  Texture::Clamp,
-                  false),
-          normal(size,
-                 (Texture::Format)GL_RGB16F,
-                 Texture::RGB,
-                 GL_FLOAT,
-                 samples,
-                 Texture::Linear,
-                 Texture::Linear,
-                 Texture::Clamp,
-                 false),
-          position(size,
-                   (Texture::Format)GL_RGB16F,
-                   Texture::RGB,
-                   GL_FLOAT,
-                   samples,
-                   Texture::Linear,
-                   Texture::Linear,
-                   Texture::Clamp,
-                   false),
-          specular(size,
-                   (Texture::Format)GL_R16F,
-                   Texture::Gray,
-                   GL_FLOAT,
-                   samples,
-                   Texture::Linear,
-                   Texture::Linear,
-                   Texture::Clamp,
-                   false),
-          depth(size, GL_DEPTH24_STENCIL8, samples) {
+          diffuse(make_shared<Texture>(size,
+                                       Texture::RGB,
+                                       Texture::RGB,
+                                       GL_FLOAT,
+                                       samples,
+                                       Texture::Linear,
+                                       Texture::Linear,
+                                       Texture::Clamp,
+                                       false)),
+          normal(make_shared<Texture>(size,
+                                      (Texture::Format)GL_RGB16F,
+                                      Texture::RGB,
+                                      GL_FLOAT,
+                                      samples,
+                                      Texture::Linear,
+                                      Texture::Linear,
+                                      Texture::Clamp,
+                                      false)),
+          position(make_shared<Texture>(size,
+                                        (Texture::Format)GL_RGB16F,
+                                        Texture::RGB,
+                                        GL_FLOAT,
+                                        samples,
+                                        Texture::Linear,
+                                        Texture::Linear,
+                                        Texture::Clamp,
+                                        false)),
+          specular(make_shared<Texture>(size,
+                                        (Texture::Format)GL_R16F,
+                                        Texture::Gray,
+                                        GL_FLOAT,
+                                        samples,
+                                        Texture::Linear,
+                                        Texture::Linear,
+                                        Texture::Clamp,
+                                        false)),
+          depth(make_shared<RenderBuffer>(size, GL_DEPTH24_STENCIL8, samples)) {
 
-        attach(&diffuse, GL_COLOR_ATTACHMENT0);
-        attach(&normal, GL_COLOR_ATTACHMENT1);
-        attach(&position, GL_COLOR_ATTACHMENT2);
-        attach(&specular, GL_COLOR_ATTACHMENT3);
-        attach(&depth, GL_DEPTH_STENCIL_ATTACHMENT);
+        attach(diffuse, GL_COLOR_ATTACHMENT0);
+        attach(normal, GL_COLOR_ATTACHMENT1);
+        attach(position, GL_COLOR_ATTACHMENT2);
+        attach(specular, GL_COLOR_ATTACHMENT3);
+        attach(depth, GL_DEPTH_STENCIL_ATTACHMENT);
     }
 
     void GeometryBuffer::bindTextures() const {
-        diffuse.bind(0);
-        normal.bind(1);
-        position.bind(2);
-        specular.bind(3);
+        diffuse->bind(0);
+        normal->bind(1);
+        position->bind(2);
+        specular->bind(3);
     }
 }
 

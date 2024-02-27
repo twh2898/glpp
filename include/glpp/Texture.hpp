@@ -5,11 +5,13 @@
 #include <GL/gl.h>
 
 #include <glm/glm.hpp>
+#include <memory>
 #include <stdexcept>
 #include <string>
 
 namespace glpp {
     using std::string;
+    using std::shared_ptr;
 
     class TextureLoadException : public std::runtime_error {
     public:
@@ -21,6 +23,9 @@ namespace glpp {
      */
     class Texture {
     public:
+        using Ptr = shared_ptr<Texture>;
+        using ConstPtr = const shared_ptr<Texture>;
+
         enum Format {
             Gray = GL_RED,
             RGB = GL_RGB,

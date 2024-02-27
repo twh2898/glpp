@@ -5,14 +5,21 @@
 #include <GL/gl.h>
 
 #include <glm/glm.hpp>
+#include <memory>
 #include <vector>
 
 #include "Texture.hpp"
 
 namespace glpp {
     using std::vector;
+    using std::shared_ptr;
 
     class RenderBuffer {
+    public:
+        using Ptr = shared_ptr<RenderBuffer>;
+        using ConstPtr = const shared_ptr<RenderBuffer>;
+
+    private:
         GLuint buffer;
         GLenum internal;
         GLsizei samples;
@@ -33,7 +40,7 @@ namespace glpp {
         ~RenderBuffer();
 
         GLuint getBufferId() const;
-        
+
         GLsizei getSamples() const;
 
         const glm::uvec2 & getSize() const;
@@ -50,6 +57,9 @@ namespace glpp {
      */
     class FrameBuffer {
     public:
+        using Ptr = shared_ptr<FrameBuffer>;
+        using ConstPtr = const shared_ptr<FrameBuffer>;
+
         struct Attachment {
             enum Type {
                 TEXTURE,
@@ -57,15 +67,15 @@ namespace glpp {
             };
 
             union {
-                Texture * texture;
-                RenderBuffer * buffer;
+                Texture::Ptr texture;
+                RenderBuffer::Ptr buffer;
             };
             Type type;
             GLenum attachment;
 
-            Attachment(Texture * texture, GLenum attachment);
+            Attachment(const Texture::Ptr & texture, GLenum attachment);
 
-            Attachment(RenderBuffer * buffer, GLenum attachment);
+            Attachment(const RenderBuffer::Ptr & buffer, GLenum attachment);
 
             void resize(const glm::uvec2 & size);
         };
@@ -101,9 +111,10 @@ namespace glpp {
          */
         GLuint getBufferId() const;
 
-        void attach(Texture * texture, GLenum attachment = GL_COLOR_ATTACHMENT0);
+        void attach(const Texture::Ptr & texture,
+                    GLenum attachment = GL_COLOR_ATTACHMENT0);
 
-        void attach(RenderBuffer * buffer,
+        void attach(const RenderBuffer::Ptr & buffer,
                     GLenum attachment = GL_DEPTH_STENCIL_ATTACHMENT);
 
         /**

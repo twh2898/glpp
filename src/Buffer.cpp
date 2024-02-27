@@ -1,7 +1,7 @@
 #include "glpp/Buffer.hpp"
 
 namespace glpp {
-    void Attribute::enable() const {
+    void Buffer::Attribute::enable() const {
         glVertexAttribPointer(index, size, type, normalized, stride, pointer);
         // Switch starting with OpenGL 4.3
         // https://stackoverflow.com/a/50651756
@@ -12,11 +12,11 @@ namespace glpp {
         glEnableVertexAttribArray(index);
     }
 
-    void Attribute::disable() const {
+    void Buffer::Attribute::disable() const {
         glDisableVertexAttribArray(index);
     }
 
-    bool Attribute::isInstanced() const {
+    bool Buffer::Attribute::isInstanced() const {
         return divisor > 0;
     }
 }
@@ -92,24 +92,24 @@ namespace glpp {
         glGenVertexArrays(1, &array);
     }
 
-    BufferArray::BufferArray(const vector<vector<Attribute>> & attributes)
+    BufferArray::BufferArray(const vector<vector<Buffer::Attribute>> & attributes)
         : BufferArray() {
 
         bind();
         for (auto & attr : attributes) {
             auto & buff = buffers.emplace_back(attr, Buffer::Array);
-            buff.bind();
-            buff.attach();
+            buff->bind();
+            buff->attach();
         }
     }
 
-    BufferArray::BufferArray(vector<Buffer> && buffers) : BufferArray() {
+    BufferArray::BufferArray(vector<Buffer::Ptr> && buffers) : BufferArray() {
 
         bind();
         this->buffers = std::move(buffers);
         for (auto & buff : buffers) {
-            buff.bind();
-            buff.attach();
+            buff->bind();
+            buff->attach();
         }
     }
 
@@ -142,17 +142,17 @@ namespace glpp {
         return buffers.size();
     }
 
-    const vector<Buffer> & BufferArray::getBuffers() const {
+    const vector<Buffer::Ptr> & BufferArray::getBuffers() const {
         return buffers;
     }
 
-    vector<Buffer> & BufferArray::getBuffers() {
+    vector<Buffer::Ptr> & BufferArray::getBuffers() {
         return buffers;
     }
 
     bool BufferArray::isInstanced() const {
         for (auto & b : buffers) {
-            if (b.isInstanced())
+            if (b->isInstanced())
                 return true;
         }
         return false;

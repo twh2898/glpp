@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <memory>
 
 #include "glpp/FrameBuffer.hpp"
 #include "glpp/Shader.hpp"
@@ -8,15 +9,19 @@
 #include "glpp/extra/Vertex.hpp"
 
 namespace glpp::extra {
+    using std::shared_ptr;
     using glm::uvec2;
 
     class GeometryBuffer : public FrameBuffer {
     public:
-        Texture diffuse;
-        Texture normal;
-        Texture position;
-        Texture specular;
-        RenderBuffer depth;
+        using Ptr = shared_ptr<GeometryBuffer>;
+        using ConstPtr = const shared_ptr<GeometryBuffer>;
+
+        Texture::Ptr diffuse;
+        Texture::Ptr normal;
+        Texture::Ptr position;
+        Texture::Ptr specular;
+        RenderBuffer::Ptr depth;
 
         // TODO: implement these as public, remember to move textures
         using FrameBuffer::FrameBuffer;

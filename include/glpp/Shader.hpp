@@ -5,6 +5,7 @@
 #include <GL/gl.h>
 
 #include <glm/glm.hpp>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -14,6 +15,7 @@
 namespace glpp {
     using std::string;
     using std::string_view;
+    using std::shared_ptr;
 
     class ShaderCompileException : public std::runtime_error {
     public:
@@ -117,6 +119,11 @@ namespace glpp {
      * Manages a single OpenGL shader.
      */
     class Shader {
+    public:
+        using Ptr = shared_ptr<Shader>;
+        using ConstPtr = const shared_ptr<Shader>;
+
+    private:
         GLuint program;
 
     public:

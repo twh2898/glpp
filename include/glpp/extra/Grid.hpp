@@ -1,17 +1,26 @@
 #pragma once
 
+#include <memory>
+
 #include "Vertex.hpp"
 #include "glpp/Buffer.hpp"
 #include "glpp/Shader.hpp"
 
 namespace glpp::extra {
+    using std::shared_ptr;
+
     /**
      * Simple grid with configurable size and color. The grid can be drawn with
      * optional transform. The shader is provided from the Grid::shader() static
      * method.
      */
     class Grid {
-        BufferArray array;
+    public:
+        using Ptr = shared_ptr<Grid>;
+        using ConstPtr = const shared_ptr<Grid>;
+
+    private:
+        BufferArray::Ptr array;
         int n;
         int size;
         glm::vec4 color;

@@ -11,31 +11,35 @@
 
 namespace glpp {
     using std::vector;
-
-    /**
-     * Describes a vertex array attribute for a Buffer.
-     */
-    struct Attribute {
-        GLuint index;
-        GLint size;
-        GLenum type;
-        bool normalized;
-        GLsizei stride;
-        const void * pointer;
-        GLuint divisor = 0;
-
-        void enable() const;
-
-        void disable() const;
-
-        bool isInstanced() const;
-    };
+    using std::shared_ptr;
 
     /**
      * A single array buffer.
      */
     class Buffer {
     public:
+        using Ptr = shared_ptr<Buffer>;
+        using ConstPtr = const shared_ptr<Buffer>;
+
+        /**
+         * Describes a vertex array attribute for a Buffer.
+         */
+        struct Attribute {
+            GLuint index;
+            GLint size;
+            GLenum type;
+            bool normalized;
+            GLsizei stride;
+            const void * pointer;
+            GLuint divisor = 0;
+
+            void enable() const;
+
+            void disable() const;
+
+            bool isInstanced() const;
+        };
+
         enum Target {
             Array = GL_ARRAY_BUFFER,
             Index = GL_ELEMENT_ARRAY_BUFFER,
@@ -120,9 +124,14 @@ namespace glpp {
     };
 
     class BufferArray {
+    public:
+        using Ptr = shared_ptr<BufferArray>;
+        using ConstPtr = const shared_ptr<BufferArray>;
+
+    private:
         GLuint array;
-        vector<Buffer> buffers;
-        std::unique_ptr<Buffer> elementBuffer;
+        vector<Buffer::Ptr> buffers;
+        Buffer::Ptr elementBuffer;
 
     public:
         using Usage = Buffer::Usage;
@@ -130,9 +139,9 @@ namespace glpp {
 
         BufferArray();
 
-        BufferArray(const vector<vector<Attribute>> & attributes);
+        BufferArray(const vector<vector<Buffer::Attribute>> & attributes);
 
-        BufferArray(vector<Buffer> && buffers);
+        BufferArray(vector<Buffer::Ptr> && buffers);
 
         BufferArray(BufferArray && other);
 
@@ -150,9 +159,9 @@ namespace glpp {
          */
         std::size_t size() const;
 
-        const vector<Buffer> & getBuffers() const;
+        const vector<Buffer::Ptr> & getBuffers() const;
 
-        vector<Buffer> & getBuffers();
+        vector<Buffer::Ptr> & getBuffers();
 
         bool isInstanced() const;
 
@@ -164,14 +173,14 @@ namespace glpp {
                                GLsizeiptr size,
                                const void * data,
                                Usage usage = Usage::Static) {
-            buffers[index].bufferData(size, data, usage);
+            buffers[index]->bufferData(size, data, usage);
         }
 
         inline void bufferSubData(size_t index,
                                   GLintptr offset,
                                   GLsizeiptr size,
                                   const void * data) {
-            buffers[index].bufferSubData(offset, size, data);
+            buffers[index]->bufferSubData(offset, size, data);
         }
 
         void bufferElements(GLsizeiptr size,

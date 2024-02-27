@@ -23,6 +23,7 @@ void main() {
 
 namespace glpp::extra {
     using std::vector;
+    using std::make_shared;
 
     void Grid::updateBuffer() {
         vector<glm::vec3> vertices;
@@ -101,10 +102,10 @@ namespace glpp::extra {
 
         n = vertices.size();
 
-        array.bind();
-        array.bufferData(0, n * sizeof(glm::vec3), vertices.data());
-        array.bufferData(1, n * sizeof(glm::vec4), colors.data());
-        array.unbind();
+        array->bind();
+        array->bufferData(0, n * sizeof(glm::vec3), vertices.data());
+        array->bufferData(1, n * sizeof(glm::vec4), colors.data());
+        array->unbind();
     }
 
     Grid::Grid(int size, const glm::vec4 & color, bool colorAxis)
@@ -112,10 +113,10 @@ namespace glpp::extra {
           size(size),
           color(color),
           colorAxis(colorAxis),
-          array(vector<vector<Attribute>> {
-              {Attribute {0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0}},
-              {Attribute {1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0}},
-          }) {
+          array(make_shared<BufferArray>(vector<vector<Buffer::Attribute>> {
+              {Buffer::Attribute {0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0}},
+              {Buffer::Attribute {1, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0}},
+          })) {
         updateBuffer();
     }
 
@@ -150,13 +151,13 @@ namespace glpp::extra {
 
     void Grid::draw() const {
         // drawArrays calls bind
-        array.drawArrays(Buffer::Lines, 0, n);
+        array->drawArrays(Buffer::Lines, 0, n);
     }
 
     void Grid::draw(const glm::mat4 & transform) const {
         shader().bind();
         shader().uniform("mvp").setMat4(transform);
-        array.drawArrays(Buffer::Lines, 0, n);
+        array->drawArrays(Buffer::Lines, 0, n);
     }
 
     Shader & Grid::shader() {

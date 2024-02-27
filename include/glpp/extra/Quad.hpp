@@ -1,15 +1,23 @@
 #pragma once
 
+#include <memory>
+
 #include "Vertex.hpp"
 #include "glpp/Buffer.hpp"
 
 namespace glpp::extra {
+    using std::shared_ptr;
 
     /**
      * 2 triangles forming a quad in 2D space.
      */
     class Quad {
-        BufferArray array;
+    public:
+        using Ptr = shared_ptr<Quad>;
+        using ConstPtr = const shared_ptr<Quad>;
+
+    private:
+        BufferArray::Ptr array;
         float vertices[8];
         glm::vec2 pos;
         glm::vec2 size;

@@ -16,8 +16,11 @@ namespace glpp::extra {
      */
     class Camera {
     public:
+        using Ptr = shared_ptr<Camera>;
+        using ConstPtr = const shared_ptr<Camera>;
+
         /**
-         * Projection mode for projectino matrix.
+         * Projection mode for projection matrix.
          */
         enum ProjectionMode {
             /// Perspective projection using fov
