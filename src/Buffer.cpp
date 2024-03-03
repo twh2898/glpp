@@ -88,6 +88,8 @@ namespace glpp {
 }
 
 namespace glpp {
+    using std::make_shared;
+
     BufferArray::BufferArray() : elementBuffer(nullptr) {
         glGenVertexArrays(1, &array);
     }
@@ -97,7 +99,8 @@ namespace glpp {
 
         bind();
         for (auto & attr : attributes) {
-            auto & buff = buffers.emplace_back(attr, Buffer::Array);
+            Buffer::Ptr buff = make_shared<Buffer>(attr, Buffer::Array);
+            buffers.push_back(buff);
             buff->bind();
             buff->attach();
         }
