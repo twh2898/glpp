@@ -125,10 +125,10 @@ int main() {
         0, 1, 2, // First Triangle
     };
 
-    Attribute a0 {0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0};
-    Attribute a1 {1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0};
+    Buffer::Attribute a0 {0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0};
+    Buffer::Attribute a1 {1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0};
 
-    BufferArray array(vector<vector<Attribute>> {{a0}, {a1}});
+    BufferArray array(vector<vector<Buffer::Attribute>> {{a0}, {a1}});
     array.bind();
     array.bufferData(0, sizeof(vertices), vertices);
     array.bufferData(1, sizeof(colors), colors);

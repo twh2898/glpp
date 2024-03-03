@@ -209,15 +209,15 @@ static void cursor_pos_callback(GLFWwindow * window, double x, double y) {
 }
 
 struct TextureViewport {
-    const Texture & tex;
+    Texture::ConstPtr tex;
     Quad quad;
 
-    TextureViewport(const Texture & tex, Quad && quad)
+    TextureViewport(Texture::ConstPtr & tex, Quad && quad)
         : tex(tex), quad(std::move(quad)) {}
 
     void draw() const {
         glDisable(GL_DEPTH_TEST);
-        tex.bind();
+        tex->bind();
         quad.draw();
     }
 };

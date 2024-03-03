@@ -125,10 +125,10 @@ int main() {
         0, 1, 2, // First Triangle
     };
 
-    Attribute a0 {0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0};
-    Attribute a1 {1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0};
+    Buffer::Attribute a0 {0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0};
+    Buffer::Attribute a1 {1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0};
 
-    BufferArray array(vector<vector<Attribute>> {{a0}, {a1}});
+    BufferArray array(vector<vector<Buffer::Attribute>> {{a0}, {a1}});
     array.bind();
     array.bufferData(0, sizeof(vertices), vertices);
     array.bufferData(1, sizeof(texCoords), texCoords);
@@ -142,10 +142,10 @@ int main() {
 
     FrameBuffer fbo(uvec2(width, height));
 
-    RenderBuffer rbo(uvec2(width, height), GL_DEPTH24_STENCIL8);
-    fbo.attach(&rbo, GL_DEPTH_STENCIL_ATTACHMENT);
+    RenderBuffer::Ptr rbo = make_shared<RenderBuffer>(uvec2(width, height), GL_DEPTH24_STENCIL8);
+    fbo.attach(rbo, GL_DEPTH_STENCIL_ATTACHMENT);
 
-    Texture tex2(uvec2(width, height),
+    Texture::Ptr tex2 = make_shared<Texture>(uvec2(width, height),
                  Texture::RGBA,
                  Texture::RGBA,
                  GL_FLOAT,
@@ -154,7 +154,7 @@ int main() {
                  Texture::Linear,
                  Texture::Clamp,
                  false);
-    fbo.attach(&tex2, GL_COLOR_ATTACHMENT0);
+    fbo.attach(tex2, GL_COLOR_ATTACHMENT0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         cerr << "FBO is not complete!" << endl;
@@ -203,7 +203,7 @@ int main() {
         FrameBuffer::getDefault().blit(fbo);
 
         shader.bind();
-        tex2.bind();
+        tex2->bind();
         quad.draw();
 
         glfwSwapBuffers(window);
