@@ -66,10 +66,8 @@ namespace glpp {
                 RENDER_BUFFER,
             };
 
-            union {
-                Texture::Ptr texture;
-                RenderBuffer::Ptr buffer;
-            };
+            Texture::Ptr texture;
+            RenderBuffer::Ptr buffer;
             Type type;
             GLenum attachment;
 
