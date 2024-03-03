@@ -10,6 +10,7 @@
 #include <memory>
 
 namespace glpp::extra {
+    using std::shared_ptr;
 
     /**
      * First person camera used to generate the projection and view matrices.
