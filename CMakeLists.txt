@@ -5,9 +5,14 @@ project(glpp
     DESCRIPTION "Helper Classes that wrap OpenGL functionality"
     LANGUAGES CXX)
 
-option(GLPP_BUILD_DOCS "Builds the glpp documentation" ON)
-option(GLPP_BUILD_EXAMPLES "Builds the glpp examples" ON)
-option(GLPP_BUILD_TESTS "Builds the glpp tests" ON)
+set(GLPP_IS_MASTER_PROJECT OFF)
+if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+    set(GLPP_IS_MASTER_PROJECT ON)
+endif()
+    
+option(GLPP_BUILD_DOCS "Builds the glpp documentation" ${GLPP_IS_MASTER_PROJECT})
+option(GLPP_BUILD_EXAMPLES "Builds the glpp examples" ${GLPP_IS_MASTER_PROJECT})
+option(GLPP_BUILD_TESTS "Builds the glpp tests" ${GLPP_IS_MASTER_PROJECT})
 
 # Only if this is the top level project (not included with add_subdirectory)
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -44,7 +49,6 @@ include_directories(PRIVATE ${CMAKE_BINARY_DIR}/include)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(GLUT REQUIRED)
-find_package(glm REQUIRED CONFIG)
 
 add_subdirectory(external)
 
