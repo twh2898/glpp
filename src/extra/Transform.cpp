@@ -1,5 +1,6 @@
 #include "glpp/extra/Transform.hpp"
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>
 
 namespace glpp::extra {
@@ -82,7 +83,7 @@ namespace glpp::extra {
     glm::mat4 Transform::toMatrix() const {
         if (changed) {
             auto translate = glm::translate(glm::mat4(1), m_position);
-            auto rotate = glm::toMat4(m_rotation);
+            auto rotate = glm::mat4(m_rotation);
             auto scale = glm::scale(glm::mat4(1), m_scale);
             matrix = translate * rotate * scale;
             changed = false;

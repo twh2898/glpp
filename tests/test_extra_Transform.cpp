@@ -1,6 +1,10 @@
 #include <gtest/gtest.h>
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
 #include <glpp/extra/Transform.hpp>
 #include <iostream>
 #include <stdexcept>
@@ -53,7 +57,7 @@ namespace {
         quat qRot(rot);
         vec3 scale(7, 8, 9);
         auto mTranslate = glm::translate(glm::mat4(1), pos);
-        auto mRotate = glm::toMat4(qRot);
+        auto mRotate = glm::mat4(qRot);
         auto mScale = glm::scale(glm::mat4(1), scale);
         mat4 matrix = mTranslate * mRotate * mScale;
 
@@ -161,7 +165,7 @@ namespace {
         Transform t(pos, qRot, scale);
 
         auto mTranslate = glm::translate(glm::mat4(1), pos);
-        auto mRotate = glm::toMat4(qRot);
+        auto mRotate = glm::mat4(qRot);
         auto mScale = glm::scale(glm::mat4(1), scale);
         auto matrix = mTranslate * mRotate * mScale;
         EXPECT_GLM_EQUAL(t.toMatrix(), matrix);
