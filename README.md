@@ -7,10 +7,8 @@ Helper Classes that wrap OpenGL functionality.
 ```sh
 git clone https://github.com/twh2898/glpp.git
 cd glpp
-mkdir build
-cd build
-cmake ..
-make
+make init
+make build
 ```
 
 ### Installing
