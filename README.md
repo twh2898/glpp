@@ -7,16 +7,34 @@ Helper Classes that wrap OpenGL functionality.
 ```sh
 git clone https://github.com/twh2898/glpp.git
 cd glpp
-make init
+./post-clone.sh
 make build
 ```
 
 ### Installing
 
 ```sh
-cd build
 make install
 ```
+
+To install the release version, set the `CONFIG` var before building.
+
+```sh
+make config CONFIG=Release
+make build CONFIG=Release
+make install CONFIG=Release
+```
+
+## CMake Options
+
+| Option              | Description                   | Default |
+| ------------------- | ----------------------------- | ------- |
+| GLPP_BUILD_DOCS     | Builds the glpp documentation | Off[^1] |
+| GLPP_BUILD_EXAMPLES | Builds the glpp examples      | Off[^1] |
+| GLPP_BUILD_TESTS    | Builds the glpp tests         | Off[^1] |
+
+[^1] When includes in another project. If this is the master project default
+will be On.
 
 ## CMake Submodule
 
@@ -30,6 +48,12 @@ add_subdirectory(glpp EXCLUDE_FROM_ALL)
 ```
 
 ## CMake Fetch Content
+### Installing
+
+```sh
+cd build
+make install
+```
 
 ```cmake
 include(FetchContent)

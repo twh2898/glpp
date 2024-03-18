@@ -4,12 +4,11 @@ CXX=/usr/bin/g++
 CONFIG=Debug
 TARGET=all
 
-all: init build
+all: config build
 
-init:
-	git submodule update --init --recursive
+config:
 	cmake --no-warn-unused-cli \
-		-DCMAKE_BUILD_TYPE=Debug \
+		-DCMAKE_BUILD_TYPE=${CONFIG} \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE \
 		-DCMAKE_C_COMPILER=${CC} \
 		-DCMAKE_CXX_COMPILER=${CXX} \
@@ -18,6 +17,9 @@ init:
 		-G Ninja
 
 build:
-	cmake --build ${PWD}/build --config ${CONFIG} --target ${TARGET} --
+	cmake --build ${PWD}/build --config ${CONFIG} --target ${TARGET}
 
-.PHONY: init build
+install:
+	cmake --install ${PWD}/build --config ${CONFIG}
+
+.PHONY: config build install
