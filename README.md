@@ -60,7 +60,7 @@ include(FetchContent)
 FetchContent_Declare(
     glpp
     GIT_REPOSITORY https://github.com/twh2898/glpp.git
-    GIT_TAG        0.1.0
+    GIT_TAG        0.8.1
 )
 FetchContent_MakeAvailable(glpp)
 ```
@@ -72,7 +72,7 @@ include(ExternalProject)
 ExternalProject_Add(
     glpp
     GIT_REPOSITORY  https://github.com/twh2898/glpp.git
-    GIT_TAG         0.1.0
+    GIT_TAG         0.8.1
     UPDATE_COMMAND  ""
     INSTALL_COMMAND ""
 )
