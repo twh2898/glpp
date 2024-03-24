@@ -97,6 +97,9 @@ namespace glpp::extra {
         /**
          * Get the grid shader.
          *
+         * This shader has a mat4 uniform called mvp. This can be set manually
+         * or by passing a transform into draw.
+         *
          * @return the Shader for a grid
          */
         static Shader & shader();
