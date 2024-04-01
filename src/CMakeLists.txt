@@ -10,6 +10,7 @@ set(HEADER_LIST
     extra/GeometryBuffer.hpp
     extra/Grid.hpp
     extra/Line.hpp
+    extra/Marker.hpp
     extra/Quad.hpp
     extra/Transform.hpp
     extra/Vertex.hpp
@@ -25,6 +26,7 @@ set(SOURCE_LIST
     extra/GeometryBuffer.cpp
     extra/Grid.cpp
     extra/Line.cpp
+    extra/Marker.cpp
     extra/Quad.cpp
     extra/Transform.cpp
     extra/Vertex.cpp
