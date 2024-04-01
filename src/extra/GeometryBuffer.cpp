@@ -52,6 +52,8 @@ namespace glpp::extra {
         attach(depth, GL_DEPTH_STENCIL_ATTACHMENT);
     }
 
+    GeometryBuffer::~GeometryBuffer() {}
+
     void GeometryBuffer::bindTextures() const {
         diffuse->bind(0);
         normal->bind(1);

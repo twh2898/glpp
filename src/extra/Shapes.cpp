@@ -72,6 +72,8 @@ namespace glpp::extra {
                Mode mode)
         : Line({p1, p2}, color, mode) {}
 
+    Line::~Line() {}
+
     Line::Line(Line && other)
         : array(std::move(other.array)),
           n(other.n),

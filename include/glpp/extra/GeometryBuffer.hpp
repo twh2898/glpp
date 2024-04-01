@@ -33,6 +33,8 @@ namespace glpp::extra {
     public:
         GeometryBuffer(const uvec2 & size, GLsizei samples = 0);
 
+        virtual ~GeometryBuffer();
+
         void bindTextures() const;
 
         static Shader & getShader();

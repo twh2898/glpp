@@ -41,6 +41,8 @@ namespace glpp::extra {
          */
         Grid(int size, const glm::vec4 & color, bool colorAxis = false);
 
+        virtual ~Grid();
+
         Grid(Grid && other);
 
         Grid & operator=(Grid && other);

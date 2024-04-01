@@ -26,6 +26,8 @@ namespace glpp::extra {
         array->unbind();
     }
 
+    Quad::~Quad() {}
+
     Quad::Quad(Quad && other) : Quad(other.pos, other.size) {}
 
     Quad & Quad::operator=(Quad && other) {

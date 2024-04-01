@@ -120,6 +120,8 @@ namespace glpp::extra {
         updateBuffer();
     }
 
+    Grid::~Grid() {}
+
     Grid::Grid(Grid && other)
         : Grid(other.size, other.color, other.colorAxis) {}
 

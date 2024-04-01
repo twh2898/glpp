@@ -46,6 +46,8 @@ namespace glpp::extra {
         Quad(const glm::vec2 & pos = glm::vec2(-1),
              const glm::vec2 & size = glm::vec2(2));
 
+        virtual ~Quad();
+
         Quad(Quad && other);
 
         Quad & operator=(Quad && other);

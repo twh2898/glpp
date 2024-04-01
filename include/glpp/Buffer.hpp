@@ -104,7 +104,7 @@ namespace glpp {
         Buffer(const Buffer &) = delete;
         Buffer & operator=(const Buffer &) = delete;
 
-        ~Buffer();
+        virtual ~Buffer();
 
         Target getTarget() const;
 
@@ -150,7 +150,7 @@ namespace glpp {
         BufferArray(const BufferArray &) = delete;
         BufferArray & operator=(const BufferArray &) = delete;
 
-        ~BufferArray();
+        virtual ~BufferArray();
 
         GLuint getArrayId() const;
 

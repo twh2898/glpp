@@ -84,6 +84,8 @@ namespace glpp::extra {
              const glm::vec4 & color = glm::vec4(1.0),
              Mode mode = Strip);
 
+        virtual ~Line();
+
         Line(Line && other);
 
         Line & operator=(Line && other);

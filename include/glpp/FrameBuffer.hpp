@@ -37,7 +37,7 @@ namespace glpp {
         RenderBuffer(const RenderBuffer &) = delete;
         RenderBuffer & operator=(const RenderBuffer &) = delete;
 
-        ~RenderBuffer();
+        virtual ~RenderBuffer();
 
         GLuint getBufferId() const;
 
@@ -88,17 +88,17 @@ namespace glpp {
     public:
         FrameBuffer(const glm::uvec2 & size);
 
+        /**
+         * Destruct the FrameBuffer.
+         */
+        virtual ~FrameBuffer();
+
         FrameBuffer(FrameBuffer && other);
 
         FrameBuffer & operator=(FrameBuffer && other);
 
         FrameBuffer(const FrameBuffer &) = delete;
         FrameBuffer & operator=(const FrameBuffer &) = delete;
-
-        /**
-         * Destruct the FrameBuffer.
-         */
-        virtual ~FrameBuffer();
 
         bool isComplete() const;
 
