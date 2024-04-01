@@ -9,8 +9,8 @@ set(HEADER_LIST
     extra/debug.hpp
     extra/GeometryBuffer.hpp
     extra/Grid.hpp
+    extra/Line.hpp
     extra/Quad.hpp
-    extra/Shapes.hpp
     extra/Transform.hpp
     extra/Vertex.hpp
     Buffer.hpp
@@ -24,8 +24,8 @@ set(SOURCE_LIST
     extra/debug.cpp
     extra/GeometryBuffer.cpp
     extra/Grid.cpp
+    extra/Line.cpp
     extra/Quad.cpp
-    extra/Shapes.cpp
     extra/Transform.cpp
     extra/Vertex.cpp
     Buffer.cpp

@@ -5,7 +5,7 @@ using namespace glpp;
 
 #include <glpp/extra/Camera.hpp>
 #include <glpp/extra/Grid.hpp>
-#include <glpp/extra/Shapes.hpp>
+#include <glpp/extra/Line.hpp>
 using namespace glpp::extra;
 
 #include <GLFW/glfw3.h>

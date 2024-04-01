@@ -1,4 +1,4 @@
-#include "glpp/extra/Shapes.hpp"
+#include "glpp/extra/Line.hpp"
 
 #include <vector>
 
