@@ -135,6 +135,6 @@ namespace glpp::extra {
          *
          * @return the transform matrix
          */
-        glm::mat4 toMatrix() const;
+        const glm::mat4 & toMatrix() const;
     };
 }

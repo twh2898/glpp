@@ -80,7 +80,7 @@ namespace glpp::extra {
         changed = true;
     }
 
-    glm::mat4 Transform::toMatrix() const {
+    const glm::mat4 & Transform::toMatrix() const {
         if (changed) {
             auto translate = glm::translate(glm::mat4(1), m_position);
             auto rotate = glm::mat4(m_rotation);
