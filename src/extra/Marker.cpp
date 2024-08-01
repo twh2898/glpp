@@ -1,6 +1,28 @@
 #include "glpp/extra/Marker.hpp"
 
 namespace glpp::extra {
+    using std::make_shared;
+
+    Mark::Mark()
+        : Transform(),
+          visible(true),
+          color({1.0}),
+          line(make_shared<Line>(color, Line::Lines)) {}
+
+    Mark::Mark(const glm::vec3 & position,
+               const glm::quat & rotation,
+               const glm::vec3 & scale)
+        : Transform(position, rotation, scale),
+          visible(true),
+          color({1.0}),
+          line(make_shared<Line>(color, Line::Lines)) {}
+
+    Mark::Mark(const glm::mat4 & matrix)
+        : Transform(matrix),
+          visible(true),
+          color({1.0}),
+          line(make_shared<Line>(color, Line::Lines)) {}
+
     Mark::~Mark() {
         Transform::~Transform();
     }
@@ -31,6 +53,16 @@ namespace glpp::extra {
             point = toMatrix() * glm::vec4(point, 1.0);
         }
         return points;
+    }
+
+    void Mark::draw() const {
+        if (!visible)
+            return;
+
+        line->setPoints(getPoints());
+        // TODO set this elsewhere
+        line->setColor(color);
+        line->draw();
     }
 }
 

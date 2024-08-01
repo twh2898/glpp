@@ -21,12 +21,28 @@ namespace glpp::extra {
     private:
         bool visible;
         glm::vec4 color;
+        Line::Ptr line;
 
     protected:
         virtual const vector<glm::vec3> & shapePoints() const = 0;
 
     public:
-        using Transform::Transform;
+        Mark();
+
+        Mark(const glm::vec3 & position,
+             const glm::quat & rotation,
+             const glm::vec3 & scale);
+
+        Mark(const glm::mat4 & matrix);
+
+        Mark(const Mark & other) = default;
+
+        Mark(Mark && other) = default;
+
+        Mark & operator=(const Mark & other) = default;
+
+        Mark & operator=(Mark && other) = default;
+
 
         virtual ~Mark();
 
@@ -41,6 +57,8 @@ namespace glpp::extra {
         void hide();
 
         vector<glm::vec3> getPoints() const;
+
+        void draw() const;
     };
 
     class AxisMark : public Mark {
