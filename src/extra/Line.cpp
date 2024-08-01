@@ -135,7 +135,7 @@ namespace glpp::extra {
 
     void Line::draw() const {
         // drawArrays calls bind
-        array->drawArrays(Buffer::Lines, 0, n);
+        array->drawArrays((Buffer::Mode)mode, 0, n);
     }
 
     void Line::draw(const glm::mat4 & transform) const {
