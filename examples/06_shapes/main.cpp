@@ -6,6 +6,7 @@ using namespace glpp;
 #include <glpp/extra/Camera.hpp>
 #include <glpp/extra/Grid.hpp>
 #include <glpp/extra/Line.hpp>
+#include <glpp/extra/Marker.hpp>
 using namespace glpp::extra;
 
 #include <GLFW/glfw3.h>
@@ -108,6 +109,14 @@ int main() {
         },
         glm::vec4(0.0, 0.0, 1.0, 1.0), Line::LineLoop);
 
+    AxisMark axm;
+    axm.move({3, 0, 1});
+    axm.setColor({1, 1, 0, 1});
+
+    DiamondMark dm;
+    dm.move({-2, 0, 1});
+    dm.setColor({0, 1, 1, 1});
+
     // uncomment this call to draw in wireframe polygons.
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -140,6 +149,8 @@ int main() {
         line1.draw(camera.projMatrix() * camera.viewMatrix());
         line2.draw(camera.projMatrix() * camera.viewMatrix());
         line3.draw(camera.projMatrix() * camera.viewMatrix());
+        axm.draw();
+        dm.draw();
 
         glfwSwapBuffers(window);
     }
