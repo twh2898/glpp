@@ -22,6 +22,7 @@ namespace glpp::extra {
         bool visible;
         glm::vec4 color;
         Line::Ptr line;
+        mutable bool firstDraw;
 
     protected:
         virtual const vector<glm::vec3> & shapePoints() const = 0;
@@ -43,7 +44,6 @@ namespace glpp::extra {
 
         Mark & operator=(Mark && other) = default;
 
-
         virtual ~Mark();
 
         const glm::vec4 & getColor() const;
@@ -57,6 +57,8 @@ namespace glpp::extra {
         void hide();
 
         vector<glm::vec3> getPoints() const;
+
+        void draw(const glm::mat4 & transform) const;
 
         void draw() const;
     };

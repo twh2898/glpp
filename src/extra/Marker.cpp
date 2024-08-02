@@ -6,33 +6,33 @@ namespace glpp::extra {
     Mark::Mark()
         : Transform(),
           visible(true),
-          color({1.0}),
-          line(make_shared<Line>(color, Line::Lines)) {}
+          line(make_shared<Line>(glm::vec4(1.0), Line::Lines)),
+          firstDraw(true) {}
 
     Mark::Mark(const glm::vec3 & position,
                const glm::quat & rotation,
                const glm::vec3 & scale)
         : Transform(position, rotation, scale),
           visible(true),
-          color({1.0}),
-          line(make_shared<Line>(color, Line::Lines)) {}
+          line(make_shared<Line>(glm::vec4(1.0), Line::Lines)),
+          firstDraw(true) {}
 
     Mark::Mark(const glm::mat4 & matrix)
         : Transform(matrix),
           visible(true),
-          color({1.0}),
-          line(make_shared<Line>(color, Line::Lines)) {}
+          line(make_shared<Line>(glm::vec4(1.0), Line::Lines)),
+          firstDraw(true) {}
 
     Mark::~Mark() {
         Transform::~Transform();
     }
 
     const glm::vec4 & Mark::getColor() const {
-        return color;
+        return line->getColor();
     }
 
     void Mark::setColor(const glm::vec4 & color) {
-        this->color = color;
+        line->setColor(color);
     }
 
     bool Mark::isVisible() const {
@@ -48,21 +48,35 @@ namespace glpp::extra {
     }
 
     vector<glm::vec3> Mark::getPoints() const {
-        vector<glm::vec3> points = shapePoints();
-        for (auto & point : points) {
-            point = toMatrix() * glm::vec4(point, 1.0);
-        }
-        return points;
+        return shapePoints();
     }
 
     void Mark::draw() const {
         if (!visible)
             return;
 
-        line->setPoints(getPoints());
-        // TODO set this elsewhere
-        line->setColor(color);
+        if (firstDraw) {
+            // NOTE this is here instead of constructor because constructor
+            // can't call virtual method
+            line->setPoints(shapePoints());
+            firstDraw = false;
+        }
+
         line->draw();
+    }
+
+    void Mark::draw(const glm::mat4 & transform) const {
+        if (!visible)
+            return;
+
+        if (firstDraw) {
+            // NOTE this is here instead of constructor because constructor
+            // can't call virtual method
+            line->setPoints(shapePoints());
+            firstDraw = false;
+        }
+
+        line->draw(transform * toMatrix());
     }
 }
 

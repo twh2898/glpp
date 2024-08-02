@@ -141,7 +141,7 @@ namespace glpp::extra {
     void Line::draw(const glm::mat4 & transform) const {
         shader().bind();
         shader().uniform("mvp").setMat4(transform);
-        array->drawArrays((Buffer::Mode)mode, 0, n);
+        draw();
     }
 
     Shader & Line::shader() {

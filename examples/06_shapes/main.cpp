@@ -146,11 +146,13 @@ int main() {
             }
         }
 
-        line1.draw(camera.projMatrix() * camera.viewMatrix());
-        line2.draw(camera.projMatrix() * camera.viewMatrix());
-        line3.draw(camera.projMatrix() * camera.viewMatrix());
-        axm.draw();
-        dm.draw();
+        auto vp = camera.projMatrix() * camera.viewMatrix();
+
+        line1.draw(vp);
+        line2.draw(vp);
+        line3.draw(vp);
+        axm.draw(vp);
+        dm.draw(vp);
 
         glfwSwapBuffers(window);
     }
