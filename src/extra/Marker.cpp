@@ -1,27 +1,42 @@
 #include "glpp/extra/Marker.hpp"
 
 namespace glpp::extra {
+    using std::move;
     using std::make_shared;
 
-    Mark::Mark()
-        : Transform(),
-          visible(true),
-          line(make_shared<Line>(glm::vec4(1.0), Line::Lines)),
-          firstDraw(true) {}
+    Mark::Mark(const vector<glm::vec3> & points, const glm::vec4 & color)
+        : Transform(), line(make_shared<Line>(points, color, Line::Lines)) {}
 
-    Mark::Mark(const glm::vec3 & position,
+    Mark::Mark(vector<glm::vec3> && points, const glm::vec4 & color)
+        : Transform(), line(make_shared<Line>(points, color, Line::Lines)) {}
+
+    Mark::Mark(const vector<glm::vec3> & points,
+               const glm::vec3 & position,
                const glm::quat & rotation,
-               const glm::vec3 & scale)
+               const glm::vec3 & scale,
+               const glm::vec4 & color)
         : Transform(position, rotation, scale),
-          visible(true),
-          line(make_shared<Line>(glm::vec4(1.0), Line::Lines)),
-          firstDraw(true) {}
+          line(make_shared<Line>(points, color, Line::Lines)) {}
 
-    Mark::Mark(const glm::mat4 & matrix)
+    Mark::Mark(vector<glm::vec3> && points,
+               const glm::vec3 & position,
+               const glm::quat & rotation,
+               const glm::vec3 & scale,
+               const glm::vec4 & color)
+        : Transform(position, rotation, scale),
+          line(make_shared<Line>(points, color, Line::Lines)) {}
+
+    Mark::Mark(const vector<glm::vec3> & points,
+               const glm::mat4 & matrix,
+               const glm::vec4 & color)
         : Transform(matrix),
-          visible(true),
-          line(make_shared<Line>(glm::vec4(1.0), Line::Lines)),
-          firstDraw(true) {}
+          line(make_shared<Line>(points, color, Line::Lines)) {}
+
+    Mark::Mark(vector<glm::vec3> && points,
+               const glm::mat4 & matrix,
+               const glm::vec4 & color)
+        : Transform(matrix),
+          line(make_shared<Line>(points, color, Line::Lines)) {}
 
     Mark::~Mark() {
         Transform::~Transform();
@@ -35,61 +50,37 @@ namespace glpp::extra {
         line->setColor(color);
     }
 
-    bool Mark::isVisible() const {
-        return visible;
-    }
-
-    void Mark::show() {
-        visible = true;
-    }
-
-    void Mark::hide() {
-        visible = false;
-    }
-
-    vector<glm::vec3> Mark::getPoints() const {
-        return shapePoints();
+    const vector<glm::vec3> & Mark::getPoints() const {
+        return line->getPoints();
     }
 
     void Mark::draw() const {
-        if (!visible)
-            return;
-
-        if (firstDraw) {
-            // NOTE this is here instead of constructor because constructor
-            // can't call virtual method
-            line->setPoints(shapePoints());
-            firstDraw = false;
-        }
-
         line->draw();
     }
 
     void Mark::draw(const glm::mat4 & transform) const {
-        if (!visible)
-            return;
-
-        if (firstDraw) {
-            // NOTE this is here instead of constructor because constructor
-            // can't call virtual method
-            line->setPoints(shapePoints());
-            firstDraw = false;
-        }
-
         line->draw(transform * toMatrix());
     }
 }
 
 namespace glpp::extra {
-    const vector<glm::vec3> & AxisMark::shapePoints() const {
-        static vector<glm::vec3> points {
-            {-1, 0, 0}, {1, 0, 0}, // X
-            {0, -1, 0}, {0, 1, 0}, // Y
-            {0, 0, -1}, {0, 0, 1}, // Z
-        };
+    static vector<glm::vec3> axis_mark_points {
+        {-1, 0, 0}, {1, 0, 0}, // X
+        {0, -1, 0}, {0, 1, 0}, // Y
+        {0, 0, -1}, {0, 0, 1}, // Z
+    };
 
-        return points;
-    }
+    AxisMark::AxisMark(const glm::vec4 & color)
+        : Mark(axis_mark_points, color) {}
+
+    AxisMark::AxisMark(const glm::vec3 & position,
+                       const glm::quat & rotation,
+                       const glm::vec3 & scale,
+                       const glm::vec4 & color)
+        : Mark(axis_mark_points, position, rotation, scale, color) {}
+
+    AxisMark::AxisMark(const glm::mat4 & matrix, const glm::vec4 & color)
+        : Mark(axis_mark_points, matrix, color) {}
 
     AxisMark::~AxisMark() {
         Mark::~Mark();
@@ -97,26 +88,34 @@ namespace glpp::extra {
 }
 
 namespace glpp::extra {
-    const vector<glm::vec3> & DiamondMark::shapePoints() const {
-        static vector<glm::vec3> points {
-            {-1, 0, 0}, {0, 0, -1}, //
-            {0, 0, -1}, {1, 0, 0}, //
-            {1, 0, 0},  {0, 0, 1}, //
-            {0, 0, 1},  {-1, 0, 0}, //
+    static vector<glm::vec3> diamond_mark_points {
+        {-1, 0, 0}, {0, 0, -1}, //
+        {0, 0, -1}, {1, 0, 0}, //
+        {1, 0, 0},  {0, 0, 1}, //
+        {0, 0, 1},  {-1, 0, 0}, //
 
-            {0, 1, 0},  {0, 0, -1}, //
-            {0, 1, 0},  {1, 0, 0}, //
-            {0, 1, 0},  {0, 0, 1}, //
-            {0, 1, 0},  {-1, 0, 0}, //
+        {0, 1, 0},  {0, 0, -1}, //
+        {0, 1, 0},  {1, 0, 0}, //
+        {0, 1, 0},  {0, 0, 1}, //
+        {0, 1, 0},  {-1, 0, 0}, //
 
-            {0, -1, 0}, {0, 0, -1}, //
-            {0, -1, 0}, {1, 0, 0}, //
-            {0, -1, 0}, {0, 0, 1}, //
-            {0, -1, 0}, {-1, 0, 0}, //
-        };
+        {0, -1, 0}, {0, 0, -1}, //
+        {0, -1, 0}, {1, 0, 0}, //
+        {0, -1, 0}, {0, 0, 1}, //
+        {0, -1, 0}, {-1, 0, 0}, //
+    };
 
-        return points;
-    }
+    DiamondMark::DiamondMark(const glm::vec4 & color)
+        : Mark(diamond_mark_points, color) {}
+
+    DiamondMark::DiamondMark(const glm::vec3 & position,
+                             const glm::quat & rotation,
+                             const glm::vec3 & scale,
+                             const glm::vec4 & color)
+        : Mark(diamond_mark_points, position, rotation, scale, color) {}
+
+    DiamondMark::DiamondMark(const glm::mat4 & matrix, const glm::vec4 & color)
+        : Mark(diamond_mark_points, matrix, color) {}
 
     DiamondMark::~DiamondMark() {
         Mark::~Mark();

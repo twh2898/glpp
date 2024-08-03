@@ -19,22 +19,33 @@ namespace glpp::extra {
         using ConstPtr = shared_ptr<Mark>;
 
     private:
-        bool visible;
-        glm::vec4 color;
         Line::Ptr line;
-        mutable bool firstDraw;
-
-    protected:
-        virtual const vector<glm::vec3> & shapePoints() const = 0;
 
     public:
-        Mark();
+        Mark(const vector<glm::vec3> & points,
+             const glm::vec4 & color = glm::vec4(1.0));
 
-        Mark(const glm::vec3 & position,
+        Mark(vector<glm::vec3> && points, const glm::vec4 & color = glm::vec4(1.0));
+
+        Mark(const vector<glm::vec3> & points,
+             const glm::vec3 & position,
              const glm::quat & rotation,
-             const glm::vec3 & scale);
+             const glm::vec3 & scale,
+             const glm::vec4 & color = glm::vec4(1.0));
 
-        Mark(const glm::mat4 & matrix);
+        Mark(vector<glm::vec3> && points,
+             const glm::vec3 & position,
+             const glm::quat & rotation,
+             const glm::vec3 & scale,
+             const glm::vec4 & color = glm::vec4(1.0));
+
+        Mark(const vector<glm::vec3> & points,
+             const glm::mat4 & matrix,
+             const glm::vec4 & color = glm::vec4(1.0));
+
+        Mark(vector<glm::vec3> && points,
+             const glm::mat4 & matrix,
+             const glm::vec4 & color = glm::vec4(1.0));
 
         Mark(const Mark & other) = default;
 
@@ -50,13 +61,7 @@ namespace glpp::extra {
 
         void setColor(const glm::vec4 & color);
 
-        bool isVisible() const;
-
-        void show();
-
-        void hide();
-
-        vector<glm::vec3> getPoints() const;
+        const vector<glm::vec3> & getPoints() const;
 
         void draw(const glm::mat4 & transform) const;
 
@@ -68,11 +73,24 @@ namespace glpp::extra {
         using Ptr = shared_ptr<AxisMark>;
         using ConstPtr = shared_ptr<AxisMark>;
 
-    protected:
-        const vector<glm::vec3> & shapePoints() const override;
-
     public:
-        using Mark::Mark;
+        AxisMark(const glm::vec4 & color = glm::vec4(1.0));
+
+        AxisMark(const glm::vec3 & position,
+                 const glm::quat & rotation,
+                 const glm::vec3 & scale,
+                 const glm::vec4 & color = glm::vec4(1.0));
+
+        AxisMark(const glm::mat4 & matrix,
+                 const glm::vec4 & color = glm::vec4(1.0));
+
+        AxisMark(const AxisMark & other) = default;
+
+        AxisMark(AxisMark && other) = default;
+
+        AxisMark & operator=(const AxisMark & other) = default;
+
+        AxisMark & operator=(AxisMark && other) = default;
 
         virtual ~AxisMark();
     };
@@ -82,11 +100,24 @@ namespace glpp::extra {
         using Ptr = shared_ptr<DiamondMark>;
         using ConstPtr = shared_ptr<DiamondMark>;
 
-    protected:
-        const vector<glm::vec3> & shapePoints() const override;
-
     public:
-        using Mark::Mark;
+        DiamondMark(const glm::vec4 & color = glm::vec4(1.0));
+
+        DiamondMark(const glm::vec3 & position,
+                    const glm::quat & rotation,
+                    const glm::vec3 & scale,
+                    const glm::vec4 & color = glm::vec4(1.0));
+
+        DiamondMark(const glm::mat4 & matrix,
+                    const glm::vec4 & color = glm::vec4(1.0));
+
+        DiamondMark(const DiamondMark & other) = default;
+
+        DiamondMark(DiamondMark && other) = default;
+
+        DiamondMark & operator=(const DiamondMark & other) = default;
+
+        DiamondMark & operator=(DiamondMark && other) = default;
 
         virtual ~DiamondMark();
     };
