@@ -21,7 +21,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      submodules: recursive
+      with:
+        submodules: recursive
 
     - name: Install OpenGL
       run: >
