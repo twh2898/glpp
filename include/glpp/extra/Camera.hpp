@@ -4,8 +4,6 @@
 // gl.h after glew.h, clang-format don't sort
 #include <GL/gl.h>
 
-#include <SFML/OpenGL.hpp>
-#include <SFML/System.hpp>
 #include <glm/glm.hpp>
 #include <memory>
 
