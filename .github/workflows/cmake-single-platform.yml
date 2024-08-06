@@ -27,7 +27,7 @@ jobs:
     - name: Install OpenGL
       run: >
         sudo apt-get update && 
-        sudo apt-get install -y freeglut3-dev libglew-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libsfml-dev
+        sudo apt-get install -y freeglut3-dev libglew-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libsfml-dev fglrx-updates
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
