@@ -39,7 +39,7 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: List docs
-      run: ls ${{github.workspace}}/build
+      run: ls ${{github.workspace}}/build/docs
 
     # - name: Test
     #   working-directory: ${{github.workspace}}/build
