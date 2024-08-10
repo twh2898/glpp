@@ -45,6 +45,14 @@ namespace glpp {
         GLuint getLocation() const;
 
         /**
+         * Check if the uniform exists in a given shader.
+         * 
+         * @return true 
+         * @return false 
+         */
+        bool exists() const;
+
+        /**
          * Set the value to integer 0 or 1.
          *
          * @param value the value to set

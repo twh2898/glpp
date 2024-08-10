@@ -118,6 +118,10 @@ namespace glpp {
         return location;
     }
 
+    bool Uniform::exists() const {
+        return location != -1;
+    }
+
     void Uniform::setBool(bool value) const {
         glUniform1i(location, static_cast<int>(value));
     }
