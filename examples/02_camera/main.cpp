@@ -131,8 +131,8 @@ int main() {
         0.0, 0.0, 1.0, // Top Center
     };
 
-    Buffer::Attribute a0 {0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0};
-    Buffer::Attribute a1 {1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0};
+    Buffer::Attribute a0 (0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float));
+    Buffer::Attribute a1 (1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float));
 
     BufferArray array(vector<vector<Buffer::Attribute>> {{a0}, {a1}});
     array.bind();

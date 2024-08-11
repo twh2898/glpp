@@ -1,6 +1,21 @@
 #include "glpp/Buffer.hpp"
 
 namespace glpp {
+    Buffer::Attribute::Attribute(GLuint index,
+                                 GLint size,
+                                 GLenum type,
+                                 bool normalized,
+                                 GLsizei stride,
+                                 const void * pointer,
+                                 GLuint divisor)
+        : index(index),
+          size(size),
+          type(type),
+          normalized(normalized),
+          stride(stride),
+          pointer(pointer),
+          divisor(divisor) {}
+
     void Buffer::Attribute::enable() const {
         glVertexAttribPointer(index, size, type, normalized, stride, pointer);
         // Switch starting with OpenGL 4.3

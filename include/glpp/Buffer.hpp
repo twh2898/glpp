@@ -33,6 +33,22 @@ namespace glpp {
             const void * pointer;
             GLuint divisor = 0;
 
+            Attribute(GLuint index,
+                      GLint size,
+                      GLenum type,
+                      bool normalized,
+                      GLsizei stride,
+                      const void * pointer = nullptr,
+                      GLuint divisor = 0);
+
+            Attribute(const Attribute & other) = default;
+
+            Attribute(Attribute && other) = default;
+
+            Attribute & operator=(const Attribute & other) = default;
+
+            Attribute & operator=(Attribute && other) = default;
+
             void enable() const;
 
             void disable() const;
