@@ -43,6 +43,11 @@ namespace glpp {
         enum Target {
             Array = GL_ARRAY_BUFFER,
             Index = GL_ELEMENT_ARRAY_BUFFER,
+            Uniform = GL_UNIFORM_BUFFER,
+            ShaderStorage = GL_SHADER_STORAGE_BUFFER,
+            TransformFeedback = GL_TRANSFORM_FEEDBACK_BUFFER,
+            PixelPack = GL_PIXEL_PACK_BUFFER,
+            PixelUnpack = GL_PIXEL_UNPACK_BUFFER,
         };
 
         /**
