@@ -25,6 +25,15 @@ make build CONFIG=Release
 make install CONFIG=Release
 ```
 
+## Deprecation Notice
+
+The following have been deprecated and will be removed or replaced in a future
+release.
+
+| What will be removed      | Why                                                 |
+| ------------------------- | --------------------------------------------------- |
+| `Shader::defaultShader()` | This shader will always outlive the OpenGL context. |
+
 ## CMake Options
 
 | Option              | Description                   | Default |

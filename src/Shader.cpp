@@ -249,6 +249,7 @@ void main() {
     FragColor = texture(gTexture, FragTex);
 })";
 
+    [[deprecated("A default shader will be provided in a different form, if at all, in future releases")]]
     Shader & Shader::defaultShader() {
         static Shader shader(defaultVertexShaderSource,
                              defaultFragmentShaderSource);

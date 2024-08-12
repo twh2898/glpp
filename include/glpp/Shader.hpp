@@ -187,6 +187,10 @@ namespace glpp {
          *
          * This shader takes a Vertex from VBO.hpp,
          *
+         * @deprecated A default shader will be provided in a different form, if
+         * at all, in future releases. This shader will always outlive the
+         * OpenGL context.
+         *
          * Uniforms:
          * - mvp: mat4
          * - model: mat4
