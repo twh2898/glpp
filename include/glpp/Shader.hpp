@@ -46,9 +46,9 @@ namespace glpp {
 
         /**
          * Check if the uniform exists in a given shader.
-         * 
-         * @return true 
-         * @return false 
+         *
+         * @return true
+         * @return false
          */
         bool exists() const;
 

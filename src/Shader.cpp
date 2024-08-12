@@ -13,7 +13,7 @@ namespace glpp {
         is.open(path);
 
         string text((std::istreambuf_iterator<char>(is)),
-                         std::istreambuf_iterator<char>());
+                    std::istreambuf_iterator<char>());
 
         return text;
     }
